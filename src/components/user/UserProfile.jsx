@@ -66,7 +66,7 @@ const UserProfile = () => {
           });
         }
       } catch (err) {
-        setError("Failed to load profile. Please try again.");
+        setError("Failed to load profile. Please try again.", err);
       } finally {
         setLoading(false);
       }
@@ -115,7 +115,7 @@ const UserProfile = () => {
         }, 3000);
       }
     } catch (err) {
-      setError("Failed to update profile. Please try again.");
+      setError("Failed to update profile. Please try again.", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -133,7 +133,7 @@ const UserProfile = () => {
         navigate("/login");
       }
     } catch (err) {
-      setError("Failed to delete account. Please try again.");
+      setError("Failed to delete account. Please try again.", err);
     } finally {
       setIsSubmitting(false);
       setShowDeleteConfirm(false);
@@ -212,7 +212,7 @@ const UserProfile = () => {
         setPasswordError(result.error);
       }
     } catch (err) {
-      setPasswordError("An unexpected error occurred");
+      setPasswordError("An unexpected error occurred", err);
     } finally {
       setPasswordLoading(false);
     }
