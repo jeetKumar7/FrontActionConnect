@@ -428,7 +428,7 @@ export const getUserProfile = async () => {
       return { error: "No authentication token found" };
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
+    const response = await fetch(`${BACKEND_URL}/api/getuser`, {
       headers: {
         Authorization: token, // Make sure "Bearer " prefix is added
       },
