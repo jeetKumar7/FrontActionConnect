@@ -7,7 +7,6 @@ import {
   FaTree,
   FaSeedling,
   FaSearch,
-  FaFilter,
   FaUserFriends,
   FaClock,
   FaPlus,
@@ -17,9 +16,6 @@ import {
   FaHome,
   FaUsers,
   FaUser,
-  FaEnvelope,
-  FaUserPlus,
-  FaCheck,
   FaSpinner,
 } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
@@ -33,22 +29,22 @@ import {
   joinInitiative,
   createInitiative,
 } from "../services";
-import { causes, getCauseById } from "../data/causes";
+import { causes } from "../data/causes";
 import { Link } from "react-router-dom";
 
-// Add this near the top of your file after imports
+// Error boundary for handling React errors
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("Modal error boundary caught error:", error, errorInfo);
+    console.error("Error boundary caught error:", error, errorInfo);
   }
 
   render() {
@@ -68,7 +64,6 @@ class ErrorBoundary extends React.Component {
         </div>
       );
     }
-
     return this.props.children;
   }
 }
@@ -81,7 +76,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-// Custom marker icon for selected and unselected initiatives
+// Custom marker icon creator
 const createCustomIcon = (iconColor = "blue") => {
   return new L.Icon({
     iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${iconColor}.png`,
@@ -93,27 +88,11 @@ const createCustomIcon = (iconColor = "blue") => {
   });
 };
 
-// User location icon
-const userLocationIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
+// User location and other user icons
+const userLocationIcon = createCustomIcon("green");
+const otherUserIcon = createCustomIcon("violet");
 
-// Other users icon
-const otherUserIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-// Component to handle map view changes when selected initiative changes
+// Component to handle map view changes
 function FlyToMarker({ position, flyToCoordinates }) {
   const map = useMap();
 
@@ -129,7 +108,7 @@ function FlyToMarker({ position, flyToCoordinates }) {
   return null;
 }
 
-// Geocode function
+// Geocode function to convert address to coordinates
 const geocodeLocation = async (locationString) => {
   if (!locationString) return null;
 
@@ -137,7 +116,6 @@ const geocodeLocation = async (locationString) => {
     const response = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationString)}`
     );
-
     const data = await response.json();
 
     if (data && data.length > 0) {
@@ -146,10 +124,10 @@ const geocodeLocation = async (locationString) => {
         lng: parseFloat(data[0].lon),
       };
     }
-    return null; // Return null if no results are found
+    return null;
   } catch (error) {
     console.error("Geocoding error:", error);
-    return null; // Return null if an error occurs
+    return null;
   }
 };
 
@@ -164,12 +142,17 @@ const categories = [
 ];
 
 const InteractiveMap = () => {
+  // State for search and filtering
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedInitiative, setSelectedInitiative] = useState(null);
   const [showInitiatives, setShowInitiatives] = useState(true);
+
+  // Map state
   const [mapCenter, setMapCenter] = useState([40.7128, -74.006]); // Default: NYC
   const [mapZoom, setMapZoom] = useState(11);
+
+  // User related state
   const [userData, setUserData] = useState(null);
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [isLoadingUserLocation, setIsLoadingUserLocation] = useState(false);
@@ -178,158 +161,23 @@ const InteractiveMap = () => {
   const [supportedCauses, setSupportedCauses] = useState([]);
   const [highlightSupported, setHighlightSupported] = useState(false);
 
-  // New states for user discovery
+  // User discovery states
   const [showPeopleTab, setShowPeopleTab] = useState(false);
   const [selectedCauseFilter, setSelectedCauseFilter] = useState("");
   const [usersWithCause, setUsersWithCause] = useState([]);
   const [userCoordinatesMap, setUserCoordinatesMap] = useState({});
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [connectionRequests, setConnectionRequests] = useState({});
   const [flyToUser, setFlyToUser] = useState(null);
 
-  // References to prevent infinite loops
-  const isInitiativesFiltered = useRef(false);
-  const mapRef = useRef(null);
-
-  // MapController to get the map instance
-  const MapController = () => {
-    const map = useMap();
-
-    useEffect(() => {
-      if (map) {
-        mapRef.current = map;
-      }
-    }, [map]);
-
-    return null;
-  };
-
-  // Fetch user profile and geocode their location
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.log("No token found, user is not logged in");
-          return;
-        }
-
-        const userData = await getUserProfile();
-        console.log("User data fetched:", userData);
-
-        if (!userData.error) {
-          setUserData(userData);
-
-          if (userData.location) {
-            setIsLoadingUserLocation(true);
-            const coordinates = await geocodeLocation(userData.location);
-            setIsLoadingUserLocation(false);
-
-            if (coordinates) {
-              setUserCoordinates(coordinates);
-            }
-          }
-
-          // Fetch the user's supported causes
-          const causes = await getSupportedCauses();
-          if (!causes.error) {
-            setSupportedCauses(causes);
-          }
-        } else {
-          // Important: Set userData to null when there's an error
-          setUserData(null);
-          console.error("Authentication error:", userData.error);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        setUserData(null);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  // Center map on user location
-  const centerOnUserLocation = useCallback(() => {
-    if (userCoordinates && mapRef.current) {
-      console.log("Centering on coordinates:", userCoordinates);
-      mapRef.current.flyTo([userCoordinates.lat, userCoordinates.lng], 13);
-      setShowUserLocation(true);
-    } else {
-      console.log("Cannot center: mapRef or coordinates missing", {
-        hasMap: !!mapRef.current,
-        coords: userCoordinates,
-      });
-    }
-  }, [userCoordinates]);
-
-  // Fetch users by cause
-  const fetchUsersByCause = async (causeId) => {
-    if (!causeId) return;
-
-    setLoadingUsers(true);
-    try {
-      const result = await getUsersByCause(causeId);
-      if (!result.error) {
-        setUsersWithCause(result);
-
-        // Geocode all user locations
-        const coordinatesMap = {};
-        for (const user of result) {
-          if (user.location) {
-            const coords = await geocodeLocation(user.location);
-            if (coords) {
-              coordinatesMap[user._id] = coords;
-            }
-          }
-        }
-        setUserCoordinatesMap(coordinatesMap);
-      }
-    } catch (error) {
-      console.error("Error fetching users by cause:", error);
-    } finally {
-      setLoadingUsers(false);
-    }
-  };
-
-  // Effect to fetch users when cause filter changes
-  useEffect(() => {
-    if (selectedCauseFilter) {
-      fetchUsersByCause(selectedCauseFilter);
-    }
-  }, [selectedCauseFilter]);
-
-  // Handle selecting a user
-  const handleSelectUser = (user) => {
-    setSelectedUser(user);
-    setSelectedInitiative(null);
-
-    if (userCoordinatesMap[user._id]) {
-      setFlyToUser({
-        coordinates: userCoordinatesMap[user._id],
-        userId: user._id,
-      });
-
-      setTimeout(() => {
-        setFlyToUser(null);
-      }, 100);
-    }
-  };
-
-  // Add state variables
-
+  // Initiatives state
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-
-  // Add these states
   const [initiatives, setInitiatives] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Add this with your other state variables
+  // Add initiative modal state
   const [showAddInitiativeModal, setShowAddInitiativeModal] = useState(false);
-
-  // Add Initiative Modal State
   const [newInitiative, setNewInitiative] = useState({
     title: "",
     category: "",
@@ -343,13 +191,111 @@ const InteractiveMap = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
+  // References
+  const isInitiativesFiltered = useRef(false);
+  const mapRef = useRef(null);
+
+  // Map controller component to access map instance
+  const MapController = () => {
+    const map = useMap();
+    useEffect(() => {
+      if (map) mapRef.current = map;
+    }, [map]);
+    return null;
+  };
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const userData = await getUserProfile();
+
+        if (!userData.error) {
+          setUserData(userData);
+
+          if (userData.location) {
+            setIsLoadingUserLocation(true);
+            const coordinates = await geocodeLocation(userData.location);
+            setIsLoadingUserLocation(false);
+
+            if (coordinates) setUserCoordinates(coordinates);
+          }
+
+          const causes = await getSupportedCauses();
+          if (!causes.error) setSupportedCauses(causes);
+        } else {
+          setUserData(null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        setUserData(null);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Center map on user location
+  const centerOnUserLocation = useCallback(() => {
+    if (userCoordinates && mapRef.current) {
+      mapRef.current.flyTo([userCoordinates.lat, userCoordinates.lng], 13);
+      setShowUserLocation(true);
+    }
+  }, [userCoordinates]);
+
+  // Fetch users by selected cause
+  const fetchUsersByCause = async (causeId) => {
+    if (!causeId) return;
+
+    setLoadingUsers(true);
+    try {
+      const result = await getUsersByCause(causeId);
+      if (!result.error) {
+        setUsersWithCause(result);
+
+        const coordinatesMap = {};
+        for (const user of result) {
+          if (user.location) {
+            const coords = await geocodeLocation(user.location);
+            if (coords) coordinatesMap[user._id] = coords;
+          }
+        }
+        setUserCoordinatesMap(coordinatesMap);
+      }
+    } catch (error) {
+      console.error("Error fetching users by cause:", error);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  // Fetch users when cause filter changes
+  useEffect(() => {
+    if (selectedCauseFilter) fetchUsersByCause(selectedCauseFilter);
+  }, [selectedCauseFilter]);
+
+  // Handle selecting a user
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    setSelectedInitiative(null);
+
+    if (userCoordinatesMap[user._id]) {
+      setFlyToUser({
+        coordinates: userCoordinatesMap[user._id],
+        userId: user._id,
+      });
+
+      setTimeout(() => setFlyToUser(null), 100);
+    }
+  };
+
   // Handle form input changes
   const handleInitiativeFormChange = (e) => {
     const { name, value } = e.target;
-    setNewInitiative((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setNewInitiative((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle form submission
@@ -359,41 +305,29 @@ const InteractiveMap = () => {
     setFormError("");
 
     try {
-      // Parse the tags from the comma-separated input
       const tags = newInitiative.tagsInput
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
-      // Build initiative data
       const initiativeData = {
         ...newInitiative,
         tags,
         organizer: userData?.name || "Anonymous",
       };
 
-      console.log("Creating initiative with data:", initiativeData);
-      console.log("Initiative data before sending:", initiativeData);
-      console.log("Sending to server:", initiativeData);
-
-      // Delete tagsInput as it's not needed in the backend
+      // Remove tagsInput from data sent to server
       delete initiativeData.tagsInput;
 
-      // Create the initiative
       const result = await createInitiative(initiativeData);
 
       if (result && result.error) {
-        console.error("API error response:", result);
         setFormError(result.error);
       } else if (result) {
-        // Success - close modal first before updating state
         setShowAddInitiativeModal(false);
 
-        // Then update other state variables safely
         setTimeout(() => {
           setSuccess("Initiative created successfully!");
-
-          // Reset form
           setNewInitiative({
             title: "",
             category: "",
@@ -404,8 +338,6 @@ const InteractiveMap = () => {
             status: "Upcoming",
             nextEvent: new Date().toISOString().split("T")[0],
           });
-
-          // Refresh initiatives list with a slight delay
           fetchInitiatives();
         }, 100);
       } else {
@@ -419,18 +351,17 @@ const InteractiveMap = () => {
     }
   };
 
-  // Add this helper function
+  // Fetch initiatives helper
   const fetchInitiatives = async () => {
     const initiativesData = await getInitiatives();
     if (!initiativesData.error) {
-      // Add coordinates and default icon to each initiative
       const initiativesWithCoordinates = await Promise.all(
         initiativesData.map(async (initiative) => {
           const coords = await geocodeLocation(initiative.location);
           return {
             ...initiative,
             coordinates: coords || { lat: 0, lng: 0 },
-            icon: FaMapMarkerAlt, // Assign a default icon if none exists
+            icon: FaMapMarkerAlt,
           };
         })
       );
@@ -438,30 +369,13 @@ const InteractiveMap = () => {
     }
   };
 
-  // Fetch initiatives and user's joined initiatives on component mount
+  // Fetch initiatives on component mount
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
-      // Get all initiatives
-      const initiativesData = await getInitiatives();
-      if (!initiativesData.error) {
-        // Add coordinates to each initiative for map display
-        const initiativesWithCoordinates = await Promise.all(
-          initiativesData.map(async (initiative) => {
-            const coords = await geocodeLocation(initiative.location);
-            return {
-              ...initiative,
-              coordinates: coords || { lat: 0, lng: 0 },
-            };
-          })
-        );
-        setInitiatives(initiativesWithCoordinates);
-      }
-
+      await fetchInitiatives();
       setLoading(false);
     };
-
     fetchData();
   }, []);
 
@@ -477,27 +391,23 @@ const InteractiveMap = () => {
     const result = await joinInitiative(initiative._id);
 
     if (result.success) {
-      // Show success message
       setSuccess(result.message);
       setTimeout(() => setSuccess(null), 3000);
 
-      // Redirect to website if available
       if (result.redirectUrl) {
         window.open(result.redirectUrl, "_blank");
       }
     } else {
-      // Show error message
       setError(result.error);
       setTimeout(() => setError(null), 3000);
 
-      // Redirect to website if available (even on error)
       if (result.redirectUrl) {
         window.open(result.redirectUrl, "_blank");
       }
     }
   };
 
-  // Handle calculating map center from filtered initiatives
+  // Calculate map center based on initiatives
   useEffect(() => {
     if (filteredInitiatives.length > 0 && !selectedInitiative && !isInitiativesFiltered.current) {
       isInitiativesFiltered.current = true;
@@ -512,33 +422,93 @@ const InteractiveMap = () => {
     }
   }, [filteredInitiatives, selectedInitiative]);
 
-  // Reset initiative filtering flag when filters change
+  // Reset filtering flag when filters change
   useEffect(() => {
     isInitiativesFiltered.current = false;
   }, [selectedCategory, searchQuery]);
 
-  // Function to handle fly to initiative
+  // Handle selecting an initiative
   const handleSelectInitiative = (initiative) => {
     setSelectedInitiative(initiative);
     setSelectedUser(null);
     setFlyToCoordinates(true);
-    // Reset flag after small delay to allow re-triggering if same initiative is clicked
-    setTimeout(() => {
-      setFlyToCoordinates(false);
-    }, 100);
+    setTimeout(() => setFlyToCoordinates(false), 100);
+  };
+
+  // Render map markers for initiatives
+  const renderInitiativeMarkers = () => {
+    return filteredInitiatives.map((initiative) => {
+      if (!initiative.coordinates || !initiative.coordinates.lat || !initiative.coordinates.lng) {
+        return null;
+      }
+
+      const iconColor = selectedInitiative?._id === initiative._id ? "red" : "blue";
+
+      return (
+        <Marker
+          key={initiative._id}
+          position={[initiative.coordinates.lat, initiative.coordinates.lng]}
+          icon={createCustomIcon(iconColor)}
+          eventHandlers={{ click: () => handleSelectInitiative(initiative) }}
+        >
+          <Popup>
+            <div className="text-black">
+              <h3 className="font-semibold">{initiative.title}</h3>
+              <p className="text-sm">{initiative.category}</p>
+              <p className="text-xs mt-1">{initiative.location}</p>
+            </div>
+          </Popup>
+        </Marker>
+      );
+    });
+  };
+
+  // Render markers for users
+  const renderUserMarkers = () => {
+    return usersWithCause.map((user) => {
+      const userCoords = userCoordinatesMap[user._id];
+      if (!userCoords) return null;
+
+      return (
+        <Marker
+          key={user._id}
+          position={[userCoords.lat, userCoords.lng]}
+          icon={otherUserIcon}
+          eventHandlers={{ click: () => handleSelectUser(user) }}
+        >
+          <Popup>
+            <div className="text-black">
+              <h3 className="font-semibold">{user.name}</h3>
+              {user.location && <p className="text-sm">{user.location}</p>}
+              <div className="mt-2">
+                <button
+                  className="bg-blue-500 text-white text-xs px-2 py-1 rounded"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectUser(user);
+                  }}
+                >
+                  View Profile
+                </button>
+              </div>
+            </div>
+          </Popup>
+        </Marker>
+      );
+    });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
-      {/* Add these near the top of your return statement */}
+      {/* Notifications */}
       {error && (
         <div className="fixed top-20 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">{error}</div>
       )}
-
       {success && (
         <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">{success}</div>
       )}
-      {/* Header Section */}
+
+      {/* Header */}
       <div className="bg-slate-900/50 border-b border-white/10 backdrop-blur-sm py-6">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -583,13 +553,11 @@ const InteractiveMap = () => {
                 className="px-4 py-2 flex items-center gap-2 bg-green-600 hover:bg-green-700 transition-colors rounded-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                title="Center map on your location"
               >
                 <FaHome />
                 <span className="hidden md:inline">My Location</span>
               </motion.button>
             )}
-
             {isLoadingUserLocation && (
               <div className="px-4 py-2 text-white/60">
                 <span className="animate-pulse">Locating...</span>
@@ -610,15 +578,9 @@ const InteractiveMap = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Local Initiatives</h2>
                   <div className="flex items-center gap-2">
-                    {userData ? ( // Only show if user is logged in
+                    {userData ? (
                       <motion.button
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent any default behavior
-                          // Use setTimeout to defer state change to next tick
-                          setTimeout(() => {
-                            setShowAddInitiativeModal(true);
-                          }, 0);
-                        }}
+                        onClick={() => setShowAddInitiativeModal(true)}
                         className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -631,7 +593,6 @@ const InteractiveMap = () => {
                         Login to create initiatives
                       </Link>
                     )}
-                    {/* Existing collapse button for mobile */}
                     <motion.button
                       onClick={() => setShowInitiatives(!showInitiatives)}
                       className="lg:hidden p-2 hover:bg-white/5 rounded-lg"
@@ -655,7 +616,7 @@ const InteractiveMap = () => {
                         selectedCategory === category
                           ? "bg-gradient-to-r from-blue-500 to-purple-500"
                           : "bg-white/5 hover:bg-white/10"
-                      } transition-all`}
+                      }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -668,29 +629,52 @@ const InteractiveMap = () => {
                 {(showInitiatives || window.innerWidth >= 1024) && (
                   <div className="grid sm:grid-cols-2 gap-4 lg:max-h-[calc(100vh-22rem)] lg:overflow-y-auto scrollbar-none">
                     {filteredInitiatives.map((initiative) => {
-                      if (!initiative.coordinates || !initiative.coordinates.lat || !initiative.coordinates.lng) {
-                        return null; // Skip initiatives without valid coordinates
-                      }
+                      if (!initiative.coordinates?.lat) return null;
 
-                      const iconColor = selectedInitiative?._id === initiative._id ? "red" : "blue";
+                      // Check if initiative is related to a supported cause
+                      const isRelatedToSupportedCause =
+                        highlightSupported && supportedCauses.some((causeId) => initiative.tags?.includes(causeId));
 
                       return (
-                        <Marker
+                        <motion.div
                           key={initiative._id}
-                          position={[initiative.coordinates.lat, initiative.coordinates.lng]}
-                          icon={createCustomIcon(iconColor)}
-                          eventHandlers={{
-                            click: () => handleSelectInitiative(initiative),
-                          }}
+                          className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                            selectedInitiative?._id === initiative._id
+                              ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/50"
+                              : isRelatedToSupportedCause
+                              ? "bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20"
+                              : "bg-white/5 border-white/10 hover:bg-white/10"
+                          }`}
+                          onClick={() => handleSelectInitiative(initiative)}
+                          whileHover={{ y: -2 }}
                         >
-                          <Popup>
-                            <div className="text-black">
-                              <h3 className="font-semibold">{initiative.title}</h3>
-                              <p className="text-sm">{initiative.category}</p>
-                              <p className="text-xs mt-1">{initiative.location}</p>
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 rounded-lg bg-white/5">
+                              <FaMapMarkerAlt className="w-5 h-5 text-blue-400" />
                             </div>
-                          </Popup>
-                        </Marker>
+                            <div className="flex-1">
+                              <h3 className="font-semibold mb-1">
+                                {initiative.title}
+                                {isRelatedToSupportedCause && (
+                                  <span className="ml-2 text-xs bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full">
+                                    Your Cause
+                                  </span>
+                                )}
+                              </h3>
+                              <p className="text-sm text-white/60 mb-2">{initiative.location}</p>
+                              <div className="flex items-center gap-4 text-sm text-white/40">
+                                <div className="flex items-center gap-1">
+                                  <FaUserFriends className="w-4 h-4" />
+                                  <span>{initiative.participants || 0}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <FaCalendarAlt className="w-4 h-4" />
+                                  <span>{new Date(initiative.nextEvent).toLocaleDateString()}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -767,22 +751,20 @@ const InteractiveMap = () => {
                               <h3 className="font-semibold mb-1">{user.name}</h3>
                               {user.location && <p className="text-sm text-white/60 mb-2">{user.location}</p>}
                               <div className="flex flex-wrap gap-2 mt-2">
-                                {/* Show cause badges */}
-                                {user.supportedCauses &&
-                                  user.supportedCauses.map((causeId) => {
-                                    const cause = causes.find((c) => c.id === causeId);
-                                    if (!cause) return null;
+                                {user.supportedCauses?.map((causeId) => {
+                                  const cause = causes.find((c) => c.id === causeId);
+                                  if (!cause) return null;
 
-                                    return (
-                                      <span
-                                        key={causeId}
-                                        className={`px-2 py-0.5 text-xs rounded-full bg-${cause.color}-500/20 text-${cause.color}-300 border border-${cause.color}-500/30 flex items-center gap-1`}
-                                      >
-                                        <cause.icon className="w-3 h-3" />
-                                        {cause.title}
-                                      </span>
-                                    );
-                                  })}
+                                  return (
+                                    <span
+                                      key={causeId}
+                                      className={`px-2 py-0.5 text-xs rounded-full bg-${cause.color}-500/20 text-${cause.color}-300 border border-${cause.color}-500/30 flex items-center gap-1`}
+                                    >
+                                      <cause.icon className="w-3 h-3" />
+                                      {cause.title}
+                                    </span>
+                                  );
+                                })}
                               </div>
                             </div>
                           </div>
@@ -798,76 +780,13 @@ const InteractiveMap = () => {
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-white/10 min-h-[400px] lg:h-[calc(100vh-16rem)] relative overflow-hidden">
             <MapContainer center={mapCenter} zoom={mapZoom} style={{ height: "100%", width: "100%" }} className="z-0">
               <MapController />
-
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
 
-              {/* Initiative markers */}
-              {!showPeopleTab &&
-                filteredInitiatives.map((initiative) => {
-                  if (!initiative.coordinates || !initiative.coordinates.lat || !initiative.coordinates.lng) {
-                    return null; // Skip initiatives without valid coordinates
-                  }
-
-                  const iconColor = selectedInitiative?._id === initiative._id ? "red" : "blue";
-
-                  return (
-                    <Marker
-                      key={initiative._id}
-                      position={[initiative.coordinates.lat, initiative.coordinates.lng]}
-                      icon={createCustomIcon(iconColor)}
-                      eventHandlers={{
-                        click: () => handleSelectInitiative(initiative),
-                      }}
-                    >
-                      <Popup>
-                        <div className="text-black">
-                          <h3 className="font-semibold">{initiative.title}</h3>
-                          <p className="text-sm">{initiative.category}</p>
-                          <p className="text-xs mt-1">{initiative.location}</p>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  );
-                })}
-
-              {/* User markers for people discovery */}
-              {showPeopleTab &&
-                usersWithCause.map((user) => {
-                  const userCoords = userCoordinatesMap[user._id];
-                  if (!userCoords) return null;
-
-                  return (
-                    <Marker
-                      key={user._id}
-                      position={[userCoords.lat, userCoords.lng]}
-                      icon={otherUserIcon}
-                      eventHandlers={{
-                        click: () => handleSelectUser(user),
-                      }}
-                    >
-                      <Popup>
-                        <div className="text-black">
-                          <h3 className="font-semibold">{user.name}</h3>
-                          {user.location && <p className="text-sm">{user.location}</p>}
-                          <div className="mt-2">
-                            <button
-                              className="bg-blue-500 text-white text-xs px-2 py-1 rounded"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectUser(user);
-                              }}
-                            >
-                              View Profile
-                            </button>
-                          </div>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  );
-                })}
+              {/* Markers */}
+              {!showPeopleTab ? renderInitiativeMarkers() : renderUserMarkers()}
 
               {/* User location marker */}
               {showUserLocation && userCoordinates && (
@@ -881,12 +800,10 @@ const InteractiveMap = () => {
                 </Marker>
               )}
 
-              {/* Component to handle flying to selected marker */}
+              {/* Fly to handlers */}
               {selectedInitiative && flyToCoordinates && (
                 <FlyToMarker position={selectedInitiative.coordinates} flyToCoordinates={flyToCoordinates} />
               )}
-
-              {/* Component to handle flying to selected user */}
               {flyToUser && <FlyToMarker position={flyToUser.coordinates} flyToCoordinates={true} />}
             </MapContainer>
 
@@ -917,8 +834,7 @@ const InteractiveMap = () => {
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {selectedInitiative.tags
-                    // Filter out cause IDs from tags before displaying
-                    .filter((tag) => !supportedCauses.includes(tag))
+                    ?.filter((tag) => !supportedCauses.includes(tag))
                     .map((tag, idx) => (
                       <span key={idx} className="px-3 py-1 rounded-full text-sm bg-white/5 border border-white/10">
                         {tag}
@@ -929,7 +845,7 @@ const InteractiveMap = () => {
                 <div className="flex justify-between items-center text-sm text-white/60 mb-4">
                   <div className="flex items-center gap-2">
                     <FaUserFriends />
-                    <span>{selectedInitiative.participants} participants</span>
+                    <span>{selectedInitiative.participants || 0} participants</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <FaClock />
@@ -991,30 +907,28 @@ const InteractiveMap = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-
                 {/* Shared Initiatives */}
                 <div className="mt-4 pt-4 border-t border-white/10">
                   <h3 className="text-sm font-medium text-white/70 mb-2">Common Interests:</h3>
                   <div className="space-y-2">
                     {initiatives
                       .filter((initiative) =>
-                        initiative.tags.some((tag) => selectedUser.supportedCauses?.includes(tag))
+                        initiative.tags?.some((tag) => selectedUser.supportedCauses?.includes(tag))
                       )
                       .slice(0, 2)
                       .map((initiative) => (
                         <div
-                          key={initiative.id}
+                          key={initiative._id}
                           className="p-2 rounded-lg bg-white/5 flex items-center gap-2 cursor-pointer hover:bg-white/10"
                           onClick={() => handleSelectInitiative(initiative)}
                         >
-                          <initiative.icon className="w-4 h-4 text-blue-400" />
+                          <FaMapMarkerAlt className="w-4 h-4 text-blue-400" />
                           <span className="text-sm truncate">{initiative.title}</span>
                         </div>
                       ))}
 
                     {initiatives.filter((initiative) =>
-                      initiative.tags.some((tag) => selectedUser.supportedCauses?.includes(tag))
+                      initiative.tags?.some((tag) => selectedUser.supportedCauses?.includes(tag))
                     ).length === 0 && <p className="text-sm text-white/40">No common initiatives found</p>}
                   </div>
                 </div>
@@ -1038,17 +952,16 @@ const InteractiveMap = () => {
       </div>
 
       {/* Add Initiative Modal */}
-      {showAddInitiativeModal && newInitiative && (
+      {showAddInitiativeModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <ErrorBoundary onClose={() => setShowAddInitiativeModal(false)}>
             <motion.div
-              initial={{ opacity: 0 }} // Simplified animation
+              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }} // Add explicit exit animation
-              transition={{ duration: 0.2 }} // Controlled transition
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="bg-slate-800 border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             >
-              {/* Modal content stays the same */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Create New Initiative</h2>
                 <button
@@ -1060,7 +973,6 @@ const InteractiveMap = () => {
               </div>
 
               <form onSubmit={handleAddInitiative} className="space-y-6">
-                {/* Title */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">
                     Title <span className="text-red-400">*</span>
@@ -1075,7 +987,6 @@ const InteractiveMap = () => {
                   />
                 </div>
 
-                {/* Category */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">
                     Category <span className="text-red-400">*</span>
@@ -1101,7 +1012,6 @@ const InteractiveMap = () => {
                   </select>
                 </div>
 
-                {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">
                     Description <span className="text-red-400">*</span>
@@ -1116,7 +1026,6 @@ const InteractiveMap = () => {
                   ></textarea>
                 </div>
 
-                {/* Location */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">
                     Location <span className="text-red-400">*</span>
@@ -1132,7 +1041,6 @@ const InteractiveMap = () => {
                   />
                 </div>
 
-                {/* Tags */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">Tags (comma separated)</label>
                   <input
@@ -1145,7 +1053,6 @@ const InteractiveMap = () => {
                   />
                 </div>
 
-                {/* Website */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">Website URL</label>
                   <input
@@ -1158,7 +1065,6 @@ const InteractiveMap = () => {
                   />
                 </div>
 
-                {/* Status */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">Status</label>
                   <div className="flex gap-4">
@@ -1187,7 +1093,6 @@ const InteractiveMap = () => {
                   </div>
                 </div>
 
-                {/* Next Event Date */}
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-1">
                     Next Event Date <span className="text-red-400">*</span>
@@ -1202,12 +1107,10 @@ const InteractiveMap = () => {
                   />
                 </div>
 
-                {/* Form Error */}
                 {formError && (
                   <div className="bg-red-500/30 border border-red-500/50 text-white p-3 rounded-lg">{formError}</div>
                 )}
 
-                {/* Submit Button */}
                 <div className="flex justify-end gap-3 pt-2">
                   <button
                     type="button"
