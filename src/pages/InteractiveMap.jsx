@@ -453,7 +453,7 @@ const InteractiveMap = () => {
             return {
               ...initiative,
               coordinates: coords || { lat: 0, lng: 0 },
-            });
+            };
           })
         );
         setInitiatives(initiativesWithCoordinates);
