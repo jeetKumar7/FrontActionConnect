@@ -360,7 +360,7 @@ const InteractiveMap = () => {
         setFormError(error.message || "An error occurred. Please try again.");
       }
     } catch (error) {
-      setFormError("An error occurred. Please try again.");
+      setFormError("An error occurred. Please try again.", error);
     } finally {
       setIsSubmitting(false);
     }
