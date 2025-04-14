@@ -352,27 +352,27 @@ const InteractiveMap = () => {
   };
 
   // Send connection request
-  const simulateConnectionRequest = (userId) => {
-    // This would connect to your backend API
-    // For now, we'll simulate with state
-    setConnectionRequests((prev) => ({
-      ...prev,
-      [userId]: { status: "pending", loading: false },
-    }));
+  // const simulateConnectionRequest = (userId) => {
+  //   // This would connect to your backend API
+  //   // For now, we'll simulate with state
+  //   setConnectionRequests((prev) => ({
+  //     ...prev,
+  //     [userId]: { status: "pending", loading: false },
+  //   }));
 
-    // Simulate API call
-    setConnectionRequests((prev) => ({
-      ...prev,
-      [userId]: { status: "pending", loading: true },
-    }));
+  //   // Simulate API call
+  //   setConnectionRequests((prev) => ({
+  //     ...prev,
+  //     [userId]: { status: "pending", loading: true },
+  //   }));
 
-    setTimeout(() => {
-      setConnectionRequests((prev) => ({
-        ...prev,
-        [userId]: { status: "sent", loading: false },
-      }));
-    }, 1000);
-  };
+  //   setTimeout(() => {
+  //     setConnectionRequests((prev) => ({
+  //       ...prev,
+  //       [userId]: { status: "sent", loading: false },
+  //     }));
+  //   }, 1000);
+  // };
 
   // Add state variables
 
