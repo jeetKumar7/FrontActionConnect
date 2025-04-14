@@ -292,6 +292,7 @@ const InteractiveMap = () => {
         setError(result.error);
       } else {
         setSuccess("Initiative deleted successfully");
+        setTimeout(() => setSuccess(null), 3000);
         setSelectedInitiative(null);
         fetchInitiatives(); // Refresh the initiatives list
       }
