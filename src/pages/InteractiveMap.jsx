@@ -667,6 +667,10 @@ const InteractiveMap = () => {
                 {(showInitiatives || window.innerWidth >= 1024) && (
                   <div className="grid sm:grid-cols-2 gap-4 lg:max-h-[calc(100vh-22rem)] lg:overflow-y-auto scrollbar-none">
                     {filteredInitiatives.map((initiative) => {
+                      if (!initiative.coordinates || !initiative.coordinates.lat || !initiative.coordinates.lng) {
+                        console.warn("Skipping initiative with invalid coordinates:", initiative);
+                        return null;
+                      }
                       // Check if this initiative is related to a supported cause
                       const isRelatedToSupportedCause =
                         highlightSupported &&
@@ -1067,7 +1071,7 @@ const InteractiveMap = () => {
       </div>
 
       {/* Add Initiative Modal */}
-      {showAddInitiativeModal && (
+      {showAddInitiativeModal && newInitiative && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <ErrorBoundary onClose={() => setShowAddInitiativeModal(false)}>
             <motion.div
