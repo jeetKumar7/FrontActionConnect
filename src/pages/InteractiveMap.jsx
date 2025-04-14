@@ -36,6 +36,43 @@ import {
 import { causes, getCauseById } from "../data/causes";
 import { Link } from "react-router-dom";
 
+// Add this near the top of your file after imports
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("Modal error boundary caught error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="bg-red-500/20 p-4 rounded-lg border border-red-500/50 text-white">
+          <h3 className="font-bold mb-2">Something went wrong</h3>
+          <button 
+            onClick={() => {
+              this.setState({ hasError: false });
+              this.props.onClose?.();
+            }}
+            className="px-3 py-1 bg-red-500 rounded hover:bg-red-600"
+          >
+            Close
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 // Fix for marker icons in production
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -415,7 +452,7 @@ const InteractiveMap = () => {
             return {
               ...initiative,
               coordinates: coords || { lat: 0, lng: 0 },
-            };
+            });
           })
         );
         setInitiatives(initiativesWithCoordinates);
@@ -574,7 +611,13 @@ const InteractiveMap = () => {
                   <div className="flex items-center gap-2">
                     {userData ? ( // Only show if user is logged in
                       <motion.button
-                        onClick={() => setShowAddInitiativeModal(true)}
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevent any default behavior
+                          // Use setTimeout to defer state change to next tick
+                          setTimeout(() => {
+                            setShowAddInitiativeModal(true);
+                          }, 0);
+                        }}
                         className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -1026,196 +1069,199 @@ const InteractiveMap = () => {
       {/* Add Initiative Modal */}
       {showAddInitiativeModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-slate-800 border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Create New Initiative</h2>
-              <button
-                onClick={() => setShowAddInitiativeModal(false)}
-                className="text-white/60 hover:text-white text-xl"
-              >
-                &times;
-              </button>
-            </div>
-
-            <form onSubmit={handleAddInitiative} className="space-y-6">
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">
-                  Title <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={newInitiative.title}
-                  onChange={handleInitiativeFormChange}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              {/* Category */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">
-                  Category <span className="text-red-400">*</span>
-                </label>
-                <select
-                  name="category"
-                  value={newInitiative.category}
-                  onChange={handleInitiativeFormChange}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  style={{ colorScheme: "dark" }}
-                  required
-                >
-                  <option value="" style={{ backgroundColor: "#1e293b", color: "white" }}>
-                    Select a category
-                  </option>
-                  {categories
-                    .filter((category) => category !== "All")
-                    .map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">
-                  Description <span className="text-red-400">*</span>
-                </label>
-                <textarea
-                  name="description"
-                  value={newInitiative.description}
-                  onChange={handleInitiativeFormChange}
-                  rows={4}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  required
-                ></textarea>
-              </div>
-
-              {/* Location */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">
-                  Location <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="location"
-                  value={newInitiative.location}
-                  onChange={handleInitiativeFormChange}
-                  placeholder="e.g. New York, NY"
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              {/* Tags */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">Tags (comma separated)</label>
-                <input
-                  type="text"
-                  name="tagsInput"
-                  value={newInitiative.tagsInput}
-                  onChange={handleInitiativeFormChange}
-                  placeholder="e.g. climate, education, community"
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              {/* Website */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">Website URL</label>
-                <input
-                  type="url"
-                  name="website"
-                  value={newInitiative.website}
-                  onChange={handleInitiativeFormChange}
-                  placeholder="https://example.com"
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              {/* Status */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">Status</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="Active"
-                      checked={newInitiative.status === "Active"}
-                      onChange={handleInitiativeFormChange}
-                      className="mr-2"
-                    />
-                    <span className="text-white/80">Active</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="Upcoming"
-                      checked={newInitiative.status === "Upcoming"}
-                      onChange={handleInitiativeFormChange}
-                      className="mr-2"
-                    />
-                    <span className="text-white/80">Upcoming</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Next Event Date */}
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">
-                  Next Event Date <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="nextEvent"
-                  value={newInitiative.nextEvent}
-                  onChange={handleInitiativeFormChange}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              {/* Form Error */}
-              {formError && (
-                <div className="bg-red-500/30 border border-red-500/50 text-white p-3 rounded-lg">{formError}</div>
-              )}
-
-              {/* Submit Button */}
-              <div className="flex justify-end gap-3 pt-2">
+          <ErrorBoundary onClose={() => setShowAddInitiativeModal(false)}>
+            <motion.div
+              initial={{ opacity: 0 }}  // Simplified animation
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}  // Controlled transition
+              className="bg-slate-800 border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            >
+              {/* Modal content stays the same */}
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Create New Initiative</h2>
                 <button
-                  type="button"
                   onClick={() => setShowAddInitiativeModal(false)}
-                  className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg"
+                  className="text-white/60 hover:text-white text-xl"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium flex items-center"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <FaSpinner className="animate-spin mr-2" />
-                      Creating...
-                    </>
-                  ) : (
-                    "Create Initiative"
-                  )}
+                  &times;
                 </button>
               </div>
-            </form>
-          </motion.div>
+
+              <form onSubmit={handleAddInitiative} className="space-y-6">
+                {/* Title */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">
+                    Title <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={newInitiative.title}
+                    onChange={handleInitiativeFormChange}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">
+                    Category <span className="text-red-400">*</span>
+                  </label>
+                  <select
+                    name="category"
+                    value={newInitiative.category}
+                    onChange={handleInitiativeFormChange}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    style={{ colorScheme: "dark" }}
+                    required
+                  >
+                    <option value="" style={{ backgroundColor: "#1e293b", color: "white" }}>
+                      Select a category
+                    </option>
+                    {categories
+                      .filter((category) => category !== "All")
+                      .map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">
+                    Description <span className="text-red-400">*</span>
+                  </label>
+                  <textarea
+                    name="description"
+                    value={newInitiative.description}
+                    onChange={handleInitiativeFormChange}
+                    rows={4}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    required
+                  ></textarea>
+                </div>
+
+                {/* Location */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">
+                    Location <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={newInitiative.location}
+                    onChange={handleInitiativeFormChange}
+                    placeholder="e.g. New York, NY"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Tags (comma separated)</label>
+                  <input
+                    type="text"
+                    name="tagsInput"
+                    value={newInitiative.tagsInput}
+                    onChange={handleInitiativeFormChange}
+                    placeholder="e.g. climate, education, community"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Website */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Website URL</label>
+                  <input
+                    type="url"
+                    name="website"
+                    value={newInitiative.website}
+                    onChange={handleInitiativeFormChange}
+                    placeholder="https://example.com"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Status</label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="status"
+                        value="Active"
+                        checked={newInitiative.status === "Active"}
+                        onChange={handleInitiativeFormChange}
+                        className="mr-2"
+                      />
+                      <span className="text-white/80">Active</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="status"
+                        value="Upcoming"
+                        checked={newInitiative.status === "Upcoming"}
+                        onChange={handleInitiativeFormChange}
+                        className="mr-2"
+                      />
+                      <span className="text-white/80">Upcoming</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Next Event Date */}
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1">
+                    Next Event Date <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="nextEvent"
+                    value={newInitiative.nextEvent}
+                    onChange={handleInitiativeFormChange}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+
+                {/* Form Error */}
+                {formError && (
+                  <div className="bg-red-500/30 border border-red-500/50 text-white p-3 rounded-lg">{formError}</div>
+                )}
+
+                {/* Submit Button */}
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddInitiativeModal(false)}
+                    className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium flex items-center"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <FaSpinner className="animate-spin mr-2" />
+                        Creating...
+                      </>
+                    ) : (
+                      "Create Initiative"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </ErrorBoundary>
         </div>
       )}
     </div>
