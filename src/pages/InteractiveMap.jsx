@@ -10,6 +10,7 @@ import {
   FaFilter,
   FaUserFriends,
   FaClock,
+  FaPlus,
   FaCalendarAlt,
   FaChevronDown,
   FaLocationArrow,
@@ -24,7 +25,14 @@ import {
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { getUserProfile, getSupportedCauses, getUsersByCause } from "../services";
+import {
+  getUserProfile,
+  getSupportedCauses,
+  getUsersByCause,
+  getInitiatives,
+  joinInitiative,
+  getUserJoinedInitiatives,
+} from "../services";
 import { causes, getCauseById } from "../data/causes";
 import { Link } from "react-router-dom";
 
@@ -108,55 +116,6 @@ const geocodeLocation = async (locationString) => {
   }
 };
 
-// Sample data for the map
-const initiatives = [
-  {
-    id: 1,
-    title: "Community Garden Project",
-    category: "Urban Farming",
-    icon: FaSeedling,
-    location: "Central Park Area",
-    coordinates: { lat: 40.785091, lng: -73.968285 },
-    organizer: "Green City Initiative",
-    participants: 45,
-    nextEvent: "2024-04-20",
-    description:
-      "Join us in creating and maintaining community gardens. Learn about sustainable farming practices and help provide fresh produce to local food banks.",
-    tags: ["Gardening", "Food Security", "Community", "3"],
-    status: "Active",
-  },
-  {
-    id: 2,
-    title: "Coastal Cleanup Drive",
-    category: "Ocean Conservation",
-    icon: FaWater,
-    location: "Brighton Beach",
-    coordinates: { lat: 40.575443, lng: -73.954324 },
-    organizer: "Ocean Warriors",
-    participants: 120,
-    nextEvent: "2024-04-15",
-    description:
-      "Regular beach cleanup initiative to protect marine life and maintain clean coastlines. Equipment and refreshments provided.",
-    tags: ["Ocean", "Cleanup", "Marine Life", "2"],
-    status: "Active",
-  },
-  {
-    id: 3,
-    title: "Urban Forest Initiative",
-    category: "Reforestation",
-    icon: FaTree,
-    location: "Riverside Park",
-    coordinates: { lat: 40.801138, lng: -73.972302 },
-    organizer: "TreeKeepers NYC",
-    participants: 75,
-    nextEvent: "2024-04-25",
-    description:
-      "Help expand our urban forest by planting and maintaining trees throughout the city. Training provided for volunteers.",
-    tags: ["Trees", "Urban Nature", "Air Quality", "1"],
-    status: "Upcoming",
-  },
-];
-
 const categories = [
   "All",
   "Urban Farming",
@@ -209,13 +168,6 @@ const InteractiveMap = () => {
     return null;
   };
 
-  // Filter initiatives based on search and category
-  const filteredInitiatives = initiatives.filter(
-    (initiative) =>
-      (selectedCategory === "All" || initiative.category === selectedCategory) &&
-      initiative.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   // Fetch user profile and geocode their location
   useEffect(() => {
     const fetchUserData = async () => {
@@ -252,37 +204,6 @@ const InteractiveMap = () => {
 
     fetchUserData();
   }, []);
-
-  // Handle calculating map center from filtered initiatives
-  useEffect(() => {
-    if (filteredInitiatives.length > 0 && !selectedInitiative && !isInitiativesFiltered.current) {
-      isInitiativesFiltered.current = true;
-
-      const lats = filteredInitiatives.map((i) => i.coordinates.lat);
-      const lngs = filteredInitiatives.map((i) => i.coordinates.lng);
-      const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
-      const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-
-      setMapCenter([centerLat, centerLng]);
-      setMapZoom(filteredInitiatives.length === 1 ? 14 : 11);
-    }
-  }, [filteredInitiatives, selectedInitiative]);
-
-  // Reset initiative filtering flag when filters change
-  useEffect(() => {
-    isInitiativesFiltered.current = false;
-  }, [selectedCategory, searchQuery]);
-
-  // Function to handle fly to initiative
-  const handleSelectInitiative = (initiative) => {
-    setSelectedInitiative(initiative);
-    setSelectedUser(null);
-    setFlyToCoordinates(true);
-    // Reset flag after small delay to allow re-triggering if same initiative is clicked
-    setTimeout(() => {
-      setFlyToCoordinates(false);
-    }, 100);
-  };
 
   // Center map on user location
   const centerOnUserLocation = useCallback(() => {
@@ -379,8 +300,188 @@ const InteractiveMap = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  // Add these states
+  const [initiatives, setInitiatives] = useState([]);
+  const [joinedInitiatives, setJoinedInitiatives] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Add this with your other state variables
+  const [showAddInitiativeModal, setShowAddInitiativeModal] = useState(false);
+
+  // Add Initiative Modal State
+  const [newInitiative, setNewInitiative] = useState({
+    title: "",
+    category: "",
+    description: "",
+    location: "",
+    tagsInput: "",
+    website: "",
+    status: "Upcoming",
+    nextEvent: new Date().toISOString().split("T")[0],
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  // Handle form input changes
+  const handleInitiativeFormChange = (e) => {
+    const { name, value } = e.target;
+    setNewInitiative((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission
+  const handleAddInitiative = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setFormError("");
+
+    try {
+      // Parse the tags from the comma-separated input
+      const tags = newInitiative.tagsInput
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag);
+
+      // Call the createInitiative service
+      const result = await createInitiative({
+        ...newInitiative,
+        tags,
+      });
+
+      if (result.error) {
+        setFormError(result.error);
+      } else {
+        // Success - close modal and refresh initiatives
+        setShowAddInitiativeModal(false);
+        setSuccess("Initiative created successfully!");
+        setTimeout(() => setSuccess(null), 3000);
+
+        // Reset form
+        setNewInitiative({
+          title: "",
+          category: "",
+          description: "",
+          location: "",
+          tagsInput: "",
+          website: "",
+          status: "Upcoming",
+          nextEvent: new Date().toISOString().split("T")[0],
+        });
+
+        // Refresh initiatives list
+        const initiativesData = await getInitiatives();
+        if (!initiativesData.error) {
+          setInitiatives(initiativesData);
+        }
+      }
+    } catch (error) {
+      setFormError("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Fetch initiatives and user's joined initiatives on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      // Get all initiatives
+      const initiativesData = await getInitiatives();
+      if (!initiativesData.error) {
+        setInitiatives(initiativesData);
+      }
+
+      // Get user's joined initiatives
+      const joinedData = await getUserJoinedInitiatives();
+      if (!joinedData.error && joinedData.length > 0) {
+        setJoinedInitiatives(joinedData.map((initiative) => initiative._id));
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  // Filter initiatives based on search and category
+  const filteredInitiatives = initiatives.filter(
+    (initiative) =>
+      (selectedCategory === "All" || initiative.category === selectedCategory) &&
+      initiative.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Handle join initiative button click
+  const handleJoinInitiative = async (initiative) => {
+    const result = await joinInitiative(initiative._id);
+
+    if (result.success) {
+      // Show success message
+      setSuccess(result.message);
+      setTimeout(() => setSuccess(null), 3000);
+
+      // Update joined initiatives
+      setJoinedInitiatives((prev) => [...prev, initiative._id]);
+
+      // Redirect to website if available
+      if (result.redirectUrl) {
+        window.open(result.redirectUrl, "_blank");
+      }
+    } else {
+      // Show error message
+      setError(result.error);
+      setTimeout(() => setError(null), 3000);
+
+      // Redirect to website if available (even on error)
+      if (result.redirectUrl) {
+        window.open(result.redirectUrl, "_blank");
+      }
+    }
+  };
+
+  // Handle calculating map center from filtered initiatives
+  useEffect(() => {
+    if (filteredInitiatives.length > 0 && !selectedInitiative && !isInitiativesFiltered.current) {
+      isInitiativesFiltered.current = true;
+
+      const lats = filteredInitiatives.map((i) => i.coordinates.lat);
+      const lngs = filteredInitiatives.map((i) => i.coordinates.lng);
+      const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
+      const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
+
+      setMapCenter([centerLat, centerLng]);
+      setMapZoom(filteredInitiatives.length === 1 ? 14 : 11);
+    }
+  }, [filteredInitiatives, selectedInitiative]);
+
+  // Reset initiative filtering flag when filters change
+  useEffect(() => {
+    isInitiativesFiltered.current = false;
+  }, [selectedCategory, searchQuery]);
+
+  // Function to handle fly to initiative
+  const handleSelectInitiative = (initiative) => {
+    setSelectedInitiative(initiative);
+    setSelectedUser(null);
+    setFlyToCoordinates(true);
+    // Reset flag after small delay to allow re-triggering if same initiative is clicked
+    setTimeout(() => {
+      setFlyToCoordinates(false);
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
+      {/* Add these near the top of your return statement */}
+      {error && (
+        <div className="fixed top-20 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">{error}</div>
+      )}
+
+      {success && (
+        <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">{success}</div>
+      )}
       {/* Header Section */}
       <div className="bg-slate-900/50 border-b border-white/10 backdrop-blur-sm py-6">
         <div className="max-w-7xl mx-auto px-4">
@@ -453,6 +554,18 @@ const InteractiveMap = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Local Initiatives</h2>
                   <div className="flex items-center gap-2">
+                    {/* Add this new button */}
+                    <motion.button
+                      onClick={() => setShowAddInitiativeModal(true)}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FaPlus className="w-3.5 h-3.5" />
+                      <span>Add Initiative</span>
+                    </motion.button>
+
+                    {/* Existing collapse button for mobile */}
                     <motion.button
                       onClick={() => setShowInitiatives(!showInitiatives)}
                       className="lg:hidden p-2 hover:bg-white/5 rounded-lg"
@@ -792,6 +905,7 @@ const InteractiveMap = () => {
                   className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 flex items-center justify-center gap-2"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={() => handleJoinInitiative(selectedInitiative)}
                 >
                   Join Initiative
                 </motion.button>
@@ -886,6 +1000,199 @@ const InteractiveMap = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Initiative Modal */}
+      {showAddInitiativeModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-slate-800 border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Create New Initiative</h2>
+              <button
+                onClick={() => setShowAddInitiativeModal(false)}
+                className="text-white/60 hover:text-white text-xl"
+              >
+                &times;
+              </button>
+            </div>
+
+            <form onSubmit={handleAddInitiative} className="space-y-6">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">
+                  Title <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={newInitiative.title}
+                  onChange={handleInitiativeFormChange}
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">
+                  Category <span className="text-red-400">*</span>
+                </label>
+                <select
+                  name="category"
+                  value={newInitiative.category}
+                  onChange={handleInitiativeFormChange}
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  required
+                >
+                  <option value="">Select a category</option>
+                  {categories
+                    .filter((category) => category !== "All")
+                    .map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">
+                  Description <span className="text-red-400">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  value={newInitiative.description}
+                  onChange={handleInitiativeFormChange}
+                  rows={4}
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  required
+                ></textarea>
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">
+                  Location <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="location"
+                  value={newInitiative.location}
+                  onChange={handleInitiativeFormChange}
+                  placeholder="e.g. New York, NY"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              {/* Tags */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">Tags (comma separated)</label>
+                <input
+                  type="text"
+                  name="tags"
+                  value={newInitiative.tagsInput}
+                  onChange={handleInitiativeFormChange}
+                  placeholder="e.g. climate, education, community"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              {/* Website */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">Website URL</label>
+                <input
+                  type="url"
+                  name="website"
+                  value={newInitiative.website}
+                  onChange={handleInitiativeFormChange}
+                  placeholder="https://example.com"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              {/* Status */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">Status</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="Active"
+                      checked={newInitiative.status === "Active"}
+                      onChange={handleInitiativeFormChange}
+                      className="mr-2"
+                    />
+                    <span className="text-white/80">Active</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="Upcoming"
+                      checked={newInitiative.status === "Upcoming"}
+                      onChange={handleInitiativeFormChange}
+                      className="mr-2"
+                    />
+                    <span className="text-white/80">Upcoming</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Next Event Date */}
+              <div>
+                <label className="block text-sm font-medium text-white/70 mb-1">
+                  Next Event Date <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="nextEvent"
+                  value={newInitiative.nextEvent}
+                  onChange={handleInitiativeFormChange}
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              {/* Form Error */}
+              {formError && (
+                <div className="bg-red-500/30 border border-red-500/50 text-white p-3 rounded-lg">{formError}</div>
+              )}
+
+              {/* Submit Button */}
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddInitiativeModal(false)}
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium flex items-center"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <FaSpinner className="animate-spin mr-2" />
+                      Creating...
+                    </>
+                  ) : (
+                    "Create Initiative"
+                  )}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

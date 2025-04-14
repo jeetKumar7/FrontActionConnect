@@ -1029,3 +1029,254 @@ export const deleteItem = async (type, id) => {
     return { success: false, error: "Network error" };
   }
 };
+
+// Get all initiatives with optional filters
+export const getInitiatives = async (filters = {}) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    // Build query parameters
+    const queryParams = new URLSearchParams();
+    if (filters.category) queryParams.append("category", filters.category);
+    if (filters.status) queryParams.append("status", filters.status);
+    if (filters.search) queryParams.append("search", filters.search);
+    if (filters.tags) queryParams.append("tags", filters.tags.join(","));
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : "";
+
+    const response = await fetch(`${BACKEND_URL}/api/initiative${queryString}`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      return data;
+    } else {
+      return {
+        error: data.message || "Failed to fetch initiatives",
+      };
+    }
+  } catch (err) {
+    console.error("Get initiatives error:", err);
+    return { error: "Network error fetching initiatives" };
+  }
+};
+
+// Get single initiative by ID
+export const getInitiativeById = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BACKEND_URL}/api/initiative/${id}`, {
+      headers: {
+        Authorization: token || "",
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      return data;
+    } else {
+      return {
+        error: data.message || "Failed to fetch initiative",
+      };
+    }
+  } catch (err) {
+    console.error("Get initiative error:", err);
+    return { error: "Network error fetching initiative" };
+  }
+};
+
+// Create new initiative
+export const createInitiative = async (initiativeData) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { error: "Authentication required" };
+    }
+
+    // First geocode the location
+    let coordinates;
+    try {
+      const geocodeResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(initiativeData.location)}`
+      );
+
+      const geocodeData = await geocodeResponse.json();
+
+      if (geocodeData && geocodeData.length > 0) {
+        coordinates = {
+          lat: parseFloat(geocodeData[0].lat),
+          lng: parseFloat(geocodeData[0].lon),
+        };
+      } else {
+        return { error: "Unable to geocode the provided location" };
+      }
+    } catch (error) {
+      return { error: "Geocoding failed" };
+    }
+
+    // Include coordinates in the data
+    const dataWithCoordinates = {
+      ...initiativeData,
+      coordinates,
+    };
+
+    const response = await fetch(`${BACKEND_URL}/api/initiative`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      body: JSON.stringify(dataWithCoordinates),
+    });
+
+    const data = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      return data;
+    } else {
+      return {
+        error: data.message || "Failed to create initiative",
+      };
+    }
+  } catch (err) {
+    console.error("Create initiative error:", err);
+    return { error: "Network error creating initiative" };
+  }
+};
+
+// Update initiative
+export const updateInitiative = async (id, initiativeData) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { error: "Authentication required" };
+    }
+
+    const response = await fetch(`${BACKEND_URL}/api/initiative/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      body: JSON.stringify(initiativeData),
+    });
+
+    const data = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      return data;
+    } else {
+      return {
+        error: data.message || "Failed to update initiative",
+      };
+    }
+  } catch (err) {
+    console.error("Update initiative error:", err);
+    return { error: "Network error updating initiative" };
+  }
+};
+
+// Delete initiative
+export const deleteInitiative = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { error: "Authentication required" };
+    }
+
+    const response = await fetch(`${BACKEND_URL}/api/initiative/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, message: data.message };
+    } else {
+      return {
+        error: data.message || "Failed to delete initiative",
+      };
+    }
+  } catch (err) {
+    console.error("Delete initiative error:", err);
+    return { error: "Network error deleting initiative" };
+  }
+};
+
+// Join initiative
+export const joinInitiative = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { error: "Authentication required" };
+    }
+
+    const response = await fetch(`${BACKEND_URL}/api/initiative/${id}/join`, {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      return {
+        success: true,
+        message: data.message,
+        redirectUrl: data.redirectUrl,
+      };
+    } else {
+      return {
+        error: data.message || "Failed to join initiative",
+        redirectUrl: data.redirectUrl, // Still pass the redirectUrl even on error
+      };
+    }
+  } catch (err) {
+    console.error("Join initiative error:", err);
+    return { error: "Network error joining initiative" };
+  }
+};
+
+// Get user's joined initiatives
+export const getUserJoinedInitiatives = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { error: "Authentication required", initiatives: [] };
+    }
+
+    const response = await fetch(`${BACKEND_URL}/api/user/joined-initiative`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      return data;
+    } else {
+      return {
+        error: data.message || "Failed to fetch joined initiatives",
+        initiatives: [],
+      };
+    }
+  } catch (err) {
+    console.error("Get joined initiatives error:", err);
+    return { error: "Network error", initiatives: [] };
+  }
+};
