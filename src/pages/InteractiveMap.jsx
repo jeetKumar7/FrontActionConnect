@@ -146,10 +146,10 @@ const geocodeLocation = async (locationString) => {
         lng: parseFloat(data[0].lon),
       };
     }
-    return null;
+    return null; // Return null if no results are found
   } catch (error) {
     console.error("Geocoding error:", error);
-    return null;
+    return null; // Return null if an error occurs
   }
 };
 
@@ -453,7 +453,7 @@ const InteractiveMap = () => {
             return {
               ...initiative,
               coordinates: coords || { lat: 0, lng: 0 },
-            };
+            });
           })
         );
         setInitiatives(initiativesWithCoordinates);
@@ -668,60 +668,29 @@ const InteractiveMap = () => {
                 {(showInitiatives || window.innerWidth >= 1024) && (
                   <div className="grid sm:grid-cols-2 gap-4 lg:max-h-[calc(100vh-22rem)] lg:overflow-y-auto scrollbar-none">
                     {filteredInitiatives.map((initiative) => {
-                      if (
-                        !initiative.coordinates ||
-                        !initiative.coordinates.lat ||
-                        !initiative.coordinates.lng ||
-                        !initiative.icon
-                      ) {
-                        console.warn("Skipping initiative with invalid coordinates:", initiative);
-                        return null;
+                      if (!initiative.coordinates || !initiative.coordinates.lat || !initiative.coordinates.lng) {
+                        return null; // Skip initiatives without valid coordinates
                       }
-                      // Check if this initiative is related to a supported cause
-                      const isRelatedToSupportedCause =
-                        highlightSupported &&
-                        supportedCauses.some((causeId) => initiative.tags && initiative.tags.includes(causeId));
+
+                      const iconColor = selectedInitiative?._id === initiative._id ? "red" : "blue";
 
                       return (
-                        <motion.div
-                          key={initiative.id}
-                          className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                            selectedInitiative?.id === initiative.id
-                              ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/50"
-                              : isRelatedToSupportedCause
-                              ? "bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20"
-                              : "bg-white/5 border-white/10 hover:bg-white/10"
-                          }`}
-                          onClick={() => handleSelectInitiative(initiative)}
-                          whileHover={{ y: -2 }}
+                        <Marker
+                          key={initiative._id}
+                          position={[initiative.coordinates.lat, initiative.coordinates.lng]}
+                          icon={createCustomIcon(iconColor)}
+                          eventHandlers={{
+                            click: () => handleSelectInitiative(initiative),
+                          }}
                         >
-                          <div className="flex items-start gap-3">
-                            <div className="p-2 rounded-lg bg-white/5">
-                              <initiative.icon className="w-5 h-5 text-blue-400" />
+                          <Popup>
+                            <div className="text-black">
+                              <h3 className="font-semibold">{initiative.title}</h3>
+                              <p className="text-sm">{initiative.category}</p>
+                              <p className="text-xs mt-1">{initiative.location}</p>
                             </div>
-                            <div className="flex-1">
-                              <h3 className="font-semibold mb-1">
-                                {initiative.title}
-                                {isRelatedToSupportedCause && (
-                                  <span className="ml-2 text-xs bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full">
-                                    Your Cause
-                                  </span>
-                                )}
-                              </h3>
-                              <p className="text-sm text-white/60 mb-2">{initiative.location}</p>
-                              <div className="flex items-center gap-4 text-sm text-white/40">
-                                <div className="flex items-center gap-1">
-                                  <FaUserFriends className="w-4 h-4" />
-                                  <span>{initiative.participants}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <FaCalendarAlt className="w-4 h-4" />
-                                  <span>{new Date(initiative.nextEvent).toLocaleDateString()}</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
+                          </Popup>
+                        </Marker>
                       );
                     })}
                   </div>
@@ -838,24 +807,19 @@ const InteractiveMap = () => {
               {/* Initiative markers */}
               {!showPeopleTab &&
                 filteredInitiatives.map((initiative) => {
-                  // Check if this initiative is related to a supported cause
-                  const isRelatedToSupportedCause =
-                    highlightSupported &&
-                    supportedCauses.some((causeId) => initiative.tags && initiative.tags.includes(causeId));
+                  if (!initiative.coordinates || !initiative.coordinates.lat || !initiative.coordinates.lng) {
+                    return null; // Skip initiatives without valid coordinates
+                  }
 
-                  // Choose icon color based on selection and supported status
-                  const iconColor =
-                    selectedInitiative?.id === initiative.id ? "red" : isRelatedToSupportedCause ? "purple" : "blue";
+                  const iconColor = selectedInitiative?._id === initiative._id ? "red" : "blue";
 
                   return (
                     <Marker
-                      key={initiative.id}
+                      key={initiative._id}
                       position={[initiative.coordinates.lat, initiative.coordinates.lng]}
                       icon={createCustomIcon(iconColor)}
                       eventHandlers={{
-                        click: () => {
-                          handleSelectInitiative(initiative);
-                        },
+                        click: () => handleSelectInitiative(initiative),
                       }}
                     >
                       <Popup>
@@ -863,9 +827,6 @@ const InteractiveMap = () => {
                           <h3 className="font-semibold">{initiative.title}</h3>
                           <p className="text-sm">{initiative.category}</p>
                           <p className="text-xs mt-1">{initiative.location}</p>
-                          {isRelatedToSupportedCause && (
-                            <p className="text-xs mt-1 text-purple-600 font-semibold">Related to your causes</p>
-                          )}
                         </div>
                       </Popup>
                     </Marker>
