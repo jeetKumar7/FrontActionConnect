@@ -1073,6 +1073,7 @@ const InteractiveMap = () => {
             <motion.div
               initial={{ opacity: 0 }} // Simplified animation
               animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} // Add explicit exit animation
               transition={{ duration: 0.2 }} // Controlled transition
               className="bg-slate-800 border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             >
