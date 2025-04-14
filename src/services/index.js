@@ -1099,6 +1099,8 @@ export const createInitiative = async (initiativeData) => {
       return { error: "Authentication required" };
     }
 
+    console.log("Creating initiative with token:", token ? "Token exists" : "No token");
+
     const response = await fetch(`${BACKEND_URL}/api/initiative`, {
       method: "POST",
       headers: {

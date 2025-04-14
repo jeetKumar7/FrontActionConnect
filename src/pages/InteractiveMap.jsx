@@ -313,6 +313,12 @@ const InteractiveMap = () => {
     setIsSubmitting(true);
     setFormError("");
 
+    if (!userData) {
+      setFormError("You must be logged in to create an initiative");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // Parse the tags from the comma-separated input
       const tags = newInitiative.tagsInput
@@ -563,17 +569,21 @@ const InteractiveMap = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Local Initiatives</h2>
                   <div className="flex items-center gap-2">
-                    {/* Add this new button */}
-                    <motion.button
-                      onClick={() => setShowAddInitiativeModal(true)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <FaPlus className="w-3.5 h-3.5" />
-                      <span>Add Initiative</span>
-                    </motion.button>
-
+                    {userData ? ( // Only show if user is logged in
+                      <motion.button
+                        onClick={() => setShowAddInitiativeModal(true)}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <FaPlus className="w-3.5 h-3.5" />
+                        <span>Add Initiative</span>
+                      </motion.button>
+                    ) : (
+                      <Link to="/login" className="text-sm text-blue-400 hover:text-blue-300">
+                        Login to create initiatives
+                      </Link>
+                    )}
                     {/* Existing collapse button for mobile */}
                     <motion.button
                       onClick={() => setShowInitiatives(!showInitiatives)}
