@@ -338,11 +338,13 @@ const InteractiveMap = () => {
       // Create initiative without coordinates since backend schema doesn't include them anymore
       try {
         // Add organizer field if it's not already in the state
+        console.log("Creating initiative with data:", newInitiative);
         const initiativeData = {
           ...newInitiative,
           tags,
           organizer: userData?.name || "Anonymous", // Use current user's name or default
         };
+        console.log("Initiative data before sending:", initiativeData);
 
         console.log("Sending to server:", initiativeData);
 
