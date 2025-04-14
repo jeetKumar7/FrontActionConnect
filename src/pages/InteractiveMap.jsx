@@ -148,6 +148,10 @@ const InteractiveMap = () => {
   const [selectedInitiative, setSelectedInitiative] = useState(null);
   const [showInitiatives, setShowInitiatives] = useState(true);
 
+  // Add to existing state variables in InteractiveMap
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeletingInitiative, setIsDeletingInitiative] = useState(false);
+
   // Map state
   const [mapCenter, setMapCenter] = useState([40.7128, -74.006]); // Default: NYC
   const [mapZoom, setMapZoom] = useState(11);
@@ -269,6 +273,33 @@ const InteractiveMap = () => {
       console.error("Error fetching users by cause:", error);
     } finally {
       setLoadingUsers(false);
+    }
+  };
+
+  // Add with other handler functions
+  const handleDeleteInitiative = async () => {
+    if (!selectedInitiative || !userData) {
+      setError("Cannot delete initiative");
+      return;
+    }
+
+    setIsDeletingInitiative(true);
+    try {
+      const result = await deleteInitiative(selectedInitiative._id);
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setSuccess("Initiative deleted successfully");
+        setSelectedInitiative(null);
+        fetchInitiatives(); // Refresh the initiatives list
+      }
+    } catch (error) {
+      console.error("Error deleting initiative:", error);
+      setError("Failed to delete initiative. Please try again.");
+    } finally {
+      setIsDeletingInitiative(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -861,6 +892,17 @@ const InteractiveMap = () => {
                 >
                   Join Initiative
                 </motion.button>
+                {/* Add this inside the Initiative Details Overlay right before the closing </motion.div> */}
+                {userData && selectedInitiative?.createdBy?._id === userData._id && (
+                  <motion.button
+                    className="mt-4 w-full px-4 py-2 bg-red-500/20 text-red-300 border border-red-500/30 rounded-lg font-medium hover:bg-red-500/30 flex items-center justify-center gap-2"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowDeleteConfirm(true)}
+                  >
+                    Delete Initiative
+                  </motion.button>
+                )}
               </motion.div>
             )}
 
@@ -1137,6 +1179,44 @@ const InteractiveMap = () => {
               </form>
             </motion.div>
           </ErrorBoundary>
+        </div>
+      )}
+      {/* Delete Initiative Confirmation Modal */}
+      {showDeleteConfirm && selectedInitiative && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-slate-800 border border-red-500/30 rounded-xl p-6 w-full max-w-md"
+          >
+            <h3 className="text-xl font-bold mb-4">Delete Initiative</h3>
+            <p className="mb-6 text-white/80">
+              Are you sure you want to delete <strong>{selectedInitiative.title}</strong>? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg"
+                disabled={isDeletingInitiative}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteInitiative}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium flex items-center"
+                disabled={isDeletingInitiative}
+              >
+                {isDeletingInitiative ? (
+                  <>
+                    <FaSpinner className="animate-spin mr-2" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>
