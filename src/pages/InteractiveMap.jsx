@@ -56,7 +56,7 @@ class ErrorBoundary extends React.Component {
       return (
         <div className="bg-red-500/20 p-4 rounded-lg border border-red-500/50 text-white">
           <h3 className="font-bold mb-2">Something went wrong</h3>
-          <button 
+          <button
             onClick={() => {
               this.setState({ hasError: false });
               this.props.onClose?.();
@@ -452,7 +452,7 @@ const InteractiveMap = () => {
             return {
               ...initiative,
               coordinates: coords || { lat: 0, lng: 0 },
-            });
+            };
           })
         );
         setInitiatives(initiativesWithCoordinates);
@@ -1071,9 +1071,9 @@ const InteractiveMap = () => {
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <ErrorBoundary onClose={() => setShowAddInitiativeModal(false)}>
             <motion.div
-              initial={{ opacity: 0 }}  // Simplified animation
+              initial={{ opacity: 0 }} // Simplified animation
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}  // Controlled transition
+              transition={{ duration: 0.2 }} // Controlled transition
               className="bg-slate-800 border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             >
               {/* Modal content stays the same */}
