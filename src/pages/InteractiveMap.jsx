@@ -321,12 +321,6 @@ const InteractiveMap = () => {
     setIsSubmitting(true);
     setFormError("");
 
-    if (!userData) {
-      setFormError("You must be logged in to create an initiative");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
       // Parse the tags from the comma-separated input
       const tags = newInitiative.tagsInput
@@ -334,38 +328,33 @@ const InteractiveMap = () => {
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
-      // Verify location is valid by geocoding, but don't send coordinates to backend
-      const coordinates = await geocodeLocation(newInitiative.location);
+      // Build initiative data
+      const initiativeData = {
+        ...newInitiative,
+        tags,
+        organizer: userData?.name || "Anonymous",
+      };
 
-      if (!coordinates) {
-        setFormError("Could not find coordinates for this location. Please enter a valid city, address or landmark.");
-        setIsSubmitting(false);
-        return;
-      }
+      console.log("Creating initiative with data:", initiativeData);
+      console.log("Initiative data before sending:", initiativeData);
+      console.log("Sending to server:", initiativeData);
 
-      // Create initiative without coordinates since backend schema doesn't include them anymore
-      try {
-        // Add organizer field if it's not already in the state
-        console.log("Creating initiative with data:", newInitiative);
-        const initiativeData = {
-          ...newInitiative,
-          tags,
-          organizer: userData?.name || "Anonymous", // Use current user's name or default
-        };
-        console.log("Initiative data before sending:", initiativeData);
+      // Delete tagsInput as it's not needed in the backend
+      delete initiativeData.tagsInput;
 
-        console.log("Sending to server:", initiativeData);
+      // Create the initiative
+      const result = await createInitiative(initiativeData);
 
-        const result = await createInitiative(initiativeData);
+      if (result && result.error) {
+        console.error("API error response:", result);
+        setFormError(result.error);
+      } else if (result) {
+        // Success - close modal first before updating state
+        setShowAddInitiativeModal(false);
 
-        if (result.error) {
-          setFormError(result.error);
-          console.error("API error:", result.error);
-        } else {
-          // Success - close modal and refresh initiatives
-          setShowAddInitiativeModal(false);
+        // Then update other state variables safely
+        setTimeout(() => {
           setSuccess("Initiative created successfully!");
-          setTimeout(() => setSuccess(null), 3000);
 
           // Reset form
           setNewInitiative({
@@ -379,31 +368,35 @@ const InteractiveMap = () => {
             nextEvent: new Date().toISOString().split("T")[0],
           });
 
-          // Refresh initiatives list and add coordinates for display
-          const initiativesData = await getInitiatives();
-          if (!initiativesData.error) {
-            // For each initiative, add coordinates for map display
-            const initiativesWithCoordinates = await Promise.all(
-              initiativesData.map(async (initiative) => {
-                const coords = await geocodeLocation(initiative.location);
-                return {
-                  ...initiative,
-                  coordinates: coords || { lat: 0, lng: 0 },
-                };
-              })
-            );
-            setInitiatives(initiativesWithCoordinates);
-          }
-        }
-      } catch (error) {
-        console.error("Create initiative error:", error);
-        setFormError(error.message || "An error occurred. Please try again.");
+          // Refresh initiatives list with a slight delay
+          fetchInitiatives();
+        }, 100);
+      } else {
+        setFormError("An unknown error occurred. Please try again.");
       }
     } catch (error) {
-      setFormError("An error occurred. Please try again.");
-      console.error(error);
+      console.error("Create initiative error:", error);
+      setFormError(error.message || "An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Add this helper function
+  const fetchInitiatives = async () => {
+    const initiativesData = await getInitiatives();
+    if (!initiativesData.error) {
+      // Add coordinates to each initiative for map display
+      const initiativesWithCoordinates = await Promise.all(
+        initiativesData.map(async (initiative) => {
+          const coords = await geocodeLocation(initiative.location);
+          return {
+            ...initiative,
+            coordinates: coords || { lat: 0, lng: 0 },
+          };
+        })
+      );
+      setInitiatives(initiativesWithCoordinates);
     }
   };
 
