@@ -76,7 +76,7 @@ function FlyToMarker({ position, flyToCoordinates }) {
     if (position && flyToCoordinates && map) {
       map.flyTo([position.lat, position.lng], 14, {
         animate: true,
-        duration: 1,
+        duration: 0.7,
       });
     }
   }, [position, flyToCoordinates, map]);
