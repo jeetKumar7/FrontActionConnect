@@ -28,6 +28,7 @@ import {
   getInitiatives,
   joinInitiative,
   createInitiative,
+  deleteInitiative,
 } from "../services";
 import { causes } from "../data/causes";
 import { Link } from "react-router-dom";
