@@ -173,11 +173,14 @@ const InteractiveMap = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return;
-        console.log("Token found:", token);
+        if (!token) {
+          console.log("No token found, user is not logged in");
+          return;
+        }
 
         const userData = await getUserProfile();
         console.log("User data fetched:", userData);
+
         if (!userData.error) {
           setUserData(userData);
 
@@ -188,19 +191,22 @@ const InteractiveMap = () => {
 
             if (coordinates) {
               setUserCoordinates(coordinates);
-              console.log("User coordinates set to:", coordinates);
             }
           }
-        }
 
-        // Fetch the user's supported causes
-        const causes = await getSupportedCauses();
-        if (!causes.error) {
-          setSupportedCauses(causes);
-          console.log("Supported causes:", causes);
+          // Fetch the user's supported causes
+          const causes = await getSupportedCauses();
+          if (!causes.error) {
+            setSupportedCauses(causes);
+          }
+        } else {
+          // Important: Set userData to null when there's an error
+          setUserData(null);
+          console.error("Authentication error:", userData.error);
         }
       } catch (error) {
         console.error("Failed to fetch user data:", error);
+        setUserData(null);
       }
     };
 

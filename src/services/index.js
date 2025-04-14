@@ -423,24 +423,31 @@ export const leaveChannel = async (channelId) => {
 export const getUserProfile = async () => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch(`${BACKEND_URL}/api/user/getuser`, {
+
+    if (!token) {
+      return { error: "No authentication token found" };
+    }
+
+    const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
       headers: {
-        Authorization: token,
+        Authorization: token, // Make sure "Bearer " prefix is added
       },
     });
 
-    const responseData = await response.json();
+    const data = await response.json();
 
     if (response.status >= 200 && response.status < 300) {
-      return responseData;
+      return data;
     } else {
-      return {
-        error: responseData.message || "Failed to fetch user profile",
-      };
+      // Clear invalid token
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+      }
+      return { error: data.message || "Failed to fetch user profile" };
     }
   } catch (err) {
-    console.error("Get profile error:", err);
-    return { error: "Network error fetching profile" };
+    console.error("Get user profile error:", err);
+    return { error: "Network error fetching user profile" };
   }
 };
 
