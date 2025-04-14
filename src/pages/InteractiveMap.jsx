@@ -667,7 +667,12 @@ const InteractiveMap = () => {
                 {(showInitiatives || window.innerWidth >= 1024) && (
                   <div className="grid sm:grid-cols-2 gap-4 lg:max-h-[calc(100vh-22rem)] lg:overflow-y-auto scrollbar-none">
                     {filteredInitiatives.map((initiative) => {
-                      if (!initiative.coordinates || !initiative.coordinates.lat || !initiative.coordinates.lng) {
+                      if (
+                        !initiative.coordinates ||
+                        !initiative.coordinates.lat ||
+                        !initiative.coordinates.lng ||
+                        !initiative.icon
+                      ) {
                         console.warn("Skipping initiative with invalid coordinates:", initiative);
                         return null;
                       }
