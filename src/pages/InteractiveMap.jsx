@@ -322,10 +322,21 @@ const InteractiveMap = () => {
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
+      // Geocode the location first
+      const coordinates = await geocodeLocation(newInitiative.location);
+
+      if (!coordinates) {
+        setFormError("Could not find coordinates for this location. Please enter a valid city, address or landmark.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Now create the initiative with the coordinates included
       try {
         const result = await createInitiative({
           ...newInitiative,
           tags,
+          coordinates, // Add the coordinates here
         });
 
         if (result.error) {
@@ -360,7 +371,8 @@ const InteractiveMap = () => {
         setFormError(error.message || "An error occurred. Please try again.");
       }
     } catch (error) {
-      setFormError("An error occurred. Please try again.", error);
+      setFormError("An error occurred. Please try again.");
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }

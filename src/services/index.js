@@ -1099,40 +1099,13 @@ export const createInitiative = async (initiativeData) => {
       return { error: "Authentication required" };
     }
 
-    // First geocode the location
-    let coordinates;
-    try {
-      const geocodeResponse = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(initiativeData.location)}`
-      );
-
-      const geocodeData = await geocodeResponse.json();
-
-      if (geocodeData && geocodeData.length > 0) {
-        coordinates = {
-          lat: parseFloat(geocodeData[0].lat),
-          lng: parseFloat(geocodeData[0].lon),
-        };
-      } else {
-        return { error: "Unable to geocode the provided location" };
-      }
-    } catch (error) {
-      return { error: "Geocoding failed" };
-    }
-
-    // Include coordinates in the data
-    const dataWithCoordinates = {
-      ...initiativeData,
-      coordinates,
-    };
-
     const response = await fetch(`${BACKEND_URL}/api/initiative`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: token,
       },
-      body: JSON.stringify(dataWithCoordinates),
+      body: JSON.stringify(initiativeData),
     });
 
     const data = await response.json();
