@@ -423,13 +423,14 @@ const InteractiveMap = () => {
   const fetchInitiatives = async () => {
     const initiativesData = await getInitiatives();
     if (!initiativesData.error) {
-      // Add coordinates to each initiative for map display
+      // Add coordinates and default icon to each initiative
       const initiativesWithCoordinates = await Promise.all(
         initiativesData.map(async (initiative) => {
           const coords = await geocodeLocation(initiative.location);
           return {
             ...initiative,
             coordinates: coords || { lat: 0, lng: 0 },
+            icon: FaMapMarkerAlt, // Assign a default icon if none exists
           };
         })
       );
