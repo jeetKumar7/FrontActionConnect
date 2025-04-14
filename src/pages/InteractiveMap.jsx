@@ -31,7 +31,6 @@ import {
   getUsersByCause,
   getInitiatives,
   joinInitiative,
-  getUserJoinedInitiatives,
   createInitiative,
 } from "../services";
 import { causes, getCauseById } from "../data/causes";
@@ -280,7 +279,6 @@ const InteractiveMap = () => {
 
   // Add these states
   const [initiatives, setInitiatives] = useState([]);
-  const [joinedInitiatives, setJoinedInitiatives] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Add this with your other state variables
@@ -322,7 +320,7 @@ const InteractiveMap = () => {
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
-      // Geocode the location first
+      // Verify location is valid by geocoding, but don't send coordinates to backend
       const coordinates = await geocodeLocation(newInitiative.location);
 
       if (!coordinates) {
@@ -331,13 +329,18 @@ const InteractiveMap = () => {
         return;
       }
 
-      // Now create the initiative with the coordinates included
+      // Create initiative without coordinates since backend schema doesn't include them anymore
       try {
-        const result = await createInitiative({
+        // Add organizer field if it's not already in the state
+        const initiativeData = {
           ...newInitiative,
           tags,
-          coordinates, // Add the coordinates here
-        });
+          organizer: userData?.name || "Anonymous", // Use current user's name or default
+        };
+
+        console.log("Sending to server:", initiativeData);
+
+        const result = await createInitiative(initiativeData);
 
         if (result.error) {
           setFormError(result.error);
@@ -360,10 +363,20 @@ const InteractiveMap = () => {
             nextEvent: new Date().toISOString().split("T")[0],
           });
 
-          // Refresh initiatives list
+          // Refresh initiatives list and add coordinates for display
           const initiativesData = await getInitiatives();
           if (!initiativesData.error) {
-            setInitiatives(initiativesData);
+            // For each initiative, add coordinates for map display
+            const initiativesWithCoordinates = await Promise.all(
+              initiativesData.map(async (initiative) => {
+                const coords = await geocodeLocation(initiative.location);
+                return {
+                  ...initiative,
+                  coordinates: coords || { lat: 0, lng: 0 },
+                };
+              })
+            );
+            setInitiatives(initiativesWithCoordinates);
           }
         }
       } catch (error) {
@@ -386,13 +399,17 @@ const InteractiveMap = () => {
       // Get all initiatives
       const initiativesData = await getInitiatives();
       if (!initiativesData.error) {
-        setInitiatives(initiativesData);
-      }
-
-      // Get user's joined initiatives
-      const joinedData = await getUserJoinedInitiatives();
-      if (!joinedData.error && joinedData.length > 0) {
-        setJoinedInitiatives(joinedData.map((initiative) => initiative._id));
+        // Add coordinates to each initiative for map display
+        const initiativesWithCoordinates = await Promise.all(
+          initiativesData.map(async (initiative) => {
+            const coords = await geocodeLocation(initiative.location);
+            return {
+              ...initiative,
+              coordinates: coords || { lat: 0, lng: 0 },
+            };
+          })
+        );
+        setInitiatives(initiativesWithCoordinates);
       }
 
       setLoading(false);
@@ -416,9 +433,6 @@ const InteractiveMap = () => {
       // Show success message
       setSuccess(result.message);
       setTimeout(() => setSuccess(null), 3000);
-
-      // Update joined initiatives
-      setJoinedInitiatives((prev) => [...prev, initiative._id]);
 
       // Redirect to website if available
       if (result.redirectUrl) {

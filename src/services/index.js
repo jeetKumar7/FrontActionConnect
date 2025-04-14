@@ -1223,33 +1223,32 @@ export const joinInitiative = async (id) => {
   }
 };
 
-// Get user's joined initiatives
-export const getUserJoinedInitiatives = async () => {
-  try {
-    const token = localStorage.getItem("token");
+// export const getUserJoinedInitiatives = async () => {
+//   try {
+//     const token = localStorage.getItem("token");
 
-    if (!token) {
-      return { error: "Authentication required", initiatives: [] };
-    }
+//     if (!token) {
+//       return { error: "Authentication required", initiatives: [] };
+//     }
 
-    const response = await fetch(`${BACKEND_URL}/api/user/joined-initiative`, {
-      headers: {
-        Authorization: token,
-      },
-    });
+//     const response = await fetch(`${BACKEND_URL}/api/user/joined-initiative`, {
+//       headers: {
+//         Authorization: token,
+//       },
+//     });
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    if (response.status >= 200 && response.status < 300) {
-      return data;
-    } else {
-      return {
-        error: data.message || "Failed to fetch joined initiatives",
-        initiatives: [],
-      };
-    }
-  } catch (err) {
-    console.error("Get joined initiatives error:", err);
-    return { error: "Network error", initiatives: [] };
-  }
-};
+//     if (response.status >= 200 && response.status < 300) {
+//       return data;
+//     } else {
+//       return {
+//         error: data.message || "Failed to fetch joined initiatives",
+//         initiatives: [],
+//       };
+//     }
+//   } catch (err) {
+//     console.error("Get joined initiatives error:", err);
+//     return { error: "Network error", initiatives: [] };
+//   }
+// };
