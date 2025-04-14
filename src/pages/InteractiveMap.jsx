@@ -32,6 +32,7 @@ import {
   getInitiatives,
   joinInitiative,
   getUserJoinedInitiatives,
+  createInitiative,
 } from "../services";
 import { causes, getCauseById } from "../data/causes";
 import { Link } from "react-router-dom";
@@ -272,29 +273,6 @@ const InteractiveMap = () => {
     }
   };
 
-  // Send connection request
-  // const simulateConnectionRequest = (userId) => {
-  //   // This would connect to your backend API
-  //   // For now, we'll simulate with state
-  //   setConnectionRequests((prev) => ({
-  //     ...prev,
-  //     [userId]: { status: "pending", loading: false },
-  //   }));
-
-  //   // Simulate API call
-  //   setConnectionRequests((prev) => ({
-  //     ...prev,
-  //     [userId]: { status: "pending", loading: true },
-  //   }));
-
-  //   setTimeout(() => {
-  //     setConnectionRequests((prev) => ({
-  //       ...prev,
-  //       [userId]: { status: "sent", loading: false },
-  //     }));
-  //   }, 1000);
-  // };
-
   // Add state variables
 
   const [error, setError] = useState(null);
@@ -344,37 +322,42 @@ const InteractiveMap = () => {
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
-      // Call the createInitiative service
-      const result = await createInitiative({
-        ...newInitiative,
-        tags,
-      });
-
-      if (result.error) {
-        setFormError(result.error);
-      } else {
-        // Success - close modal and refresh initiatives
-        setShowAddInitiativeModal(false);
-        setSuccess("Initiative created successfully!");
-        setTimeout(() => setSuccess(null), 3000);
-
-        // Reset form
-        setNewInitiative({
-          title: "",
-          category: "",
-          description: "",
-          location: "",
-          tagsInput: "",
-          website: "",
-          status: "Upcoming",
-          nextEvent: new Date().toISOString().split("T")[0],
+      try {
+        const result = await createInitiative({
+          ...newInitiative,
+          tags,
         });
 
-        // Refresh initiatives list
-        const initiativesData = await getInitiatives();
-        if (!initiativesData.error) {
-          setInitiatives(initiativesData);
+        if (result.error) {
+          setFormError(result.error);
+          console.error("API error:", result.error);
+        } else {
+          // Success - close modal and refresh initiatives
+          setShowAddInitiativeModal(false);
+          setSuccess("Initiative created successfully!");
+          setTimeout(() => setSuccess(null), 3000);
+
+          // Reset form
+          setNewInitiative({
+            title: "",
+            category: "",
+            description: "",
+            location: "",
+            tagsInput: "",
+            website: "",
+            status: "Upcoming",
+            nextEvent: new Date().toISOString().split("T")[0],
+          });
+
+          // Refresh initiatives list
+          const initiativesData = await getInitiatives();
+          if (!initiativesData.error) {
+            setInitiatives(initiativesData);
+          }
         }
+      } catch (error) {
+        console.error("Create initiative error:", error);
+        setFormError(error.message || "An error occurred. Please try again.");
       }
     } catch (error) {
       setFormError("An error occurred. Please try again.");
@@ -1046,9 +1029,12 @@ const InteractiveMap = () => {
                   value={newInitiative.category}
                   onChange={handleInitiativeFormChange}
                   className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  style={{ colorScheme: "dark" }}
                   required
                 >
-                  <option value="">Select a category</option>
+                  <option value="" style={{ backgroundColor: "#1e293b", color: "white" }}>
+                    Select a category
+                  </option>
                   {categories
                     .filter((category) => category !== "All")
                     .map((category) => (
@@ -1095,7 +1081,7 @@ const InteractiveMap = () => {
                 <label className="block text-sm font-medium text-white/70 mb-1">Tags (comma separated)</label>
                 <input
                   type="text"
-                  name="tags"
+                  name="tagsInput"
                   value={newInitiative.tagsInput}
                   onChange={handleInitiativeFormChange}
                   placeholder="e.g. climate, education, community"
