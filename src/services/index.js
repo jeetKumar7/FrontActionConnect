@@ -1115,6 +1115,7 @@ export const createInitiative = async (initiativeData) => {
     if (response.status >= 200 && response.status < 300) {
       return data;
     } else {
+      console.log("API error response:", data);
       return {
         error: data.message || "Failed to create initiative",
       };
