@@ -174,8 +174,10 @@ const InteractiveMap = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
+        console.log("Token found:", token);
 
         const userData = await getUserProfile();
+        console.log("User data fetched:", userData);
         if (!userData.error) {
           setUserData(userData);
 
