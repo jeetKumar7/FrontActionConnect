@@ -393,7 +393,7 @@ const InteractiveMap = () => {
             tagsInput: "",
             website: "",
             status: "Upcoming",
-            nextEvent: new Date().toISOString().split("T")[0],
+            nextEvent: new Date().split("T")[0],
           });
           fetchInitiatives();
         }, 100);
