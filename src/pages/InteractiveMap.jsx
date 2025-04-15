@@ -696,10 +696,10 @@ const InteractiveMap = () => {
                               </h3>
                               <p className="text-sm text-white/60 mb-2">{initiative.location}</p>
                               <div className="flex items-center gap-4 text-sm text-white/40">
-                                <div className="flex items-center gap-1">
+                                {/* <div className="flex items-center gap-1">
                                   <FaUserFriends className="w-4 h-4" />
                                   <span>{initiative.participants || 0}</span>
-                                </div>
+                                </div> */}
                                 <div className="flex items-center gap-1">
                                   <FaCalendarAlt className="w-4 h-4" />
                                   <span>{new Date(initiative.nextEvent).toLocaleDateString()}</span>
@@ -876,10 +876,10 @@ const InteractiveMap = () => {
                 </div>
 
                 <div className="flex justify-between items-center text-sm text-white/60 mb-4">
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <FaUserFriends />
                     <span>{selectedInitiative.participants || 0} participants</span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center gap-2">
                     <FaClock />
                     <span>Next event: {new Date(selectedInitiative.nextEvent).toLocaleDateString()}</span>
