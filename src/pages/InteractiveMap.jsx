@@ -879,9 +879,9 @@ const InteractiveMap = () => {
                       title={isOverlayMinimized ? "Expand" : "Minimize"}
                     >
                       {isOverlayMinimized ? (
-                        <FaCompressArrowsAlt className="h-5 w-5" />
-                      ) : (
                         <FaExpandArrowsAlt className="h-5 w-5" />
+                      ) : (
+                        <FaCompressArrowsAlt className="h-5 w-5" />
                       )}
                     </button>
                     <div
