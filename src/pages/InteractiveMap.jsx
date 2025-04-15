@@ -480,7 +480,7 @@ const InteractiveMap = () => {
 
     if (result.success) {
       setSuccess(result.message);
-      setTimeout(() => setSuccess(null), 3000);
+      setTimeout(() => setSuccess(null), 1500);
 
       if (result.redirectUrl) {
         window.open(result.redirectUrl, "_blank");
@@ -764,11 +764,11 @@ const InteractiveMap = () => {
                                 <div className="flex items-center gap-4 text-sm text-white/40">
                                   <div className="flex items-center gap-1">
                                     <FaCalendarAlt className="w-4 h-4" />
+
                                     <span>
                                       {initiative.status === "Active"
                                         ? "Active now"
-                                        : initiative.nextEvent &&
-                                          new Date(initiative.nextEvent).toString() !== "Invalid Date"
+                                        : initiative.nextEvent && !isNaN(new Date(initiative.nextEvent))
                                         ? new Date(initiative.nextEvent).toLocaleDateString()
                                         : "Date not set"}
                                     </span>
@@ -975,9 +975,8 @@ const InteractiveMap = () => {
                         <span>
                           {selectedInitiative.status === "Active"
                             ? "Active now"
-                            : selectedInitiative.nextEvent &&
-                              new Date(selectedInitiative.nextEvent).toString() !== "Invalid Date"
-                            ? `Next event: ${new Date(selectedInitiative.nextEvent).toLocaleDateString()}`
+                            : selectedInitiative.nextEvent && !isNaN(new Date(selectedInitiative.nextEvent))
+                            ? new Date(selectedInitiative.nextEvent).toLocaleDateString()
                             : "Date not set"}
                         </span>
                       </div>
