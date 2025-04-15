@@ -369,6 +369,7 @@ const InteractiveMap = () => {
 
       const initiativeData = {
         ...newInitiative,
+        nextEvent: new Date(newInitiative.nextEvent),
         tags,
         organizer: userData?.name || "Anonymous",
       };
