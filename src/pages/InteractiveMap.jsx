@@ -183,6 +183,10 @@ const InteractiveMap = () => {
   const [initiatives, setInitiatives] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [categoryInput, setCategoryInput] = useState("");
+  const [showCategorySuggestions, setShowCategorySuggestions] = useState(false);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+
   // Add initiative modal state
   const [showAddInitiativeModal, setShowAddInitiativeModal] = useState(false);
   const [isOverlayMinimized, setIsOverlayMinimized] = useState(false);
@@ -415,6 +419,36 @@ const InteractiveMap = () => {
     };
     fetchData();
   }, []);
+
+  // Add this function to handle category input
+  const handleCategoryInputChange = (e) => {
+    const value = e.target.value;
+    setCategoryInput(value);
+
+    // Filter categories based on input
+    const filtered = categories
+      .filter((cat) => cat !== "All")
+      .filter((cat) => cat.toLowerCase().includes(value.toLowerCase()));
+
+    setFilteredCategories(filtered);
+    setShowCategorySuggestions(true);
+
+    // Update the initiative form state
+    setNewInitiative((prev) => ({
+      ...prev,
+      category: value,
+    }));
+  };
+
+  // Add this function to handle category selection from dropdown
+  const handleCategorySelect = (category) => {
+    setCategoryInput(category);
+    setNewInitiative((prev) => ({
+      ...prev,
+      category,
+    }));
+    setShowCategorySuggestions(false);
+  };
 
   // Filter initiatives based on search and category
   const filteredInitiatives = initiatives.filter(
@@ -1069,25 +1103,35 @@ const InteractiveMap = () => {
                   <label className="block text-sm font-medium text-white/70 mb-1">
                     Category <span className="text-red-400">*</span>
                   </label>
-                  <select
-                    name="category"
-                    value={newInitiative.category}
-                    onChange={handleInitiativeFormChange}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                    style={{ colorScheme: "dark" }}
-                    required
-                  >
-                    <option value="" style={{ backgroundColor: "#1e293b", color: "white" }}>
-                      Select a category
-                    </option>
-                    {categories
-                      .filter((category) => category !== "All")
-                      .map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                  </select>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={categoryInput}
+                      onChange={handleCategoryInputChange}
+                      onFocus={() => setShowCategorySuggestions(true)}
+                      onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 200)}
+                      placeholder="Select or type a category"
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                      required
+                    />
+                    {showCategorySuggestions && categoryInput && (
+                      <div className="absolute z-20 mt-1 w-full bg-slate-700 border border-white/10 rounded-lg shadow-lg max-h-60 overflow-auto">
+                        {filteredCategories.length > 0 ? (
+                          filteredCategories.map((category) => (
+                            <div
+                              key={category}
+                              className="px-4 py-2 cursor-pointer hover:bg-slate-600 text-white"
+                              onClick={() => handleCategorySelect(category)}
+                            >
+                              {category}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-white/60 italic">Custom category: "{categoryInput}"</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
