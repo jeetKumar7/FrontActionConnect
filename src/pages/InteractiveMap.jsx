@@ -8,6 +8,8 @@ import {
   FaSeedling,
   FaSearch,
   FaUserFriends,
+  FaCompressArrowsAlt,
+  FaExpandArrowsAlt,
   FaClock,
   FaPlus,
   FaCalendarAlt,
@@ -877,29 +879,9 @@ const InteractiveMap = () => {
                       title={isOverlayMinimized ? "Expand" : "Minimize"}
                     >
                       {isOverlayMinimized ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path d="M3 3a1 1 0 00-1 1v4a1 1 0 102 0V5.414l3.293 3.293a1 1 0 101.414-1.414L5.414 4H8a1 1 0 100-2H4a1 1 0 00-1 1z" />
-                          <path d="M3 17a1 1 0 001 1h4a1 1 0 100-2H5.414l3.293-3.293a1 1 0 00-1.414-1.414L4 14.586V12a1 1 0 10-2 0v4a1 1 0 001 1z" />
-                          <path d="M17 3a1 1 0 00-1-1h-4a1 1 0 100 2h2.586l-3.293 3.293a1 1 0 001.414 1.414L16 5.414V8a1 1 0 102 0V4a1 1 0 00-1-1z" />
-                          <path d="M17 17a1 1 0 001-1v-4a1 1 0 10-2 0v2.586l-3.293-3.293a1 1 0 00-1.414 1.414L14.586 16H12a1 1 0 100 2h4a1 1 0 001-1z" />
-                        </svg>
+                        <FaCompressArrowsAlt className="h-5 w-5" />
                       ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path d="M8 3a1 1 0 00-1 1v2H5a1 1 0 00-1 1v1a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1z" />
-                          <path d="M8 11a1 1 0 00-1 1v2a1 1 0 001 1h1a1 1 0 001-1v-3a1 1 0 00-1-1H8z" />
-                          <path d="M11 8a1 1 0 001-1V5a1 1 0 011-1h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 010-2z" />
-                          <path d="M14 11a1 1 0 00-1 1v1a1 1 0 001 1h2a1 1 0 001-1v-1a1 1 0 00-1-1h-2z" />
-                        </svg>
+                        <FaExpandArrowsAlt className="h-5 w-5" />
                       )}
                     </button>
                     <div
