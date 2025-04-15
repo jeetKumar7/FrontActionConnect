@@ -6,12 +6,14 @@ import axios from "axios";
 
 // API Keys and Base URLs
 const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
-const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+// const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 const GOOGLE_BOOKS_API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
 const YOUTUBE_BASE_URL = "https://www.googleapis.com/youtube/v3";
-const NEWS_BASE_URL = "https://newsapi.org/v2/everything";
+// const NEWS_BASE_URL = "https://newsapi.org/v2/everything";
 const GOOGLE_BOOKS_BASE_URL = "https://www.googleapis.com/books/v1/volumes";
-const TED_TALKS_BASE_URL = "https://tedtalksapi.herokuapp.com/api";
+// const TED_TALKS_BASE_URL = "https://tedtalksapi.herokuapp.com/api";
+const GNEWS_BASE_URL = "https://gnews.io/api/v4/search";
+const GNEWS_API_KEY = import.meta.env.YOUR_GNEWS_API_KEY; // Use your GNews API key
 
 export const fetchYouTubeVideos = async (searchQuery, maxResults = 10) => {
   try {
@@ -50,23 +52,25 @@ export const fetchNewsArticles = async (searchQuery = "environment", pageSize = 
     fromDate.setDate(fromDate.getDate() - 30);
     const fromDateString = fromDate.toISOString().split("T")[0];
 
-    const response = await axios.get(`${NEWS_BASE_URL}`, {
+    // Make a request to GNews API
+    const response = await axios.get(`${GNEWS_BASE_URL}`, {
       params: {
         q: searchQuery,
+        lang: "en", // GNews uses 'lang' instead of 'language'
         from: fromDateString,
-        language: "en",
-        sortBy: "relevancy",
-        pageSize,
-        apiKey: NEWS_API_KEY,
+        page: 1, // GNews API uses 'page' for pagination
+        token: GNEWS_API_KEY, // GNews requires the API token instead of 'apiKey'
+        pageSize, // Limit the number of results
       },
     });
 
+    // Process and map the response data
     return response.data.articles.map((article) => ({
       id: article.url,
       title: article.title,
       description: article.description || "No description available",
       url: article.url,
-      thumbnail: article.urlToImage || "https://via.placeholder.com/300x200?text=No+Image",
+      thumbnail: article.image || "https://via.placeholder.com/300x200?text=No+Image", // GNews uses 'image' instead of 'urlToImage'
       publishedAt: article.publishedAt,
       source: article.source.name,
       author: article.author || "Unknown Author",
