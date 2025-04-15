@@ -764,7 +764,11 @@ const InteractiveMap = () => {
                                 <div className="flex items-center gap-4 text-sm text-white/40">
                                   <div className="flex items-center gap-1">
                                     <FaCalendarAlt className="w-4 h-4" />
-                                    <span>{new Date(initiative.nextEvent).toLocaleDateString()}</span>
+                                    <span>
+                                      {initiative.status === "Active"
+                                        ? "Active now"
+                                        : new Date(initiative.nextEvent).toLocaleDateString()}
+                                    </span>
                                   </div>
                                 </div>
                               </div>
@@ -965,7 +969,11 @@ const InteractiveMap = () => {
                     <div className="flex justify-between items-center text-sm text-white/60 mb-4">
                       <div className="flex items-center gap-2">
                         <FaClock />
-                        <span>Next event: {new Date(selectedInitiative.nextEvent).toLocaleDateString()}</span>
+                        <span>
+                          {selectedInitiative.status === "Active"
+                            ? "Next event: Active now"
+                            : `Next event: ${new Date(selectedInitiative.nextEvent).toLocaleDateString()}`}
+                        </span>
                       </div>
                     </div>
                   </>
