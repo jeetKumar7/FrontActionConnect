@@ -13,7 +13,7 @@ const YOUTUBE_BASE_URL = "https://www.googleapis.com/youtube/v3";
 const GOOGLE_BOOKS_BASE_URL = "https://www.googleapis.com/books/v1/volumes";
 // const TED_TALKS_BASE_URL = "https://tedtalksapi.herokuapp.com/api";
 const GNEWS_BASE_URL = "https://gnews.io/api/v4/search";
-const GNEWS_API_KEY = import.meta.env.YOUR_GNEWS_API_KEY; // Use your GNews API key
+const GNEWS_API_KEY = import.meta.env.VITE_GNEWS_API_KEY; // Use your GNews API key
 
 export const fetchYouTubeVideos = async (searchQuery, maxResults = 10) => {
   try {
