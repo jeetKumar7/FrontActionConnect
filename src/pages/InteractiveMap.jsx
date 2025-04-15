@@ -972,7 +972,11 @@ const InteractiveMap = () => {
                         <span>
                           {selectedInitiative.status === "Active"
                             ? "Next event: Active now"
-                            : `Next event: ${new Date(selectedInitiative.nextEvent).toLocaleDateString()}`}
+                            : `Next event: ${
+                                selectedInitiative.nextEvent && !isNaN(new Date(selectedInitiative.nextEvent))
+                                  ? new Date(selectedInitiative.nextEvent).toLocaleDateString()
+                                  : "Date not set"
+                              }`}
                         </span>
                       </div>
                     </div>
