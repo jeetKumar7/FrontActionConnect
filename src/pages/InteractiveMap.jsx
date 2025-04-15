@@ -470,7 +470,8 @@ const InteractiveMap = () => {
   const filteredInitiatives = initiatives.filter(
     (initiative) =>
       (selectedCategory === "All" || initiative.category === selectedCategory) &&
-      initiative.title.toLowerCase().includes(searchQuery.toLowerCase())
+      (initiative.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        initiative.category.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   // Handle join initiative button click
