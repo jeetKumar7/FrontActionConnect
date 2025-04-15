@@ -393,7 +393,7 @@ const InteractiveMap = () => {
             tagsInput: "",
             website: "",
             status: "Upcoming",
-            nextEvent: new Date().split("T")[0],
+            nextEvent: new Date().toISOString().split("T")[0],
           });
           fetchInitiatives();
         }, 100);
@@ -767,7 +767,10 @@ const InteractiveMap = () => {
                                     <span>
                                       {initiative.status === "Active"
                                         ? "Active now"
-                                        : new Date(initiative.nextEvent).toLocaleDateString()}
+                                        : initiative.nextEvent &&
+                                          new Date(initiative.nextEvent).toString() !== "Invalid Date"
+                                        ? new Date(initiative.nextEvent).toLocaleDateString()
+                                        : "Date not set"}
                                     </span>
                                   </div>
                                 </div>
@@ -971,12 +974,11 @@ const InteractiveMap = () => {
                         <FaClock />
                         <span>
                           {selectedInitiative.status === "Active"
-                            ? "Next event: Active now"
-                            : `Next event: ${
-                                selectedInitiative.nextEvent && !isNaN(new Date(selectedInitiative.nextEvent))
-                                  ? new Date(selectedInitiative.nextEvent).toLocaleDateString()
-                                  : "Date not set"
-                              }`}
+                            ? "Active now"
+                            : selectedInitiative.nextEvent &&
+                              new Date(selectedInitiative.nextEvent).toString() !== "Invalid Date"
+                            ? `Next event: ${new Date(selectedInitiative.nextEvent).toLocaleDateString()}`
+                            : "Date not set"}
                         </span>
                       </div>
                     </div>
