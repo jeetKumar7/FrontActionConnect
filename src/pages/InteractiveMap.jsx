@@ -661,55 +661,69 @@ const InteractiveMap = () => {
                 {/* Initiatives List */}
                 {(showInitiatives || window.innerWidth >= 1024) && (
                   <div className="grid sm:grid-cols-2 gap-4 lg:max-h-[calc(100vh-22rem)] lg:overflow-y-auto scrollbar-none">
-                    {filteredInitiatives.map((initiative) => {
-                      if (!initiative.coordinates?.lat) return null;
+                    {loading ? (
+                      // Loading animation
+                      <div className="col-span-2 flex flex-col items-center justify-center py-12 space-y-3">
+                        <FaSpinner className="animate-spin text-3xl text-blue-400" />
+                        <p className="text-white/60">Loading initiatives...</p>
+                      </div>
+                    ) : filteredInitiatives.length > 0 ? (
+                      // Map over initiatives when we have data
+                      filteredInitiatives.map((initiative) => {
+                        if (!initiative.coordinates?.lat) return null;
 
-                      // Check if initiative is related to a supported cause
-                      const isRelatedToSupportedCause =
-                        highlightSupported && supportedCauses.some((causeId) => initiative.tags?.includes(causeId));
+                        // Check if initiative is related to a supported cause
+                        const isRelatedToSupportedCause =
+                          highlightSupported && supportedCauses.some((causeId) => initiative.tags?.includes(causeId));
 
-                      return (
-                        <motion.div
-                          key={initiative._id}
-                          className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                            selectedInitiative?._id === initiative._id
-                              ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/50"
-                              : isRelatedToSupportedCause
-                              ? "bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20"
-                              : "bg-white/5 border-white/10 hover:bg-white/10"
-                          }`}
-                          onClick={() => handleSelectInitiative(initiative)}
-                          whileHover={{ y: -2 }}
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="p-2 rounded-lg bg-white/5">
-                              <FaMapMarkerAlt className="w-5 h-5 text-blue-400" />
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-semibold mb-1">
-                                {initiative.title}
-                                {isRelatedToSupportedCause && (
-                                  <span className="ml-2 text-xs bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full">
-                                    Your Cause
-                                  </span>
-                                )}
-                              </h3>
-                              <p className="text-sm text-white/60 mb-2">{initiative.location}</p>
-                              <div className="flex items-center gap-4 text-sm text-white/40">
-                                {/* <div className="flex items-center gap-1">
-                                  <FaUserFriends className="w-4 h-4" />
-                                  <span>{initiative.participants || 0}</span>
-                                </div> */}
-                                <div className="flex items-center gap-1">
-                                  <FaCalendarAlt className="w-4 h-4" />
-                                  <span>{new Date(initiative.nextEvent).toLocaleDateString()}</span>
+                        return (
+                          <motion.div
+                            key={initiative._id}
+                            className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                              selectedInitiative?._id === initiative._id
+                                ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/50"
+                                : isRelatedToSupportedCause
+                                ? "bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20"
+                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                            }`}
+                            onClick={() => handleSelectInitiative(initiative)}
+                            whileHover={{ y: -2 }}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="p-2 rounded-lg bg-white/5">
+                                <FaMapMarkerAlt className="w-5 h-5 text-blue-400" />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-semibold mb-1">
+                                  {initiative.title}
+                                  {isRelatedToSupportedCause && (
+                                    <span className="ml-2 text-xs bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full">
+                                      Your Cause
+                                    </span>
+                                  )}
+                                </h3>
+                                <p className="text-sm text-white/60 mb-2">{initiative.location}</p>
+                                <div className="flex items-center gap-4 text-sm text-white/40">
+                                  <div className="flex items-center gap-1">
+                                    <FaCalendarAlt className="w-4 h-4" />
+                                    <span>{new Date(initiative.nextEvent).toLocaleDateString()}</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
+                          </motion.div>
+                        );
+                      })
+                    ) : (
+                      // No results found
+                      <div className="col-span-2 bg-white/5 rounded-lg p-6 text-center">
+                        <FaMapMarkerAlt className="mx-auto text-3xl text-white/30 mb-3" />
+                        <p className="text-white/60">No initiatives found matching your search.</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </>
