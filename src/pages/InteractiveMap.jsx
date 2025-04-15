@@ -372,6 +372,7 @@ const InteractiveMap = () => {
 
         tags,
         organizer: userData?.name || "Anonymous",
+        nextEvent: newInitiative.nextEvent, // Make sure to send nextEvent
       };
 
       // Remove tagsInput from data sent to server
