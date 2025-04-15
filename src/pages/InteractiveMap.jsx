@@ -183,6 +183,8 @@ const InteractiveMap = () => {
 
   // Add initiative modal state
   const [showAddInitiativeModal, setShowAddInitiativeModal] = useState(false);
+  const [isOverlayMinimized, setIsOverlayMinimized] = useState(false);
+
   const [newInitiative, setNewInitiative] = useState({
     title: "",
     category: "",
@@ -859,46 +861,84 @@ const InteractiveMap = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute bottom-6 right-6 w-96 max-w-[calc(100%-3rem)] bg-slate-900/90 backdrop-blur-sm rounded-xl border border-white/10 p-6 z-[1000]"
+                className={`absolute bottom-6 right-6 ${
+                  isOverlayMinimized ? "w-64" : "w-96"
+                } max-w-[calc(100%-3rem)] bg-slate-900/90 backdrop-blur-sm rounded-xl border border-white/10 p-6 z-[1000]`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h2 className="text-xl font-semibold mb-1">{selectedInitiative.title}</h2>
                     <p className="text-white/60">{selectedInitiative.location}</p>
                   </div>
-                  <div
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      selectedInitiative.status === "Active"
-                        ? "bg-green-500/20 text-green-400"
-                        : "bg-yellow-500/20 text-yellow-400"
-                    }`}
-                  >
-                    {selectedInitiative.status}
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setIsOverlayMinimized(!isOverlayMinimized)}
+                      className="p-1 rounded hover:bg-white/10 text-white/60 hover:text-white"
+                      title={isOverlayMinimized ? "Expand" : "Minimize"}
+                    >
+                      {isOverlayMinimized ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                    <div
+                      className={`px-3 py-1 rounded-full text-sm ${
+                        selectedInitiative.status === "Active"
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-yellow-500/20 text-yellow-400"
+                      }`}
+                    >
+                      {selectedInitiative.status}
+                    </div>
                   </div>
                 </div>
 
-                <p className="text-white/80 text-sm mb-4">{selectedInitiative.description}</p>
+                {/* Only show detailed content when not minimized */}
+                {!isOverlayMinimized && (
+                  <>
+                    <p className="text-white/80 text-sm mb-4">{selectedInitiative.description}</p>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {selectedInitiative.tags
-                    ?.filter((tag) => !supportedCauses.includes(tag))
-                    .map((tag, idx) => (
-                      <span key={idx} className="px-3 py-1 rounded-full text-sm bg-white/5 border border-white/10">
-                        {tag}
-                      </span>
-                    ))}
-                </div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {selectedInitiative.tags
+                        ?.filter((tag) => !supportedCauses.includes(tag))
+                        .map((tag, idx) => (
+                          <span key={idx} className="px-3 py-1 rounded-full text-sm bg-white/5 border border-white/10">
+                            {tag}
+                          </span>
+                        ))}
+                    </div>
 
-                <div className="flex justify-between items-center text-sm text-white/60 mb-4">
-                  {/* <div className="flex items-center gap-2">
-                    <FaUserFriends />
-                    <span>{selectedInitiative.participants || 0} participants</span>
-                  </div> */}
-                  <div className="flex items-center gap-2">
-                    <FaClock />
-                    <span>Next event: {new Date(selectedInitiative.nextEvent).toLocaleDateString()}</span>
-                  </div>
-                </div>
+                    <div className="flex justify-between items-center text-sm text-white/60 mb-4">
+                      <div className="flex items-center gap-2">
+                        <FaClock />
+                        <span>Next event: {new Date(selectedInitiative.nextEvent).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <motion.button
                   className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 flex items-center justify-center gap-2"
@@ -908,7 +948,7 @@ const InteractiveMap = () => {
                 >
                   Join Initiative
                 </motion.button>
-                {/* Add this inside the Initiative Details Overlay right before the closing </motion.div> */}
+
                 {userData && selectedInitiative?.createdBy?._id === userData._id && (
                   <motion.button
                     className="mt-4 w-full px-4 py-2 bg-red-500/20 text-red-300 border border-red-500/30 rounded-lg font-medium hover:bg-red-500/30 flex items-center justify-center gap-2"
