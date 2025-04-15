@@ -369,8 +369,7 @@ const InteractiveMap = () => {
 
       const initiativeData = {
         ...newInitiative,
-        // Format as YYYY-MM-DDT00:00:00.000Z to ensure date preservation
-        nextEvent: new Date(`${newInitiative.nextEvent}T00:00:00.000Z`),
+
         tags,
         organizer: userData?.name || "Anonymous",
       };
