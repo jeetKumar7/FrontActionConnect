@@ -142,6 +142,22 @@ const categories = [
   "Waste Management",
   "Renewable Energy",
   "Wildlife Protection",
+  "Community Building",
+  "Education",
+  "Health",
+  "Sustainable Living",
+  "Climate Action",
+  "Biodiversity",
+  "Food Security",
+  "Water Conservation",
+  "Air Quality",
+  "Pollution Control",
+  "Green Technology",
+  "Sustainable Transportation",
+  "Environmental Justice",
+  "Sustainable Agriculture",
+  "Ecosystem Restoration",
+  "Plastic Pollution",
 ];
 
 const InteractiveMap = () => {
