@@ -130,7 +130,7 @@ const UserProfile = () => {
       } else {
         // Clear localStorage and redirect to login
         localStorage.removeItem("token");
-        navigate("/login");
+        navigate("/");
       }
     } catch (err) {
       setError("Failed to delete account. Please try again.", err);
