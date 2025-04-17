@@ -228,7 +228,7 @@ const Navbar = () => {
                 <a
                   href={link.path}
                   onClick={(e) => handleProtectedNavigation(e, link.path)}
-                  className="text-slate-300 hover:text-white text-[13px] xl:text-sm font-medium flex items-center gap-1.5"
+                  className="text-slate-300 hover:text-white text-lg xl:text-xl font-medium flex items-center gap-2"
                 >
                   <span className="text-base xl:text-lg">{link.icon}</span>
                   <span className="whitespace-nowrap">{link.name}</span>
