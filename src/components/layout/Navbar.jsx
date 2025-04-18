@@ -116,7 +116,7 @@ const Navbar = () => {
     navigate("/", { replace: true });
 
     // Force a page refresh to ensure all components recognize the auth change
-    window.location.reload();
+    // window.location.reload();
   };
 
   const navLinks = [
