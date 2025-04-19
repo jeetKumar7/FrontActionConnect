@@ -161,9 +161,9 @@ const Navbar = () => {
       <div className="max-w-[90rem] mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/">
+          <Link to="/" className="flex-shrink-0">
             <motion.div
-              className="flex items-center gap-3 shrink-0"
+              className="flex items-center gap-3"
               whileHover={{ scale: 1.03 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -220,6 +220,15 @@ const Navbar = () => {
               </div>
             </motion.div>
           </Link>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
@@ -334,104 +343,63 @@ const Navbar = () => {
               </div>
             )}
           </div>
-
-          {/* Mobile Menu Button */}
-          <motion.button
-            className="lg:hidden relative z-50 text-slate-300 hover:text-white"
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-          </motion.button>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="fixed inset-0 bg-slate-900/95 backdrop-blur-lg lg:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="h-full flex flex-col pt-24 px-6">
-              {/* Mobile Search */}
-              <div className="flex items-center bg-white/5 rounded-xl px-4 py-3 border border-white/10 mb-8">
-                <FaSearch className="text-slate-400 mr-3" />
-                <input
-                  type="text"
-                  placeholder="Search anything..."
-                  className="bg-transparent w-full text-white placeholder-slate-400 focus:outline-none"
-                />
-              </div>
-
-              {/* Mobile Navigation */}
-              <div className="space-y-6">
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="lg:hidden mt-4 pb-4"
+            >
+              <div className="flex flex-col space-y-4">
                 {navLinks.map((link) => (
-                  <motion.div key={link.name} whileHover={{ x: 4 }}>
-                    <a
-                      href={link.path}
-                      onClick={(e) => handleProtectedNavigation(e, link.path)}
-                      className="flex items-center gap-4 text-slate-300 hover:text-white text-lg font-medium"
-                    >
-                      <span className="text-2xl">{link.icon}</span>
-                      {link.name}
-                    </a>
-                  </motion.div>
+                  <motion.a
+                    key={link.name}
+                    href={link.path}
+                    onClick={(e) => handleProtectedNavigation(e, link.path)}
+                    className="flex items-center gap-2 text-slate-300 hover:text-white text-lg font-medium py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
+                    whileHover={{ x: 5 }}
+                  >
+                    <span className="text-xl">{link.icon}</span>
+                    <span>{link.name}</span>
+                  </motion.a>
                 ))}
-              </div>
-
-              {/* Mobile Auth */}
-              <div className="mt-auto pb-8 space-y-4">
                 {!isAuthenticated ? (
                   <>
                     <button
-                      onClick={() => {
-                        setIsOpen(false);
-                        setShowSignIn(true);
-                      }}
-                      className="block w-full text-center text-slate-300 hover:text-white py-3 text-lg font-medium"
+                      onClick={handleOpenSignIn}
+                      className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-lg font-medium text-center"
                     >
-                      Sign in
+                      Sign In
                     </button>
                     <button
-                      onClick={() => {
-                        setIsOpen(false);
-                        setShowSignUp(true);
-                      }}
-                      className="block w-full text-center bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-4 rounded-xl text-lg font-medium shadow-lg shadow-blue-500/20"
+                      onClick={handleOpenSignUp}
+                      className="w-full bg-white/10 text-white py-3 px-4 rounded-lg font-medium text-center"
                     >
-                      Get Started
+                      Sign Up
                     </button>
                   </>
                 ) : (
-                  <>
-                    <Link
-                      to="/profile"
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-center gap-3 text-white py-3 text-lg font-medium"
-                    >
-                      <FaUserCircle />
-                      <span>Your Profile</span>
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center justify-center gap-3 w-full bg-white/5 hover:bg-white/10 text-white py-4 rounded-xl text-lg font-medium border border-white/10"
-                    >
-                      <FaSignOutAlt />
-                      <span>Sign Out</span>
-                    </button>
-                  </>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full bg-red-500/10 text-red-400 py-3 px-4 rounded-lg font-medium text-center flex items-center justify-center gap-2"
+                  >
+                    <FaSignOutAlt />
+                    Sign Out
+                  </button>
                 )}
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Auth Modals */}
-      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
+      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} onSwitchToSignUp={handleOpenSignUp} />
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} onSwitchToSignIn={handleOpenSignIn} />
     </motion.nav>
   );
