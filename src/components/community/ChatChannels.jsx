@@ -510,6 +510,7 @@ const ChatChannels = () => {
         } else {
           // Update message in the list
           setMessages((prev) => prev.map((msg) => (msg._id === messageId ? { ...msg, content: editMessage } : msg)));
+          // Close the edit modal
           setEditingMessageId(null);
           setEditMessage("");
         }

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { FaEnvelope, FaLock, FaUser, FaGoogle, FaGithub } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaEnvelope, FaLock, FaUser, FaGoogle, FaGithub, FaCheckCircle } from "react-icons/fa";
 import Modal from "../common/Modal";
 import { login, register } from "../../services";
 
@@ -11,22 +11,20 @@ export const SignInModal = ({ isOpen, onClose }) => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    setSuccess(false);
 
     try {
       const response = await login(formData);
 
-      // Debug log
-      console.log("Login response in component:", response);
-
       if (response.error) {
         setError(response.error);
       } else {
-        // Check if we have the token and user data
         if (!response.token) {
           setError("Invalid response from server: missing token");
           return;
@@ -34,24 +32,30 @@ export const SignInModal = ({ isOpen, onClose }) => {
 
         // Store authentication data in localStorage
         localStorage.setItem("token", response.token);
-
-        // Safely access user data
         if (response.user) {
           if (response.user._id) localStorage.setItem("userId", response.user._id);
           if (response.user.name) localStorage.setItem("userName", response.user.name);
           if (response.user.email) localStorage.setItem("userEmail", response.user.email);
         }
 
-        console.log("Login successful - stored token:", response.token.substring(0, 15) + "...");
-
-        // Trigger auth state update
-        window.dispatchEvent(new Event("storage"));
-
-        // Close modal
-        onClose();
-
-        // Refresh page if needed to reset component states
-        window.location.reload();
+        // Show success state
+        setSuccess(true);
+        
+        // Wait for success animation
+        setTimeout(() => {
+          // Trigger auth state update
+          window.dispatchEvent(new Event("storage"));
+          
+          // Close modal
+          onClose();
+          
+          // Reset form and states
+          setFormData({ email: "", password: "" });
+          setSuccess(false);
+          
+          // Refresh page
+          window.location.reload();
+        }, 1500);
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -64,11 +68,29 @@ export const SignInModal = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Welcome Back">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2 rounded-lg text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-2 rounded-lg text-sm flex items-center gap-2"
+            >
+              <FaCheckCircle />
+              <span>Successfully signed in!</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="space-y-4">
           <div className="relative">
@@ -161,10 +183,12 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
@@ -180,29 +204,35 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         password: formData.password,
       });
 
-      // Log the full response to debug
-      console.log("Registration response:", response);
-
       if (response.error) {
         setError(response.error);
       } else if (response.token) {
         // Store authentication data in localStorage
         localStorage.setItem("token", response.token);
         localStorage.setItem("userId", response.user?._id);
-
-        // You can also store other user data if needed
         if (response.user?.name) {
           localStorage.setItem("userName", response.user.name);
         }
 
-        console.log("Registration successful:", response);
-
-        // Trigger a page refresh or update auth state
-        window.dispatchEvent(new Event("storage")); // This will trigger any auth listeners
-
-        onClose();
+        // Show success state
+        setSuccess(true);
+        
+        // Wait for success animation
+        setTimeout(() => {
+          // Trigger auth state update
+          window.dispatchEvent(new Event("storage"));
+          
+          // Close modal
+          onClose();
+          
+          // Reset form and states
+          setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+          setSuccess(false);
+          
+          // Refresh page
+          window.location.reload();
+        }, 1500);
       } else {
-        // Handle the case where response doesn't have expected format
         console.error("Invalid response format", response);
         setError("Unexpected response format. Please try again.");
       }
@@ -217,11 +247,29 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create Account">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2 rounded-lg text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-2 rounded-lg text-sm flex items-center gap-2"
+            >
+              <FaCheckCircle />
+              <span>Account created successfully!</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="space-y-4">
           <div className="relative">
