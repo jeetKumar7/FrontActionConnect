@@ -47,18 +47,19 @@ const Footer = () => {
               <p className="text-slate-400">Get the latest news and updates delivered to your inbox.</p>
             </div>
             <div className="w-full md:w-auto">
-              <form className="flex gap-2">
+              // Update the form in Footer.jsx
+              <form className="flex flex-col sm:flex-row gap-2 w-full">
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 md:w-64 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
+                  className="sm:flex-none px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
                 >
-                  Subscribe
+                  Subscribe <FaArrowRight className="inline ml-2" />
                 </motion.button>
               </form>
             </div>
