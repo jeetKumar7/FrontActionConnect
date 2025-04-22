@@ -29,7 +29,7 @@ const InteractiveBackground = () => {
       <motion.div
         className="absolute w-[600px] h-[600px] rounded-full"
         style={{
-          background: "radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)",
+          background: "radial-gradient(circle at center, rgba(50, 55, 199, 0.1) 0%, transparent 70%)",
           x: mousePosition.x * 100 - 300,
           y: mousePosition.y * 100 - 300,
         }}
