@@ -23,14 +23,23 @@ const InteractiveBackground = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Generate floating particles
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    size: Math.random() * 3 + 1,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    delay: Math.random() * 2,
-  }));
+  // Generate floating particles with smoother movement patterns
+  const particles = Array.from({ length: 15 }).map((_, i) => {
+    const size = Math.random() * 2 + 1;
+    const startX = Math.random() * 100;
+    const startY = Math.random() * 100;
+    const duration = 15 + Math.random() * 10; // Longer duration for smoother movement
+    const delay = Math.random() * duration;
+    
+    return {
+      id: i,
+      size,
+      startX,
+      startY,
+      duration,
+      delay,
+    };
+  });
 
   return (
     <div
@@ -51,25 +60,39 @@ const InteractiveBackground = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_24px]" />
       </motion.div>
 
-      {/* Floating particles */}
+      {/* Floating particles with smoother animations */}
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
-          className="absolute rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20"
+          className="absolute rounded-full bg-gradient-to-r from-blue-400/10 to-purple-400/10"
           style={{
             width: particle.size,
             height: particle.size,
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
+            left: `${particle.startX}%`,
+            top: `${particle.startY}%`,
           }}
           animate={{
-            y: [0, -20, 0],
-            opacity: [0.5, 1, 0.5],
+            x: [
+              `${particle.startX}%`,
+              `${(particle.startX + 20) % 100}%`,
+              `${(particle.startX - 10) % 100}%`,
+              `${particle.startX}%`,
+            ],
+            y: [
+              `${particle.startY}%`,
+              `${(particle.startY + 15) % 100}%`,
+              `${(particle.startY - 5) % 100}%`,
+              `${particle.startY}%`,
+            ],
+            opacity: [0.3, 0.6, 0.3],
+            scale: [1, 1.2, 1],
           }}
           transition={{
-            duration: 3 + particle.delay,
+            duration: particle.duration,
             repeat: Infinity,
             ease: "easeInOut",
+            delay: particle.delay,
+            times: [0, 0.5, 0.8, 1],
           }}
         />
       ))}
