@@ -167,19 +167,99 @@ export default function HeroSection() {
             ].map((stat, index) => (
               <motion.div
                 key={index}
-                className={`flex flex-col items-center p-5 sm:p-6 md:p-8 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 group`}
+                className={`relative flex flex-col items-center p-5 sm:p-6 md:p-8 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 overflow-hidden group`}
                 whileHover={{ y: -5 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 + index * 0.1, duration: 0.8, ease: "easeOut" }}
               >
-                <stat.icon className={`text-3xl md:text-4xl text-${stat.color}-400 mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`} />
-                <span className={`font-bold text-2xl md:text-3xl text-${stat.color}-400 mb-1 md:mb-2 group-hover:scale-105 transition-transform duration-300`}>
-                  {stat.value}
-                </span>
-                <span className="text-slate-300 text-sm md:text-base text-center group-hover:text-white transition-colors duration-300">
-                  {stat.label}
-                </span>
+                {/* Floating animation background */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"
+                  animate={{
+                    y: [0, -10, 0],
+                    opacity: [0.1, 0.2, 0.1],
+                  }}
+                  transition={{
+                    duration: 3 + index,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+
+                {/* Hover effect overlay */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    background: `radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)`,
+                  }}
+                />
+
+                {/* Content */}
+                <div className="relative z-10">
+                  <motion.div
+                    className={`text-3xl md:text-4xl text-${stat.color}-400 mb-3 md:mb-4`}
+                    animate={{
+                      y: [0, -5, 0],
+                      scale: [1, 1.05, 1],
+                    }}
+                    transition={{
+                      duration: 2 + index,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <stat.icon className="group-hover:scale-110 transition-transform duration-300" />
+                  </motion.div>
+                  
+                  <motion.span
+                    className={`font-bold text-2xl md:text-3xl text-${stat.color}-400 mb-1 md:mb-2`}
+                    animate={{
+                      scale: [1, 1.05, 1],
+                    }}
+                    transition={{
+                      duration: 2 + index,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    {stat.value}
+                  </motion.span>
+                  
+                  <motion.span
+                    className="text-slate-300 text-sm md:text-base text-center group-hover:text-white transition-colors duration-300"
+                    animate={{
+                      opacity: [0.8, 1, 0.8],
+                    }}
+                    transition={{
+                      duration: 2 + index,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    {stat.label}
+                  </motion.span>
+                </div>
+
+                {/* Glow effect */}
+                <motion.div
+                  className="absolute inset-0 rounded-2xl"
+                  style={{
+                    boxShadow: `0 0 20px rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'purple' ? '147, 51, 234' : '236, 72, 153'}, 0.2)`,
+                  }}
+                  animate={{
+                    boxShadow: [
+                      `0 0 20px rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'purple' ? '147, 51, 234' : '236, 72, 153'}, 0.2)`,
+                      `0 0 30px rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'purple' ? '147, 51, 234' : '236, 72, 153'}, 0.3)`,
+                      `0 0 20px rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'purple' ? '147, 51, 234' : '236, 72, 153'}, 0.2)`,
+                    ],
+                  }}
+                  transition={{
+                    duration: 2 + index,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
               </motion.div>
             ))}
           </motion.div>
