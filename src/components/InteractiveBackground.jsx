@@ -8,8 +8,8 @@ const InteractiveBackground = () => {
   useEffect(() => {
     const handleMouseMove = (e) => {
       const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
       setMousePosition({ x, y });
     };
 
@@ -27,16 +27,15 @@ const InteractiveBackground = () => {
 
       {/* Mouse-following glow effect */}
       <motion.div
-        className="absolute w-[300px] h-[300px] rounded-full"
+        className="absolute w-[800px] h-[800px] rounded-full"
         style={{
-          background: "radial-gradient(circle at center, rgba(50, 55, 199, 0.5) 0%, transparent 70%)",
-          left: mousePosition.x - 150,
-          top: mousePosition.y - 150,
-          transform: "translate(-50%, -50%)",
+          background: "radial-gradient(circle at center, rgba(50, 55, 199, 0.3) 0%, transparent 70%)",
+          x: mousePosition.x * 100 - 400,
+          y: mousePosition.y * 100 - 400,
         }}
         animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3],
+          opacity: [0.2, 0.4, 0.2],
         }}
         transition={{
           duration: 2,
@@ -45,18 +44,17 @@ const InteractiveBackground = () => {
         }}
       />
 
-      {/* Secondary glow effect */}
+      {/* Secondary glow effect for more depth */}
       <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full blur-3xl"
+        className="absolute w-[600px] h-[600px] rounded-full blur-3xl"
         style={{
-          background: "radial-gradient(circle at center, rgba(50, 55, 199, 0.3) 0%, transparent 70%)",
-          left: mousePosition.x - 250,
-          top: mousePosition.y - 250,
-          transform: "translate(-50%, -50%)",
+          background: "radial-gradient(circle at center, rgba(50, 55, 199, 0.2) 0%, transparent 70%)",
+          x: mousePosition.x * 100 - 300,
+          y: mousePosition.y * 100 - 300,
         }}
         animate={{
           scale: [1, 1.1, 1],
-          opacity: [0.2, 0.4, 0.2],
+          opacity: [0.1, 0.3, 0.1],
         }}
         transition={{
           duration: 3,
