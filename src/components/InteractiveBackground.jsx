@@ -27,13 +27,40 @@ const InteractiveBackground = () => {
 
       {/* Mouse-following glow effect */}
       <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full blur-3xl opacity-20"
+        className="absolute w-[600px] h-[600px] rounded-full"
         style={{
-          background: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)",
+          background: "radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)",
+          x: mousePosition.x * 100 - 300,
+          y: mousePosition.y * 100 - 300,
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      {/* Secondary glow effect for more depth */}
+      <motion.div
+        className="absolute w-[400px] h-[400px] rounded-full blur-3xl"
+        style={{
+          background: "radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%)",
           x: mousePosition.x * 100 - 200,
           y: mousePosition.y * 100 - 200,
         }}
-        transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.05, 0.15, 0.05],
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
 
       {/* Subtle gradient overlay */}
