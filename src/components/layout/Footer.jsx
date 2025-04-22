@@ -47,7 +47,6 @@ const Footer = () => {
               <p className="text-slate-400">Get the latest news and updates delivered to your inbox.</p>
             </div>
             <div className="w-full md:w-auto">
-              // Update the form in Footer.jsx
               <form className="flex flex-col sm:flex-row gap-2 w-full">
                 <input
                   type="email"
