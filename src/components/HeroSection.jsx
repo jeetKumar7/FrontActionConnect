@@ -30,7 +30,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8 bg-gradient-to-b from-slate-900 to-slate-800">
+    <section className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8 animated-gradient">
       {/* Hero content */}
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col justify-center min-h-[calc(100vh-80px)] py-16 md:py-24">
         {/* Tagline Section */}
