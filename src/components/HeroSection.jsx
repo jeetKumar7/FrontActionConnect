@@ -8,6 +8,7 @@ export default function HeroSection() {
   const [showSignUp, setShowSignUp] = useState(false);
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Check for authentication
   useEffect(() => {
@@ -21,6 +22,18 @@ export default function HeroSection() {
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: e.clientX / window.innerWidth,
+        y: e.clientY / window.innerHeight,
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   const handleGetStarted = () => {
     if (isAuthenticated) {
       navigate("/passion");
@@ -31,6 +44,30 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8 animated-gradient">
+      {/* Background elements */}
+      <div className="absolute inset-0 z-0">
+        {/* Grid overlay */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
+
+        {/* Noise texture */}
+        <div className="absolute inset-0 noise-texture opacity-[0.03]"></div>
+
+        {/* Animated glow */}
+        <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] rounded-full bg-blue-500/10 blur-[100px] animate-pulse-slow"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[40vw] h-[40vw] rounded-full bg-purple-500/10 blur-[100px] animate-pulse-slower"></div>
+
+        <div
+          className="absolute w-[600px] h-[600px] rounded-full blur-[80px] opacity-10 pointer-events-none"
+          style={{
+            background: "radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)",
+            transform: `translate(${mousePosition.x * window.innerWidth - 300}px, ${
+              mousePosition.y * window.innerHeight - 300
+            }px)`,
+            transition: "transform 0.3s ease-out",
+          }}
+        />
+      </div>
+
       {/* Hero content */}
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col justify-center min-h-[calc(100vh-80px)] py-16 md:py-24">
         {/* Tagline Section */}
