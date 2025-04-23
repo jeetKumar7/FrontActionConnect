@@ -1,24 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaRocket, FaUsers, FaLightbulb } from "react-icons/fa";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { SignUpModal } from "./auth/AuthModals";
-import InteractiveBackground from "./InteractiveBackground";
 
 export default function HeroSection() {
   const [showSignUp, setShowSignUp] = useState(false);
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  // Enhanced parallax effects
-  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
 
   // Check for authentication
   useEffect(() => {
@@ -41,14 +30,9 @@ export default function HeroSection() {
   };
 
   return (
-    <section ref={containerRef} className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8">
-      <InteractiveBackground />
-
+    <section className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8 bg-gradient-to-b from-slate-900 to-slate-800">
       {/* Hero content */}
-      <motion.div
-        className="relative z-10 max-w-5xl mx-auto flex flex-col justify-center min-h-[calc(100vh-80px)] py-16 md:py-24"
-        style={{ y, opacity, scale }}
-      >
+      <div className="relative z-10 max-w-5xl mx-auto flex flex-col justify-center min-h-[calc(100vh-80px)] py-16 md:py-24">
         {/* Tagline Section */}
         <div className="flex-1 flex items-center justify-center my-8 md:my-12">
           <div className="text-center">
@@ -228,7 +212,7 @@ export default function HeroSection() {
             ))}
           </motion.div>
         </div>
-      </motion.div>
+      </div>
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} />
     </section>
   );
