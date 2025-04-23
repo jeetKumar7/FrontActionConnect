@@ -15,8 +15,6 @@ import InteractiveMap from "./pages/InteractiveMap";
 import LearnMore from "./pages/LearnMore";
 import UserProfile from "./components/user/UserProfile";
 import AuthCallback from "./components/auth/AuthCallback";
-import LoadingAnimation from './components/common/LoadingAnimation';
-import { Suspense } from 'react';
 
 // const Home = () => <div className="p-6">Home Page</div>;
 const Library = () => <div className="p-6">Content Library</div>;
@@ -38,26 +36,22 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen flex flex-col">
+      <div>
         <Navbar />
-        <main className="flex-grow">
-          <Suspense fallback={<LoadingAnimation fullScreen size="lg" />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/library" element={<ContentLibrary />} />
-              <Route path="/community/*" element={<Community />} />
-              <Route path="/hub" element={<ActionHub />} />
-              <Route path="/chat" element={<ChatChannels />} />
-              <Route path="/feed" element={<CommunityFeed />} />
-              <Route path="/events" element={<UpcomingEvents />} />
-              <Route path="/passion" element={<FindPassion />} />
-              <Route path="/map" element={<InteractiveMap />} />
-              <Route path="/learn-more" element={<LearnMore />} />
-              <Route path="/profile" element={<UserProfile />} />
-              <Route path="/auth-success" element={<AuthCallback />} />
-            </Routes>
-          </Suspense>
-        </main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/library" element={<ContentLibrary />} />
+          <Route path="/community/*" element={<Community />} />
+          <Route path="/hub" element={<ActionHub />} />
+          <Route path="/chat" element={<ChatChannels />} />
+          <Route path="/feed" element={<CommunityFeed />} />
+          <Route path="/events" element={<UpcomingEvents />} />
+          <Route path="/passion" element={<FindPassion />} />
+          <Route path="/map" element={<InteractiveMap />} />
+          <Route path="/learn-more" element={<LearnMore />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/auth-success" element={<AuthCallback />} />
+        </Routes>
         <Footer />
       </div>
     </QueryClientProvider>
