@@ -15,9 +15,10 @@ export default function HeroSection() {
     offset: ["start start", "end start"],
   });
 
-  // Parallax effects
-  const y = useTransform(scrollYProgress, [0, 1], [0, 100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  // Enhanced parallax effects
+  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
 
   // Check for authentication
   useEffect(() => {
@@ -40,70 +41,77 @@ export default function HeroSection() {
   };
 
   return (
-    <section 
-      ref={containerRef}
-      className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-    >
+    <section ref={containerRef} className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8">
       <InteractiveBackground />
 
       {/* Hero content */}
       <motion.div
-        className="relative z-10 max-w-5xl mx-auto flex flex-col min-h-[calc(100vh-80px)] py-16 md:py-24"
-        style={{ y, opacity }}
+        className="relative z-10 max-w-5xl mx-auto flex flex-col justify-center min-h-[calc(100vh-80px)] py-16 md:py-24"
+        style={{ y, opacity, scale }}
       >
         {/* Tagline Section */}
         <div className="flex-1 flex items-center justify-center my-8 md:my-12">
           <div className="text-center">
-            <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight"
-              initial={{ opacity: 0, y: 20 }}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1.0] }}
             >
-              Turn Your Passion Into
-              <motion.div
-                className="mt-2 md:mt-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-              >
-                <span className="relative inline-block">
-                  <motion.span 
-                    className="absolute -inset-1 blur-2xl bg-gradient-to-r from-blue-600/30 to-purple-600/30"
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
+                Turn Your Passion Into
+                <div className="mt-2 md:mt-4">
+                  <motion.div
+                    className="relative inline-block"
                     animate={{
-                      opacity: [0.3, 0.6, 0.3],
+                      filter: [
+                        "drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))",
+                        "drop-shadow(0 0 25px rgba(168, 85, 247, 0.4))",
+                        "drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))",
+                      ],
                     }}
                     transition={{
-                      duration: 3,
+                      duration: 4,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                  />
-                  <motion.span 
-                    className="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"
-                    animate={{
-                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                    }}
-                    transition={{
-                      duration: 5,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    style={{
-                      backgroundSize: "200% 200%",
-                    }}
                   >
-                    Meaningful Change
-                  </motion.span>
-                </span>
-              </motion.div>
-            </motion.h1>
+                    <motion.span
+                      className="absolute -inset-1 rounded-lg blur-2xl bg-gradient-to-r from-blue-600/30 to-purple-600/30"
+                      animate={{
+                        opacity: [0.3, 0.6, 0.3],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    />
+                    <motion.span
+                      className="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"
+                      animate={{
+                        backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      style={{
+                        backgroundSize: "200% 200%",
+                      }}
+                    >
+                      Meaningful Change
+                    </motion.span>
+                  </motion.div>
+                </div>
+              </h1>
+            </motion.div>
 
             <motion.p
-              className="mt-6 md:mt-8 max-w-xl mx-auto text-base md:text-lg text-slate-400 leading-relaxed px-4"
+              className="mt-6 md:mt-8 max-w-xl mx-auto text-base md:text-lg text-slate-300 leading-relaxed px-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
             >
               ActionConnect helps you discover social causes, connect with like-minded individuals and provides
               resources to take meaningful action.
@@ -118,34 +126,40 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+            transition={{ delay: 0.6, duration: 0.8 }}
           >
             <motion.button
               onClick={handleGetStarted}
-              className="group relative w-full sm:w-auto bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-purple-600 transform hover:-translate-y-1 overflow-hidden"
-              whileHover={{ scale: 1.05 }}
+              className="group relative w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-purple-500/30 overflow-hidden"
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 15px 30px -10px rgba(59, 130, 246, 0.4)",
+              }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="relative z-10">{isAuthenticated ? "Find Your Passion →" : "Get Started Now →"}</span>
               <motion.span
-                className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  backgroundSize: "200% 200%",
-                }}
+                className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"
                 animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                  x: ["-100%", "100%"],
+                  opacity: [0, 0.5, 0],
                 }}
                 transition={{
                   duration: 3,
                   repeat: Infinity,
-                  ease: "linear",
+                  ease: "easeInOut",
+                  repeatDelay: 1,
                 }}
               />
+              <span className="relative z-10">{isAuthenticated ? "Find Your Passion →" : "Get Started Now →"}</span>
             </motion.button>
+
             <Link to="/learn-more">
               <motion.button
-                className="group relative w-full sm:w-auto mt-3 sm:mt-0 bg-white/10 backdrop-blur-sm text-white border border-white/20 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl hover:bg-white/20 transition-all duration-300 ease-in-out"
-                whileHover={{ scale: 1.05 }}
+                className="group relative w-full sm:w-auto mt-3 sm:mt-0 bg-white/5 backdrop-blur-sm text-white border border-white/20 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl hover:bg-white/10 transition-all duration-300"
+                whileHover={{
+                  scale: 1.05,
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                }}
                 whileTap={{ scale: 0.95 }}
               >
                 <span className="relative z-10">Learn More</span>
@@ -153,12 +167,16 @@ export default function HeroSection() {
             </Link>
           </motion.div>
 
-          {/* Stats Section */}
+          {/* Enhanced Stats Section */}
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 lg:gap-8 w-full max-w-4xl mx-auto px-4 sm:px-0"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+            transition={{
+              delay: 0.8,
+              duration: 0.8,
+              staggerChildren: 0.1,
+            }}
           >
             {[
               { icon: FaUsers, value: "10k+", label: "Causes Discovered", color: "blue" },
@@ -167,14 +185,40 @@ export default function HeroSection() {
             ].map((stat, index) => (
               <motion.div
                 key={index}
-                className={`flex flex-col items-center p-5 sm:p-6 md:p-8 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 group`}
-                whileHover={{ y: -5 }}
+                className="relative overflow-hidden flex flex-col items-center p-5 sm:p-6 md:p-8 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 group"
+                whileHover={{
+                  y: -5,
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                  transition: { duration: 0.3 },
+                }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + index * 0.1, duration: 0.8, ease: "easeOut" }}
+                transition={{ delay: 0.9 + index * 0.15, duration: 0.6 }}
               >
-                <stat.icon className={`text-3xl md:text-4xl text-${stat.color}-400 mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`} />
-                <span className={`font-bold text-2xl md:text-3xl text-${stat.color}-400 mb-1 md:mb-2 group-hover:scale-105 transition-transform duration-300`}>
+                {/* Shimmering effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                  style={{ skewX: "-20deg" }}
+                  animate={{
+                    x: ["-100%", "100%"],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatDelay: 1,
+                    delay: index * 0.5,
+                  }}
+                />
+
+                <motion.div
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <stat.icon className={`text-3xl md:text-4xl text-${stat.color}-400 mb-3 md:mb-4`} />
+                </motion.div>
+
+                <span className={`font-bold text-2xl md:text-3xl text-${stat.color}-400 mb-1 md:mb-2`}>
                   {stat.value}
                 </span>
                 <span className="text-slate-300 text-sm md:text-base text-center group-hover:text-white transition-colors duration-300">
