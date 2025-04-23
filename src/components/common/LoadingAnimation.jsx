@@ -1,11 +1,6 @@
 import { motion } from "framer-motion";
-import { useEffect } from "react";
 
 const LoadingAnimation = ({ size = "md", fullScreen = false }) => {
-  useEffect(() => {
-    console.log("LoadingAnimation mounted", { size, fullScreen });
-  }, [size, fullScreen]);
-
   const sizeClasses = {
     sm: "w-6 h-6",
     md: "w-12 h-12",
@@ -14,7 +9,7 @@ const LoadingAnimation = ({ size = "md", fullScreen = false }) => {
 
   const containerStyle = fullScreen
     ? "fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50"
-    : "flex items-center justify-center w-full h-full";
+    : "flex items-center justify-center";
 
   return (
     <div className={containerStyle}>
@@ -27,7 +22,7 @@ const LoadingAnimation = ({ size = "md", fullScreen = false }) => {
       >
         {/* Outer ring */}
         <motion.div
-          className="absolute inset-0 border-4 border-blue-500/20 rounded-full"
+          className="absolute inset-0 border-4 border-primary/20 rounded-full"
           animate={{
             rotate: 360,
           }}
@@ -40,7 +35,7 @@ const LoadingAnimation = ({ size = "md", fullScreen = false }) => {
 
         {/* Inner ring */}
         <motion.div
-          className="absolute inset-2 border-4 border-blue-500 rounded-full"
+          className="absolute inset-2 border-4 border-primary rounded-full"
           animate={{
             rotate: -360,
           }}
@@ -53,7 +48,7 @@ const LoadingAnimation = ({ size = "md", fullScreen = false }) => {
 
         {/* Center dot */}
         <motion.div
-          className="absolute inset-4 bg-blue-500 rounded-full"
+          className="absolute inset-4 bg-primary rounded-full"
           animate={{
             scale: [1, 1.2, 1],
           }}
