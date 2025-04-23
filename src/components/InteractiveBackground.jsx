@@ -6,10 +6,12 @@ const InteractiveBackground = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
   const { scrollY } = useScroll();
 
-  // Enhanced parallax effects
+  // Parallax effect without opacity changes
   const backgroundY = useTransform(scrollY, [0, 1000], [0, -100]);
-  const backgroundOpacity = useTransform(scrollY, [0, 300], [1, 0.7]);
-  const gridOpacity = useTransform(scrollY, [0, 500], [0.07, 0.03]);
+
+  // Fixed opacity values instead of scroll-dependent ones
+  const backgroundOpacity = 1; // Constant full opacity
+  const gridOpacity = 0.07; // Constant grid opacity
 
   // Generate particles for the background
   const particles = useMemo(
@@ -55,7 +57,7 @@ const InteractiveBackground = () => {
 
   return (
     <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Deep space gradient background */}
+      {/* Deep space gradient background with fixed opacity */}
       <motion.div
         className="absolute inset-0"
         style={{
@@ -65,19 +67,19 @@ const InteractiveBackground = () => {
         }}
       />
 
-      {/* Animated grid pattern */}
+      {/* Animated grid pattern with fixed opacity */}
       <motion.div
         className="absolute inset-0"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
-          y: useTransform(scrollY, [0, 500], [0, -50]),
+          y: useTransform(scrollY, [0, 500], [0, -50]), // Keep parallax movement
           opacity: gridOpacity,
         }}
       />
 
-      {/* Particles with glow */}
+      {/* Particles with glow - unchanged */}
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
@@ -92,7 +94,7 @@ const InteractiveBackground = () => {
           animate={{
             x: [`${particle.x}%`, `${particle.x + (Math.random() * 10 - 5)}%`, `${particle.x}%`],
             y: [`${particle.y}%`, `${particle.y + (Math.random() * 10 - 5)}%`, `${particle.y}%`],
-            opacity: [0.1, 0.7, 0.1],
+            opacity: [0.1, 0.7, 0.1], // Keeping this animation as it's not scroll-based
           }}
           transition={{
             duration: particle.duration,
@@ -163,7 +165,7 @@ const InteractiveBackground = () => {
             }}
             animate={{
               x: ["0%", "130%"],
-              opacity: [0, 0.8, 0],
+              opacity: [0, 0.8, 0], // Keeping this animation as it's part of the effect
             }}
             transition={{
               duration: Math.random() * 10 + 15,
@@ -175,10 +177,10 @@ const InteractiveBackground = () => {
         ))}
       </div>
 
-      {/* Depth overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
+      {/* Modified depth overlay gradient - no transparency change on scroll */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/30 to-transparent" />
 
-      {/* Vignette effect */}
+      {/* Vignette effect - unchanged */}
       <div
         className="absolute inset-0 bg-radial-gradient pointer-events-none"
         style={{
