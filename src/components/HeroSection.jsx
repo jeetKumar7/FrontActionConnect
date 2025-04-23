@@ -59,7 +59,7 @@ export default function HeroSection() {
         <div
           className="absolute w-[600px] h-[600px] rounded-full blur-[80px] opacity-10 pointer-events-none"
           style={{
-            background: "radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 40%)",
             transform: `translate(${mousePosition.x * window.innerWidth - 300}px, ${
               mousePosition.y * window.innerHeight - 300
             }px)`,
