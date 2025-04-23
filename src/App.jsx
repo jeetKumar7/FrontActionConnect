@@ -4,7 +4,7 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./pages/Home";
 import ContentLibrary from "./pages/ContentLibrary";
 import Footer from "./components/layout/Footer";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useIsFetching } from "@tanstack/react-query";
 import Community from "./pages/Community";
 import CommunityFeed from "./components/community/CommunityFeed";
 import ChatChannels from "./components/community/ChatChannels";
@@ -18,13 +18,6 @@ import AuthCallback from "./components/auth/AuthCallback";
 import LoadingAnimation from './components/common/LoadingAnimation';
 import { Suspense } from 'react';
 
-// const Home = () => <div className="p-6">Home Page</div>;
-const Library = () => <div className="p-6">Content Library</div>;
-const Hub = () => <div className="p-6">Action Hub</div>;
-const Map = () => <div className="p-6">Map Page</div>;
-const Chat = () => <div className="p-6">Community Chat</div>;
-const Feed = () => <div className="p-6">Community Feed</div>;
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -35,31 +28,40 @@ const queryClient = new QueryClient({
   },
 });
 
+function AppContent() {
+  const isFetching = useIsFetching();
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      {isFetching > 0 && <LoadingAnimation size="sm" />}
+      <main className="flex-grow">
+        <Suspense fallback={<LoadingAnimation fullScreen size="lg" />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/library" element={<ContentLibrary />} />
+            <Route path="/community/*" element={<Community />} />
+            <Route path="/hub" element={<ActionHub />} />
+            <Route path="/chat" element={<ChatChannels />} />
+            <Route path="/feed" element={<CommunityFeed />} />
+            <Route path="/events" element={<UpcomingEvents />} />
+            <Route path="/passion" element={<FindPassion />} />
+            <Route path="/map" element={<InteractiveMap />} />
+            <Route path="/learn-more" element={<LearnMore />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/auth-success" element={<AuthCallback />} />
+          </Routes>
+        </Suspense>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow">
-          <Suspense fallback={<LoadingAnimation fullScreen size="lg" />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/library" element={<ContentLibrary />} />
-              <Route path="/community/*" element={<Community />} />
-              <Route path="/hub" element={<ActionHub />} />
-              <Route path="/chat" element={<ChatChannels />} />
-              <Route path="/feed" element={<CommunityFeed />} />
-              <Route path="/events" element={<UpcomingEvents />} />
-              <Route path="/passion" element={<FindPassion />} />
-              <Route path="/map" element={<InteractiveMap />} />
-              <Route path="/learn-more" element={<LearnMore />} />
-              <Route path="/profile" element={<UserProfile />} />
-              <Route path="/auth-success" element={<AuthCallback />} />
-            </Routes>
-          </Suspense>
-        </main>
-        <Footer />
-      </div>
+      <AppContent />
     </QueryClientProvider>
   );
 }
