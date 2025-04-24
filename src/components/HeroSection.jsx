@@ -110,7 +110,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 z-0 overflow-hidden">
           {!isMobile && (
             <video className="absolute w-full h-full object-cover opacity-90" autoPlay muted loop playsInline>
-              <source src="/actionbg.mp4" type="video/mp4" />
+              <source src="/actionbg_1.mp4" type="video/mp4" />
             </video>
           )}
           {/* Gradient overlay for better text visibility */}
