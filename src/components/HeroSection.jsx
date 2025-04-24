@@ -114,7 +114,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <div className="inline-block px-4 py-1 rounded-full bg-green-400/10 border border-green-400/20 mb-6">
-              <span className="text-green-300 text-sm font-medium">Our Environmental Mission</span>
+              <span className="text-green-300 text-sm font-medium">Our Mission</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
@@ -123,7 +123,7 @@ export default function HeroSection() {
 
             <p className="mt-6 text-lg text-gray-200/90 leading-relaxed max-w-lg">
               We bring together passionate individuals, actionable ideas, and sustainable solutions that deepen
-              environmental awareness and transform shared vision into collective impact.
+              awareness and transform shared vision into collective impact.
             </p>
 
             {/* CTA buttons with new design */}
