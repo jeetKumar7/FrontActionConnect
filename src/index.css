@@ -96,3 +96,37 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* New animation classes for the redesigned hero */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes reverse-spin {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 60s linear infinite;
+}
+
+.animate-reverse-spin {
+  animation: reverse-spin 30s linear infinite;
+}
+
+/* Create earth texture placeholder - replace with actual texture */
+@supports not (background: url("../public/earth_texture.png")) {
+  .earth-fallback {
+    background: radial-gradient(circle at center, rgba(16, 185, 129, 0.5) 0%, rgba(6, 95, 70, 0.3) 100%);
+  }
+}
