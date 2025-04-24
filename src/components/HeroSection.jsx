@@ -19,6 +19,7 @@ export default function HeroSection() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -92,6 +93,12 @@ export default function HeroSection() {
 
   const nodes = generateNodes(12);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -99,7 +106,18 @@ export default function HeroSection() {
     >
       {/* Professional background elements */}
       <div className="absolute inset-0 z-0">
-        {/* Grid pattern */}
+        {/* Background video */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {!isMobile && (
+            <video className="absolute w-full h-full object-cover opacity-20" autoPlay muted loop playsInline>
+              <source src="/actionbg.mp4" type="video/mp4" />
+            </video>
+          )}
+          {/* Gradient overlay for better text visibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/80 to-indigo-950/80"></div>
+        </div>
+
+        {/* Grid pattern - keep existing elements */}
         <motion.div
           className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"
           style={{ y: backgroundY }}
