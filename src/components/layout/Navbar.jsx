@@ -224,7 +224,7 @@ const Navbar = () => {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Updated for all caps and single line */}
           <div className="hidden lg:flex items-center">
             <div className="flex items-center">
               {navLinks.map((link) => (
@@ -239,7 +239,7 @@ const Navbar = () => {
                         handleProtectedNavigation(e, link.path);
                       }
                     }}
-                    className="flex items-center text-left w-full text-slate-200 hover:text-white text-sm font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                    className="flex items-center text-left w-full text-slate-200 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
                   >
                     <span>{link.name}</span>
                   </Link>
@@ -347,7 +347,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu - Updated text styling */}
+        {/* Mobile Menu - Updated for all caps and single line */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -370,7 +370,7 @@ const Navbar = () => {
                           handleProtectedNavigation(e, link.path);
                         }
                       }}
-                      className="flex items-center text-left w-full text-slate-200 hover:text-white text-sm font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                      className="flex items-center text-left w-full text-slate-200 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
                     >
                       <span>{link.name}</span>
                     </Link>
