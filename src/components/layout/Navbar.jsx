@@ -229,9 +229,8 @@ const Navbar = () => {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Enhanced text styling */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center">
-            {/* Main Navigation */}
             <div className="flex items-center">
               {navLinks.map((link) => (
                 <motion.div key={link.name} whileHover={{ y: -2 }} className="relative mx-2 group">
@@ -241,7 +240,7 @@ const Navbar = () => {
                       // Only prevent default for protected routes
                       const requiresAuth = ["/passion", "/community", "/map"];
                       if (requiresAuth.includes(link.path) && !isAuthenticated) {
-                        e.preventDefault();
+                        e.preventDefault(); // Prevent navigation for protected routes
                         handleProtectedNavigation(e, link.path);
                       }
                     }}
