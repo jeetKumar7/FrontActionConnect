@@ -47,7 +47,7 @@ const Navbar = () => {
     console.log("Navigation requested to:", path);
 
     // Define routes requiring authentication
-    const requiresAuth = ["/passion", "/community", "/map"];
+    const requiresAuth = [];
 
     if (requiresAuth.includes(path) && !isAuthenticated) {
       console.log("Auth required for:", path);
