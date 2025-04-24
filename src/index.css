@@ -73,22 +73,23 @@ body,
   background-size: 200px 200px;
 }
 
-/* Professional scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
+/* Custom scrollbar for causes showcase */
+.causes-scrollbar::-webkit-scrollbar {
+  width: 3px;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+.causes-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.12);
+.causes-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.causes-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* Enhance the font rendering */

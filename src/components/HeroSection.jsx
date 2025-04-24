@@ -211,138 +211,140 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Network visualization - updated with visible content */}
+        {/* Right: Cause Showcase - completely redesigned */}
         <motion.div className="hidden lg:block w-full lg:w-1/2 lg:pl-8 relative" style={{ y: imageY }}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-            className="relative h-[500px] w-[500px] mx-auto"
+            className="relative h-[500px] w-full max-w-[500px] mx-auto"
           >
-            {/* Enhanced Network visualization */}
-            <div className="absolute inset-0 rounded-full border-[12px] border-indigo-500/10 animate-spin-slow"></div>
-            <div className="absolute inset-[30px] rounded-full border-[1px] border-indigo-400/20 animate-reverse-spin"></div>
-
-            {/* Fill the blank space with a gradient background */}
-            <div className="absolute inset-[60px] rounded-full bg-gradient-to-br from-indigo-600/20 via-violet-500/10 to-purple-800/20 backdrop-blur-sm shadow-2xl">
-              {/* Add visible pattern with improved visibility */}
+            {/* Gradient background */}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-900/30 via-violet-900/20 to-purple-900/30 backdrop-blur-sm shadow-2xl border border-indigo-500/10 overflow-hidden">
+              {/* Subtle grid pattern */}
               <div
-                className="absolute inset-0 rounded-full opacity-30 mix-blend-overlay"
+                className="absolute inset-0 opacity-10"
                 style={{
-                  background: `
-                    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-                    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-                    radial-gradient(circle at 35% 65%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-                    radial-gradient(circle at 65% 35%, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
-                  `,
-                  backgroundSize: "40px 40px",
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+                  backgroundSize: "20px 20px",
                 }}
               ></div>
 
-              {/* Dynamic hub visualization instead of just "AC" */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <motion.div
-                  className="relative w-40 h-40"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
-                >
-                  {/* Cause icons arranged in a circle */}
-                  {[...Array(6)].map((_, i) => {
-                    const angle = (i / 6) * Math.PI * 2;
-                    const x = Math.cos(angle) * 60;
-                    const y = Math.sin(angle) * 60;
-
-                    // Different cause icons
-                    const icons = [
-                      <FaHandsHelping key="hands" className="text-indigo-300" />,
-                      <FaUsers key="users" className="text-violet-300" />,
-                      <FaChartLine key="chart" className="text-purple-300" />,
-                    ];
-
-                    return (
-                      <motion.div
-                        key={i}
-                        className="absolute w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/30 to-violet-500/30 flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2"
-                        style={{
-                          left: `calc(50% + ${x}px)`,
-                          top: `calc(50% + ${y}px)`,
-                        }}
-                        animate={{
-                          scale: [1, 1.2, 1],
-                          opacity: [0.6, 1, 0.6],
-                        }}
-                        transition={{
-                          duration: 3 + i,
-                          repeat: Infinity,
-                          delay: i * 0.5,
-                          ease: "easeInOut",
-                        }}
-                      >
-                        {icons[i % 3]}
-                      </motion.div>
-                    );
-                  })}
-
-                  {/* Center hub */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-r from-indigo-600/40 to-violet-600/40 flex items-center justify-center z-10 backdrop-blur-md">
-                    <div className="text-white/80 text-lg font-medium">AC</div>
-                  </div>
-                </motion.div>
+              {/* Content title */}
+              <div className="absolute top-6 left-6 right-6">
+                <h3 className="text-xl font-medium text-white/90 mb-1">Impacting Communities Through</h3>
+                <div className="h-0.5 w-16 bg-indigo-400/60"></div>
               </div>
+
+              {/* Featured causes showcase */}
+              <div className="absolute inset-0 pt-20 px-6 pb-6 overflow-hidden">
+                <div className="h-full grid grid-cols-2 gap-4 overflow-y-auto pr-2 causes-scrollbar">
+                  {[
+                    {
+                      title: "Environmental Conservation",
+                      color: "from-emerald-500/20 to-teal-600/20",
+                      icon: "🌱",
+                      count: 1245,
+                    },
+                    { title: "Education Access", color: "from-blue-500/20 to-indigo-600/20", icon: "📚", count: 834 },
+                    { title: "Healthcare Equity", color: "from-red-500/20 to-pink-600/20", icon: "🏥", count: 967 },
+                    {
+                      title: "Poverty Alleviation",
+                      color: "from-amber-500/20 to-orange-600/20",
+                      icon: "🏠",
+                      count: 1182,
+                    },
+                    {
+                      title: "Clean Water Initiatives",
+                      color: "from-cyan-500/20 to-blue-600/20",
+                      icon: "💧",
+                      count: 756,
+                    },
+                    { title: "Social Justice", color: "from-purple-500/20 to-violet-600/20", icon: "⚖️", count: 1058 },
+                  ].map((cause, index) => (
+                    <motion.div
+                      key={index}
+                      className={`rounded-lg bg-gradient-to-br ${cause.color} backdrop-blur-sm border border-white/5 p-4 flex flex-col hover:border-white/10 transition-all duration-300 relative overflow-hidden group`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                      whileHover={{ scale: 1.03, y: -3 }}
+                    >
+                      {/* Background soft gradient */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent"
+                        initial={{ opacity: 0.3 }}
+                        whileHover={{ opacity: 0.5 }}
+                        transition={{ duration: 0.3 }}
+                      />
+
+                      <div className="flex justify-between items-start mb-3">
+                        <span className="text-2xl">{cause.icon}</span>
+                        <span className="text-xs font-medium text-white/70 bg-white/10 px-2 py-1 rounded-full">
+                          {cause.count.toLocaleString()} actions
+                        </span>
+                      </div>
+
+                      <h4 className="text-white text-base font-medium mb-2 mt-1">{cause.title}</h4>
+
+                      <div className="mt-auto flex items-center justify-between">
+                        <div className="flex -space-x-2">
+                          {[...Array(3)].map((_, i) => (
+                            <div
+                              key={i}
+                              className="w-6 h-6 rounded-full bg-indigo-500/30 border border-indigo-500/40 flex items-center justify-center text-[10px] text-white/80"
+                            >
+                              {["JD", "TK", "MR"][i]}
+                            </div>
+                          ))}
+                        </div>
+                        <motion.div
+                          className="text-indigo-300/80 text-xs flex items-center"
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          View <FaArrowDown className="rotate-[-90deg] ml-1 text-[10px]" />
+                        </motion.div>
+                      </div>
+
+                      {/* Animated indicator light */}
+                      <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full">
+                        <motion.div
+                          className="absolute inset-0 rounded-full bg-white/70"
+                          animate={{ scale: [1, 1.5, 1], opacity: [0.7, 0.2, 0.7] }}
+                          transition={{ duration: 2 + index, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Gradient overlays to indicate scrolling */}
+              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-indigo-900/80 to-transparent pointer-events-none"></div>
+              <div className="absolute top-20 left-0 right-0 h-6 bg-gradient-to-b from-indigo-900/80 to-transparent pointer-events-none"></div>
             </div>
 
-            {/* Nodes */}
-            {nodes.map((node) => (
-              <motion.div
-                key={node.index}
-                className={`absolute w-${Math.floor(node.size)} h-${Math.floor(node.size)} rounded-full bg-${
-                  node.color
-                }-400`}
-                style={{
-                  left: node.x,
-                  top: node.y,
-                  width: node.size,
-                  height: node.size,
-                }}
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.6, 1, 0.6],
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                  ease: "easeInOut",
-                }}
-              />
-            ))}
+            {/* Floating decorative elements */}
+            <motion.div
+              className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 blur-xl"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{ duration: 7, repeat: Infinity }}
+            />
 
-            {/* Connection lines */}
-            <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              {nodes.map((source, i) => (
-                <motion.line
-                  key={i}
-                  x1={source.x + source.size / 2}
-                  y1={source.y + source.size / 2}
-                  x2={nodes[(i + 3) % nodes.length].x + nodes[(i + 3) % nodes.length].size / 2}
-                  y2={nodes[(i + 3) % nodes.length].y + nodes[(i + 3) % nodes.length].size / 2}
-                  stroke={`rgba(120, 120, 255, ${0.1 + Math.random() * 0.1})`}
-                  strokeWidth="1"
-                  strokeDasharray="4,4"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{
-                    pathLength: 1,
-                    opacity: [0.3, 0.6, 0.3],
-                  }}
-                  transition={{
-                    duration: 4 + Math.random() * 2,
-                    repeat: Infinity,
-                    delay: Math.random() * 2,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </svg>
+            <motion.div
+              className="absolute -bottom-10 -left-5 w-28 h-28 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 blur-xl"
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.2, 0.4, 0.2],
+              }}
+              transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+            />
           </motion.div>
         </motion.div>
       </div>
