@@ -337,7 +337,7 @@ const FeatureShowcase = () => {
       description: "Engage in real-time discussions with topic experts and passionate advocates in dedicated channels.",
       icon: FaComments,
       color: "from-indigo-600 to-blue-500",
-      path: "/discussions",
+      path: "/community/channels",
     },
     {
       id: "personalization",
@@ -346,7 +346,7 @@ const FeatureShowcase = () => {
         "Find your passion with our interactive quiz and get matched with causes that align with your values.",
       icon: FaLightbulb,
       color: "from-green-600 to-emerald-500",
-      path: "/personalization",
+      path: "/passion",
     },
   ];
 
