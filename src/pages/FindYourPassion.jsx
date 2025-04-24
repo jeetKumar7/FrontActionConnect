@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
   FaLeaf,
   FaWater,
@@ -29,6 +29,8 @@ import {
   FaPlus,
   FaCheck,
   FaSpinner,
+  FaArrowLeft,
+  FaArrowDown,
 } from "react-icons/fa";
 import { getUserProfile, getSupportedCauses, addSupportedCause, removeSupportedCause } from "../services";
 import { causes } from "../data/causes";
@@ -65,7 +67,7 @@ const quizSections = [
   },
 ];
 
-// Questions by section
+// Questions by section - keeping the existing questions
 const questionsBySection = {
   interests: [
     {
@@ -249,11 +251,23 @@ const FindPassion = () => {
   const [matchedCauses, setMatchedCauses] = useState([]);
   const [sectionProgress, setSectionProgress] = useState({});
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   // State for supported causes
   const [supportedCauses, setSupportedCauses] = useState([]);
   const [causeActionLoading, setCauseActionLoading] = useState({});
   const [actionFeedback, setActionFeedback] = useState({ message: "", type: "" });
+
+  // Parallax scrolling effect
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -15]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.6]);
 
   const sectionColorMap = {
     red: "bg-red-500/20 text-red-400",
@@ -290,19 +304,45 @@ const FindPassion = () => {
     fetchUserData();
   }, []);
 
-  // Handle supporting a cause
-  const handleSupportCause = async (causeId, causeTitle) => {
-    // Check if already supported to toggle
-    const isAlreadySupported = supportedCauses.includes(causeId.toString());
+  // Mouse tracking with improved smoothing
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition((prev) => ({
+        x: prev.x + (e.clientX / window.innerWidth - prev.x) * 0.03,
+        y: prev.y + (e.clientY / window.innerHeight - prev.y) * 0.03,
+      }));
+    };
 
-    // Set loading for this specific cause
+    let animationFrameId;
+    const updateMousePosition = () => {
+      animationFrameId = requestAnimationFrame(updateMousePosition);
+    };
+    updateMousePosition();
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  // Check for mobile devices
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle supporting a cause - keeping existing functionality
+  const handleSupportCause = async (causeId, causeTitle) => {
+    // Existing functionality
+    const isAlreadySupported = supportedCauses.includes(causeId.toString());
     setCauseActionLoading((prev) => ({ ...prev, [causeId]: true }));
 
     try {
       let response;
 
       if (isAlreadySupported) {
-        // Remove support
         response = await removeSupportedCause(causeId.toString());
         if (!response.error) {
           setSupportedCauses(response.supportedCauses || []);
@@ -317,7 +357,6 @@ const FindPassion = () => {
           });
         }
       } else {
-        // Add support
         response = await addSupportedCause(causeId.toString());
         if (!response.error) {
           setSupportedCauses(response.supportedCauses || []);
@@ -358,8 +397,8 @@ const FindPassion = () => {
     setSectionProgress(progress);
   }, []);
 
+  // Quiz navigation and progress functionality - keeping existing behavior
   const handleStartQuiz = () => {
-    // Start with the first section
     const firstSection = quizSections[0].id;
     setCurrentSection(firstSection);
     setStep(0);
@@ -371,19 +410,11 @@ const FindPassion = () => {
     // Update progress for current section
     if (currentSection) {
       const sectionQuestions = questionsBySection[currentSection];
-
-      // Get all question IDs for the current section
       const sectionQuestionIds = sectionQuestions.map((q) => q.id);
-
-      // Count how many questions from this section have been answered
-      // Include the current answer being added
       const answeredQuestions = new Set(
         [...Object.keys(answers), questionId].filter((id) => sectionQuestionIds.includes(id))
       );
-
       const answeredCount = answeredQuestions.size;
-
-      // Calculate percentage
       const progress = Math.min(Math.round((answeredCount / sectionQuestions.length) * 100), 100);
 
       setSectionProgress((prev) => ({
@@ -464,15 +495,15 @@ const FindPassion = () => {
   };
 
   const calculateResults = () => {
-    // Calculate scores based on quiz answers
+    // Calculate scores based on quiz answers - keeping existing logic
     const causeScores = causes.map((cause) => {
-      // Start with a lower base score to allow for more differentiation
+      // Start with a base score
       let score = 20;
 
-      // Interest section matches (q1-q3)
+      // Interest section matches
       if (answers.q1) {
         const selectedInterests = Array.isArray(answers.q1) ? answers.q1 : [answers.q1];
-        // Match environmental interests with related causes
+
         if (cause.category === "environmental") {
           if (
             selectedInterests.includes("climate") &&
@@ -523,7 +554,7 @@ const FindPassion = () => {
         }
       }
 
-      // Values section (q4-q6)
+      // Values section (q4-q6) - keeping existing logic
       if (answers.q4) {
         if (answers.q4 === "future" && cause.id === "1") score += 15;
         if (answers.q4 === "biodiversity" && (cause.id === "2" || cause.id === "3")) score += 15;
@@ -531,7 +562,7 @@ const FindPassion = () => {
         if (answers.q4 === "community" && cause.id === "7") score += 15;
       }
 
-      // Actions section (q7-q9)
+      // Actions section (q7-q9) - keeping existing logic
       if (answers.q7) {
         const preferredActions = Array.isArray(answers.q7) ? answers.q7 : [answers.q7];
 
@@ -549,7 +580,7 @@ const FindPassion = () => {
         }
       }
 
-      // Scale of impact preference (q10)
+      // Scale of impact preference (q10) - keeping existing logic
       if (answers.q10) {
         if (answers.q10 === "local" && cause.tags.some((tag) => tag.toLowerCase().includes("community"))) {
           score += 10;
@@ -559,7 +590,7 @@ const FindPassion = () => {
         }
       }
 
-      // Type of change preference (q12)
+      // Type of change preference (q12) - keeping existing logic
       if (answers.q12) {
         if (answers.q12 === "direct" && cause.id === "2") score += 10; // Ocean conservation
         if (answers.q12 === "policy" && cause.id === "5") score += 10; // Climate policy
@@ -594,7 +625,7 @@ const FindPassion = () => {
                 key={index}
                 className={`w-full p-4 rounded-xl text-left transition-all flex items-center ${
                   answers[question.id] === option.value
-                    ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-2 border-blue-500"
+                    ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border-2 border-indigo-500"
                     : "bg-white/5 hover:bg-white/10 border border-white/10"
                 }`}
                 onClick={() => handleAnswer(question.id, option.value)}
@@ -605,7 +636,7 @@ const FindPassion = () => {
                   <div
                     className={`w-6 h-6 rounded-full border ${
                       answers[question.id] === option.value
-                        ? "border-blue-500 bg-blue-500 flex items-center justify-center"
+                        ? "border-indigo-500 bg-indigo-500 flex items-center justify-center"
                         : "border-white/30"
                     }`}
                   >
@@ -648,7 +679,7 @@ const FindPassion = () => {
                     key={index}
                     className={`p-4 rounded-xl text-left transition-all flex items-center ${
                       isSelected
-                        ? "bg-gradient-to-r from-blue-500/30 to-purple-500/30 border-blue-500"
+                        ? "bg-gradient-to-r from-indigo-500/30 to-purple-500/30 border-indigo-500"
                         : "bg-white/5 hover:bg-white/10"
                     } border border-white/10`}
                     onClick={() => {
@@ -690,24 +721,28 @@ const FindPassion = () => {
             <div
               className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
                 currentSection === section.id
-                  ? `bg-${section.color}-500/30 text-${section.color}-400 border-2 border-${section.color}-500`
+                  ? `bg-${section.color}-500/30 border-2 border-${section.color}-500`
                   : idx < quizSections.findIndex((s) => s.id === currentSection)
                   ? "bg-green-500/20 text-green-400"
                   : "bg-white/10 text-white/40"
               }`}
             >
-              {React.createElement(section.icon)}
+              {React.createElement(section.icon, {
+                className: currentSection === section.id ? `text-${section.color}-400` : "",
+              })}
             </div>
             <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-              <div
+              <motion.div
                 className={`h-full ${
                   currentSection === section.id
-                    ? "bg-gradient-to-r from-blue-500 to-purple-500"
+                    ? "bg-gradient-to-r from-indigo-500 to-purple-500"
                     : idx < quizSections.findIndex((s) => s.id === currentSection)
                     ? "bg-green-500"
                     : "bg-transparent"
                 }`}
-                style={{ width: `${sectionProgress[section.id] || 0}%` }}
+                initial={{ width: 0 }}
+                animate={{ width: `${sectionProgress[section.id] || 0}%` }}
+                transition={{ duration: 0.5 }}
               />
             </div>
           </div>
@@ -730,7 +765,7 @@ const FindPassion = () => {
         </div>
         <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
             initial={{ width: 0 }}
             animate={{ width: `${overallProgress}%` }}
             transition={{ duration: 0.5 }}
@@ -746,25 +781,87 @@ const FindPassion = () => {
   const LoadingQuestionIndicator = () => (
     <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm z-10 rounded-2xl">
       <div className="flex flex-col items-center">
-        <FaSpinner className="text-3xl text-blue-400 animate-spin mb-3" />
+        <FaSpinner className="text-3xl text-indigo-400 animate-spin mb-3" />
         <p className="text-white/80">Loading next question...</p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
+    <div
+      ref={sectionRef}
+      className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80 text-white pt-20"
+    >
+      {/* Background Elements */}
+      <div className="absolute inset-0 top-20 z-0">
+        {/* Background video */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {!isMobile && (
+            <video className="absolute w-full h-full object-cover opacity-90" autoPlay muted loop playsInline>
+              <source src="/actionbg.mp4" type="video/mp4" />
+            </video>
+          )}
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/80 to-indigo-950/80"></div>
+        </div>
+
+        {/* Subtle noise texture */}
+        <div className="absolute inset-0 opacity-[0.015] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]">
+          <div className="absolute inset-0 bg-noise"></div>
+        </div>
+
+        {/* Gradient accent lights */}
+        <div className="absolute -left-1/4 top-1/4 w-1/2 aspect-square rounded-full bg-indigo-900/20 blur-[120px]"></div>
+        <div className="absolute -right-1/4 bottom-1/4 w-1/2 aspect-square rounded-full bg-violet-900/20 blur-[120px]"></div>
+
+        {/* Responsive glow following cursor */}
+        <motion.div
+          className="absolute w-[600px] h-[600px] rounded-full blur-[140px] opacity-[0.07] pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(79, 70, 229, 0.2) 40%, transparent 70%)",
+            x: useTransform(() => mousePosition.x * window.innerWidth - 300),
+            y: useTransform(() => mousePosition.y * window.innerHeight - 300),
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 10,
+            damping: 50,
+            mass: 3,
+          }}
+        />
+      </div>
+
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-16 overflow-hidden">
+      <div className="relative bg-gradient-to-r from-indigo-900/70 to-purple-900/70 py-16 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:14px_24px]" />
-        <div className="relative max-w-5xl mx-auto px-4">
+        <motion.div
+          className="relative max-w-5xl mx-auto px-4"
+          style={{ y: contentY, opacity }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="max-w-3xl mx-auto text-center">
+            {/* Customized badge matching Hero style */}
+            <div className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-6">
+              <span className="text-indigo-300 text-sm font-medium">Find Your Passion</span>
+            </div>
+
             <motion.h1
               className="text-4xl md:text-5xl font-bold mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              {userName ? `${userName}, Discover Your Passion` : "Discover Your Passion"}
+              {userName ? (
+                <>
+                  {userName}, Discover Your <span className="text-indigo-400">Passion</span>
+                </>
+              ) : (
+                <>
+                  Discover Your <span className="text-indigo-400">Passion</span>
+                </>
+              )}
             </motion.h1>
             <motion.p
               className="text-xl text-white/80 mb-8"
@@ -775,22 +872,22 @@ const FindPassion = () => {
               Take our interactive quiz to find causes that align with your values and interests
             </motion.p>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 py-12">
         {/* Feedback message for cause support actions */}
         <AnimatePresence>
           {actionFeedback.message && (
             <motion.div
-              className={`fixed top-24 right-4 z-50 p-4 rounded-lg shadow-lg ${
+              className={`fixed top-24 right-4 z-50 p-4 rounded-lg shadow-lg backdrop-blur-sm text-white ${
                 actionFeedback.type === "success"
                   ? "bg-green-500/80"
                   : actionFeedback.type === "error"
                   ? "bg-red-500/80"
                   : "bg-blue-500/80"
-              } backdrop-blur-sm text-white`}
+              }`}
               initial={{ opacity: 0, y: -20, x: 20 }}
               animate={{ opacity: 1, y: 0, x: 0 }}
               exit={{ opacity: 0, y: -20, x: 20 }}
@@ -805,14 +902,14 @@ const FindPassion = () => {
           {step === -1 && !showResults && (
             <motion.div
               key="intro"
-              className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8"
+              className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
               <div className="text-center mb-8">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FaLightbulb className="text-3xl text-blue-400" />
+                <div className="w-20 h-20 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FaLightbulb className="text-3xl text-indigo-400" />
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Ready to Find Your Environmental Passion?</h2>
                 <p className="text-white/70 max-w-xl mx-auto">
@@ -824,7 +921,11 @@ const FindPassion = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 {quizSections.map((section) => (
-                  <div key={section.id} className="bg-white/5 rounded-xl p-4 flex items-start gap-4">
+                  <motion.div
+                    key={section.id}
+                    className="bg-white/5 backdrop-blur-sm rounded-xl p-4 flex items-start gap-4 border border-white/5 hover:border-indigo-500/20"
+                    whileHover={{ y: -5, borderColor: "rgba(99, 102, 241, 0.2)" }}
+                  >
                     <div className={`p-3 rounded-lg bg-${section.color}-500/20 text-${section.color}-400`}>
                       {React.createElement(section.icon)}
                     </div>
@@ -832,18 +933,31 @@ const FindPassion = () => {
                       <h3 className="font-medium mb-1">{section.title}</h3>
                       <p className="text-sm text-white/60">{section.description}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
               <div className="flex justify-center">
                 <motion.button
                   onClick={handleStartQuiz}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl text-lg font-medium hover:from-blue-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all"
+                  className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl text-lg font-medium shadow-lg hover:shadow-xl transition-all"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Start the Quiz
+                  <span className="flex items-center gap-2">
+                    Start the Quiz
+                    <motion.span
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <FaArrowRight />
+                    </motion.span>
+                  </span>
                 </motion.button>
               </div>
             </motion.div>
@@ -854,7 +968,7 @@ const FindPassion = () => {
               {isTransitioning && <LoadingQuestionIndicator />}
               <motion.div
                 key={`question-${currentSection}-${step}`}
-                className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 flex flex-col min-h-[500px]"
+                className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 flex flex-col min-h-[500px] shadow-lg"
                 initial={{ opacity: 0, x: isTransitioning ? 20 : 0 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -896,14 +1010,8 @@ const FindPassion = () => {
                     whileTap={step === 0 && currentSection === quizSections[0].id ? {} : { scale: 0.95 }}
                     disabled={step === 0 && currentSection === quizSections[0].id}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Back
+                    <FaArrowLeft className="text-sm" />
+                    <span>Back</span>
                   </motion.button>
 
                   <div className="text-sm text-white/50">
@@ -918,8 +1026,8 @@ const FindPassion = () => {
                     onClick={nextQuestion}
                     className={`px-6 py-2.5 rounded-lg flex items-center gap-2 ${
                       !answers[currentQuestion?.id] && currentQuestion?.type !== "multiple-select"
-                        ? "bg-blue-500/50 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                        ? "bg-indigo-500/50 cursor-not-allowed"
+                        : "bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
                     }`}
                     whileHover={
                       !answers[currentQuestion?.id] && currentQuestion?.type !== "multiple-select" ? {} : { x: 5 }
@@ -931,17 +1039,13 @@ const FindPassion = () => {
                     }
                     disabled={!answers[currentQuestion?.id] && currentQuestion?.type !== "multiple-select"}
                   >
-                    {step === questionsBySection[currentSection]?.length - 1 &&
-                    currentSection === quizSections[quizSections.length - 1].id
-                      ? "See Results"
-                      : "Continue"}
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <span>
+                      {step === questionsBySection[currentSection]?.length - 1 &&
+                      currentSection === quizSections[quizSections.length - 1].id
+                        ? "See Results"
+                        : "Continue"}
+                    </span>
+                    <FaArrowRight className="text-sm" />
                   </motion.button>
                 </div>
               </motion.div>
@@ -955,32 +1059,34 @@ const FindPassion = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 text-center">
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 text-center shadow-lg">
                 <motion.div
-                  className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full flex items-center justify-center"
+                  className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full flex items-center justify-center"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", delay: 0.2 }}
                 >
-                  <FaLeaf className="text-3xl text-green-400" />
+                  <FaLeaf className="text-3xl text-indigo-400" />
                 </motion.div>
                 <h2 className="text-3xl font-bold mb-2">Your Matched Causes</h2>
                 <p className="text-white/70 mb-4 max-w-xl mx-auto">
                   Based on your responses, we've identified these causes that align with your values and interests.
                 </p>
 
-                {/* Only keep Retake Quiz button */}
+                {/* Retake Quiz button */}
                 <div className="flex justify-center mb-8">
-                  <button
+                  <motion.button
                     onClick={() => {
                       setStep(-1);
                       setShowResults(false);
                       setAnswers({});
                     }}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                    className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 hover:border-white/20"
+                    whileHover={{ scale: 1.05, borderColor: "rgba(255, 255, 255, 0.2)" }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     Retake Quiz
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
@@ -993,7 +1099,7 @@ const FindPassion = () => {
                 {matchedCauses.map((cause, index) => (
                   <motion.div
                     key={cause.id}
-                    className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 h-full"
+                    className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 h-full shadow-lg"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 + 0.4 }}
@@ -1002,7 +1108,9 @@ const FindPassion = () => {
                     <div className="flex flex-col h-full">
                       <div className="flex items-start gap-4 mb-4">
                         <div
-                          className={`p-4 rounded-lg ${sectionColorMap[cause.color] || "bg-blue-500/20 text-blue-400"}`}
+                          className={`p-4 rounded-lg ${
+                            sectionColorMap[cause.color] || "bg-indigo-500/20 text-indigo-400"
+                          }`}
                         >
                           <cause.icon className="w-6 h-6" />
                         </div>
@@ -1039,7 +1147,7 @@ const FindPassion = () => {
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
                               supportedCauses.includes(cause.id.toString())
                                 ? "bg-green-500/30 text-green-400 border border-green-500/50"
-                                : "bg-white/10 hover:bg-white/20"
+                                : "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
                             }`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -1069,7 +1177,7 @@ const FindPassion = () => {
               {/* View All Supported Causes */}
               {supportedCauses.length > 0 && (
                 <motion.div
-                  className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
+                  className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 shadow-lg"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
@@ -1083,8 +1191,8 @@ const FindPassion = () => {
                       return (
                         <motion.div
                           key={causeId}
-                          className="flex items-center gap-3 p-3 bg-white/5 rounded-lg"
-                          whileHover={{ scale: 1.03 }}
+                          className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/5 hover:border-indigo-500/20"
+                          whileHover={{ scale: 1.03, borderColor: "rgba(99, 102, 241, 0.2)" }}
                         >
                           <div className={`p-2 rounded-lg bg-${cause.color}-500/20`}>
                             <cause.icon className={`w-4 h-4 text-${cause.color}-400`} />
@@ -1108,16 +1216,27 @@ const FindPassion = () => {
                 <h3 className="text-2xl font-semibold mb-4">Ready to Take Action?</h3>
                 <div className="flex flex-wrap justify-center gap-4">
                   <motion.button
-                    className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center gap-2 hover:from-blue-600 hover:to-purple-600 transition-colors"
+                    className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => (window.location.href = "/hub")}
                   >
-                    Go to Action Hub <FaArrowRight />
+                    Go to Action Hub
+                    <motion.span
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <FaArrowRight />
+                    </motion.span>
                   </motion.button>
                   <motion.button
-                    className="px-6 py-3 bg-white/10 rounded-lg flex items-center gap-2 hover:bg-white/20 transition-colors"
-                    whileHover={{ scale: 1.05 }}
+                    className="px-6 py-3 bg-white/10 rounded-lg flex items-center gap-2 border border-white/10 hover:border-white/20"
+                    whileHover={{ scale: 1.05, borderColor: "rgba(255, 255, 255, 0.2)" }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => (window.location.href = "/community")}
                   >
@@ -1129,6 +1248,31 @@ const FindPassion = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Professional scroll indicator */}
+      <motion.div
+        className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 text-xs text-indigo-300/90 py-2 px-4 rounded-full bg-indigo-900/10 backdrop-blur-sm border border-indigo-500/10 z-50"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5 }}
+        style={{ opacity: useTransform(scrollYProgress, [0, 0.05], [1, 0]) }}
+      >
+        <motion.div
+          animate={{
+            y: [0, 3, 0],
+            opacity: [0.7, 1, 0.7],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="text-indigo-400"
+        >
+          <FaArrowDown />
+        </motion.div>
+        <span>Discover Your Passion</span>
+      </motion.div>
     </div>
   );
 };
