@@ -114,16 +114,16 @@ export default function HeroSection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <div className="inline-block px-4 py-1 rounded-full bg-green-400/10 border border-green-400/20 mb-6">
-              <span className="text-green-300 text-sm font-medium">Join Our Environmental Movement</span>
+              <span className="text-green-300 text-sm font-medium">Our Environmental Mission</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
-              Drive <span className="text-green-300">Environmental</span> Action That Matters
+              Connect, <span className="text-green-300">Inspire</span>, and Catalyze Meaningful Change
             </h1>
 
             <p className="mt-6 text-lg text-gray-200/90 leading-relaxed max-w-lg">
-              Connect with like-minded individuals and organizations to create tangible impact through collaborative
-              initiatives and data-driven environmental solutions.
+              We bring together passionate individuals, actionable ideas, and sustainable solutions that deepen
+              environmental awareness and transform shared vision into collective impact.
             </p>
 
             {/* CTA buttons with new design */}
