@@ -102,10 +102,10 @@ export default function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80 pt-16"
     >
       {/* Professional background elements */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 top-16 z-0">
         {/* Background video */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           {!isMobile && (
@@ -144,8 +144,8 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* Main content layout */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-screen flex flex-col lg:flex-row items-center justify-between py-12">
+      {/* Main content layout - adjust the py-12 to pt-4 pb-12 for better spacing */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-screen flex flex-col lg:flex-row items-center justify-between pt-4 pb-12">
         {/* Left: Content section */}
         <motion.div className="w-full lg:w-1/2 lg:pr-8 mb-10 lg:mb-0 z-10" style={{ y: contentY, opacity }}>
           <motion.div
