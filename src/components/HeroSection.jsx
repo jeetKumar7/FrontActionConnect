@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { FaMapMarkerAlt, FaUsers, FaComments, FaLightbulb, FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { FaHandsHelping, FaUsers, FaChartLine, FaArrowDown } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { SignUpModal } from "./auth/AuthModals";
 
@@ -211,7 +211,7 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Interactive Feature Showcase */}
+        {/* Right: Cause Showcase - completely redesigned */}
         <motion.div className="hidden lg:block w-full lg:w-1/2 lg:pl-8 relative" style={{ y: imageY }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -219,7 +219,7 @@ export default function HeroSection() {
             transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
             className="relative h-[500px] w-full max-w-[500px] mx-auto"
           >
-            {/* Base container with fancy styling */}
+            {/* Gradient background */}
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-900/30 via-violet-900/20 to-purple-900/30 backdrop-blur-sm shadow-2xl border border-indigo-500/10 overflow-hidden">
               {/* Subtle grid pattern */}
               <div
@@ -229,18 +229,102 @@ export default function HeroSection() {
                     "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
                   backgroundSize: "20px 20px",
                 }}
-              />
+              ></div>
 
-              {/* Feature showcase header */}
-              <div className="absolute top-0 left-0 right-0 px-6 py-4 bg-gradient-to-b from-indigo-900/80 to-transparent z-10">
-                <h3 className="text-xl font-medium text-white/90">Platform Features</h3>
-                <div className="h-0.5 w-16 bg-indigo-400/60 mt-1"></div>
+              {/* Content title */}
+              <div className="absolute top-6 left-6 right-6">
+                <h3 className="text-xl font-medium text-white/90 mb-1">Impacting Communities Through</h3>
+                <div className="h-0.5 w-16 bg-indigo-400/60"></div>
               </div>
 
-              {/* Feature showcase content */}
-              <div className="absolute inset-0 pt-16 px-6 pb-16">
-                <FeatureShowcase />
+              {/* Featured causes showcase */}
+              <div className="absolute inset-0 pt-20 px-6 pb-6 overflow-hidden">
+                <div className="h-full grid grid-cols-2 gap-4 overflow-y-auto pr-2 causes-scrollbar">
+                  {[
+                    {
+                      title: "Environmental Conservation",
+                      color: "from-emerald-500/20 to-teal-600/20",
+                      icon: "🌱",
+                      count: 1245,
+                    },
+                    { title: "Education Access", color: "from-blue-500/20 to-indigo-600/20", icon: "📚", count: 834 },
+                    { title: "Healthcare Equity", color: "from-red-500/20 to-pink-600/20", icon: "🏥", count: 967 },
+                    {
+                      title: "Poverty Alleviation",
+                      color: "from-amber-500/20 to-orange-600/20",
+                      icon: "🏠",
+                      count: 1182,
+                    },
+                    {
+                      title: "Clean Water Initiatives",
+                      color: "from-cyan-500/20 to-blue-600/20",
+                      icon: "💧",
+                      count: 756,
+                    },
+                    { title: "Social Justice", color: "from-purple-500/20 to-violet-600/20", icon: "⚖️", count: 1058 },
+                  ].map((cause, index) => (
+                    <motion.div
+                      key={index}
+                      className={`rounded-lg bg-gradient-to-br ${cause.color} backdrop-blur-sm border border-white/5 p-4 flex flex-col hover:border-white/10 transition-all duration-300 relative overflow-hidden group`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                      whileHover={{ scale: 1.03, y: -3 }}
+                    >
+                      {/* Background soft gradient */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent"
+                        initial={{ opacity: 0.3 }}
+                        whileHover={{ opacity: 0.5 }}
+                        transition={{ duration: 0.3 }}
+                      />
+
+                      <div className="flex justify-between items-start mb-3">
+                        <span className="text-2xl">{cause.icon}</span>
+                        <span className="text-xs font-medium text-white/70 bg-white/10 px-2 py-1 rounded-full">
+                          {cause.count.toLocaleString()} actions
+                        </span>
+                      </div>
+
+                      <h4 className="text-white text-base font-medium mb-2 mt-1">{cause.title}</h4>
+
+                      <div className="mt-auto flex items-center justify-between">
+                        <div className="flex -space-x-2">
+                          {[...Array(3)].map((_, i) => (
+                            <div
+                              key={i}
+                              className="w-6 h-6 rounded-full bg-indigo-500/30 border border-indigo-500/40 flex items-center justify-center text-[10px] text-white/80"
+                            >
+                              {["JD", "TK", "MR"][i]}
+                            </div>
+                          ))}
+                        </div>
+                        <motion.div
+                          className="text-indigo-300/80 text-xs flex items-center"
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          View <FaArrowDown className="rotate-[-90deg] ml-1 text-[10px]" />
+                        </motion.div>
+                      </div>
+
+                      {/* Animated indicator light */}
+                      <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full">
+                        <motion.div
+                          className="absolute inset-0 rounded-full bg-white/70"
+                          animate={{ scale: [1, 1.5, 1], opacity: [0.7, 0.2, 0.7] }}
+                          transition={{ duration: 2 + index, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
+
+              {/* Gradient overlays to indicate scrolling */}
+              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-indigo-900/80 to-transparent pointer-events-none"></div>
+              <div className="absolute top-20 left-0 right-0 h-6 bg-gradient-to-b from-indigo-900/80 to-transparent pointer-events-none"></div>
             </div>
 
             {/* Floating decorative elements */}
@@ -294,167 +378,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
-// Interactive Feature Showcase Component
-const FeatureShowcase = () => {
-  const [activeFeature, setActiveFeature] = useState(0);
-
-  const features = [
-    {
-      id: "map",
-      title: "Interactive Map",
-      description:
-        "Discover local initiatives and connect with like-minded individuals in your area working on environmental and social causes.",
-      icon: FaMapMarkerAlt,
-      image: "/feature-map.png", // Replace with actual image path
-      color: "from-blue-600 to-cyan-500",
-    },
-    {
-      id: "community",
-      title: "Community Network",
-      description:
-        "Join a vibrant community of change-makers sharing ideas, resources, and supporting each other's initiatives.",
-      icon: FaUsers,
-      image: "/feature-community.png", // Replace with actual image path
-      color: "from-purple-600 to-pink-500",
-    },
-    {
-      id: "discussions",
-      title: "Live Chat Channels",
-      description: "Engage in real-time discussions with topic experts and passionate advocates in dedicated channels.",
-      icon: FaComments,
-      image: "/feature-chat.png", // Replace with actual image path
-      color: "from-indigo-600 to-blue-500",
-    },
-    {
-      id: "personalization",
-      title: "Personalized Causes",
-      description:
-        "Find your passion with our interactive quiz and get matched with causes that align with your values.",
-      icon: FaLightbulb,
-      image: "/feature-passion.png", // Replace with actual image path
-      color: "from-green-600 to-emerald-500",
-    },
-  ];
-
-  const nextFeature = () => {
-    setActiveFeature((prev) => (prev + 1) % features.length);
-  };
-
-  const prevFeature = () => {
-    setActiveFeature((prev) => (prev - 1 + features.length) % features.length);
-  };
-
-  // Auto-rotate through features
-  useEffect(() => {
-    const interval = setInterval(() => {
-      nextFeature();
-    }, 5000); // Change every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="relative h-full overflow-hidden">
-      {/* Features */}
-      <AnimatePresence mode="wait">
-        {features.map(
-          (feature, index) =>
-            activeFeature === index && (
-              <motion.div
-                key={feature.id}
-                className="absolute inset-0 flex flex-col"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-              >
-                {/* Feature image with gradient overlay */}
-                <div className="relative h-[220px] rounded-xl mb-4 overflow-hidden group">
-                  <motion.div
-                    className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-40`}
-                    whileHover={{ opacity: 0.6 }}
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-
-                  {/* If you have actual images, use this */}
-                  {feature.image && (
-                    <motion.img
-                      src={feature.image}
-                      alt={feature.title}
-                      className="w-full h-full object-cover"
-                      initial={{ scale: 1 }}
-                      animate={{ scale: 1.05 }}
-                      transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
-                    />
-                  )}
-
-                  {/* Fallback if no image is available */}
-                  {!feature.image && (
-                    <div className="w-full h-full bg-indigo-900/40 flex items-center justify-center">
-                      <feature.icon className="text-6xl text-white/70" />
-                    </div>
-                  )}
-
-                  {/* Feature icon badge */}
-                  <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                    <feature.icon className="text-white text-xl" />
-                  </div>
-                </div>
-
-                {/* Feature content */}
-                <div className="flex-1 flex flex-col">
-                  <h3 className="text-xl font-bold mb-2 text-white">{feature.title}</h3>
-                  <p className="text-white/80 text-sm leading-relaxed mb-4">{feature.description}</p>
-
-                  <motion.button
-                    className="mt-auto self-start px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center gap-2 text-sm"
-                    whileHover={{ scale: 1.05, x: 5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span>Explore Feature</span>
-                    <FaArrowRight className="text-xs" />
-                  </motion.button>
-                </div>
-              </motion.div>
-            )
-        )}
-      </AnimatePresence>
-
-      {/* Navigation arrows */}
-      <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center">
-        <motion.button
-          className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
-          onClick={prevFeature}
-          whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <FaArrowLeft className="text-xs" />
-        </motion.button>
-
-        {/* Indicator dots */}
-        <div className="flex space-x-2">
-          {features.map((_, idx) => (
-            <button
-              key={idx}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                activeFeature === idx ? "bg-white w-6" : "bg-white/30"
-              }`}
-              onClick={() => setActiveFeature(idx)}
-            />
-          ))}
-        </div>
-
-        <motion.button
-          className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
-          onClick={nextFeature}
-          whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <FaArrowRight className="text-xs" />
-        </motion.button>
-      </div>
-    </div>
-  );
-};
