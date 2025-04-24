@@ -161,12 +161,7 @@ const Navbar = () => {
   ];
 
   return (
-    <motion.nav
-      className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-gradient-to-r from-slate-950/95 to-indigo-950/95 backdrop-blur-xl border-b border-indigo-500/15 shadow-md shadow-black/10"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-gradient-to-r from-slate-950/95 to-indigo-950/95 backdrop-blur-xl border-b border-indigo-500/15 shadow-md shadow-black/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           {/* Logo - No changes needed */}
