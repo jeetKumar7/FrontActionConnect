@@ -211,7 +211,7 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Network visualization */}
+        {/* Right: Network visualization - updated with visible content */}
         <motion.div className="hidden lg:block w-full lg:w-1/2 lg:pl-8 relative" style={{ y: imageY }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -219,13 +219,21 @@ export default function HeroSection() {
             transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
             className="relative h-[500px] w-[500px] mx-auto"
           >
-            {/* Network visualization */}
+            {/* Enhanced Network visualization */}
             <div className="absolute inset-0 rounded-full border-[12px] border-indigo-500/10 animate-spin-slow"></div>
-
             <div className="absolute inset-[30px] rounded-full border-[1px] border-indigo-400/20 animate-reverse-spin"></div>
 
+            {/* Fill the blank space with a gradient background */}
             <div className="absolute inset-[60px] rounded-full bg-gradient-to-br from-indigo-600/20 via-violet-500/10 to-purple-800/20 backdrop-blur-sm shadow-2xl">
-              <div className="absolute inset-0 rounded-full opacity-20 mix-blend-overlay bg-network-texture"></div>
+              {/* Add visible pattern */}
+              <div className="absolute inset-0 rounded-full opacity-30 mix-blend-overlay network-pattern"></div>
+
+              {/* Additional content to ensure visibility */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-indigo-500/30 to-violet-500/30 flex items-center justify-center">
+                  <div className="text-white/50 text-4xl font-light">AC</div>
+                </div>
+              </div>
             </div>
 
             {/* Nodes */}
