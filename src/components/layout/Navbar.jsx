@@ -149,11 +149,7 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className={`fixed w-full top-0 z-50 transition-all duration-500 ${
-        scrolled || isOpen
-          ? "py-3 bg-gradient-to-r from-slate-900/90 to-slate-800/90 backdrop-blur-lg border-b border-white/10"
-          : "py-4 bg-transparent"
-      }`}
+      className="fixed w-full top-0 z-50 transition-all duration-500 py-3 bg-gradient-to-r from-slate-900/90 to-slate-800/90 backdrop-blur-lg border-b border-white/10"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
