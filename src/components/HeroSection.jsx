@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { FaRocket, FaUsers, FaLightbulb } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SignUpModal } from "./auth/AuthModals";
 
 export default function HeroSection() {
@@ -10,7 +10,16 @@ export default function HeroSection() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // Check for authentication
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.6]);
+
+  // Authentication check
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
@@ -22,6 +31,7 @@ export default function HeroSection() {
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
+  // Mouse tracking for subtle effects
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({
@@ -43,213 +53,179 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8 animated-gradient">
-      {/* Background elements */}
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen overflow-hidden flex flex-col px-4 sm:px-6 md:px-8 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800"
+    >
+      {/* Refined background elements */}
       <div className="absolute inset-0 z-0">
-        {/* Grid overlay */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        {/* More subtle grid pattern */}
+        <motion.div
+          className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"
+          style={{ y: backgroundY }}
+        ></motion.div>
 
-        {/* Noise texture */}
-        <div className="absolute inset-0 noise-texture opacity-[0.03]"></div>
+        {/* Refined noise texture */}
+        <div className="absolute inset-0 noise-texture opacity-[0.02]"></div>
 
-        {/* Animated glow */}
-        <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] rounded-full bg-blue-500/10 blur-[100px] animate-pulse-slow"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[40vw] h-[40vw] rounded-full bg-purple-500/10 blur-[100px] animate-pulse-slower"></div>
+        {/* More subtle glow effects */}
+        <div className="absolute top-1/4 -left-1/4 w-[70vw] h-[60vh] rounded-full bg-blue-600/5 blur-[120px]"></div>
+        <div className="absolute bottom-1/4 -right-1/4 w-[60vw] h-[60vh] rounded-full bg-indigo-600/5 blur-[130px]"></div>
 
-        <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-[80px] opacity-10 pointer-events-none"
+        {/* Subtle mouse-following effect */}
+        <motion.div
+          className="absolute w-[500px] h-[500px] rounded-full blur-[150px] opacity-[0.035] pointer-events-none"
           style={{
-            background: "radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 40%)",
-            transform: `translate(${mousePosition.x * window.innerWidth - 300}px, ${
-              mousePosition.y * window.innerHeight - 300
-            }px)`,
-            transition: "transform 0.3s ease-out",
+            background: "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)",
+            x: useTransform(() => mousePosition.x * window.innerWidth - 250),
+            y: useTransform(() => mousePosition.y * window.innerHeight - 250),
           }}
+          transition={{ type: "spring", stiffness: 75, damping: 25 }}
         />
       </div>
 
-      {/* Hero content */}
-      <div className="relative z-10 max-w-5xl mx-auto flex flex-col justify-center min-h-[calc(100vh-80px)] py-16 md:py-24">
-        {/* Tagline Section */}
-        <div className="flex-1 flex items-center justify-center my-8 md:my-12">
-          <div className="text-center">
+      {/* Hero content with improved layout */}
+      <motion.div
+        style={{ opacity: contentOpacity }}
+        className="relative z-10 max-w-6xl mx-auto w-full flex flex-col justify-center min-h-[calc(100vh-80px)] py-16 md:py-20"
+      >
+        {/* Improved Tagline Section */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center max-w-4xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1.0] }}
+              transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1.0] }}
             >
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
+              <span className="inline-block text-blue-400 font-medium text-sm md:text-base mb-4 tracking-wider uppercase">
+                Environmental Action Platform
+              </span>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
                 Turn Your Passion Into
-                <div className="mt-2 md:mt-4">
-                  <motion.div
-                    className="relative inline-block"
-                    animate={{
-                      filter: [
-                        "drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))",
-                        "drop-shadow(0 0 25px rgba(168, 85, 247, 0.4))",
-                        "drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))",
-                      ],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <motion.span
-                      className="absolute -inset-1 rounded-lg blur-2xl bg-gradient-to-r from-blue-600/30 to-purple-600/30"
-                      animate={{
-                        opacity: [0.3, 0.6, 0.3],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    <motion.span
-                      className="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"
-                      animate={{
-                        backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                      }}
-                      transition={{
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      style={{
-                        backgroundSize: "200% 200%",
-                      }}
-                    >
-                      Meaningful Change
-                    </motion.span>
-                  </motion.div>
+                <div className="mt-3">
+                  <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-400 bg-[size:200%_200%] animate-gradient">
+                    Meaningful Change
+                  </span>
                 </div>
               </h1>
             </motion.div>
 
             <motion.p
-              className="mt-6 md:mt-8 max-w-xl mx-auto text-base md:text-lg text-slate-300 leading-relaxed px-4"
+              className="mt-6 md:mt-8 max-w-2xl mx-auto text-base md:text-lg text-slate-300/90 leading-relaxed px-4 font-light"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+              transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
             >
-              ActionConnect helps you discover social causes, connect with like-minded individuals and provides
-              resources to take meaningful action.
+              ActionConnect brings together resources, people, and causes to create measurable environmental impact
+              through focused community action and data-driven initiatives.
             </motion.p>
+
+            {/* Updated CTA buttons */}
+            <motion.div
+              className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              <motion.button
+                onClick={handleGetStarted}
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base font-medium rounded-lg transition-all duration-300 shadow-lg shadow-blue-900/30"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <span className="relative z-10">{isAuthenticated ? "Find Your Passion →" : "Get Started Now →"}</span>
+              </motion.button>
+
+              <Link to="/learn-more">
+                <motion.button
+                  className="w-full sm:w-auto mt-3 sm:mt-0 bg-transparent border border-slate-700 hover:border-slate-500 text-white px-6 sm:px-8 py-3 sm:py-4 text-base font-medium rounded-lg hover:bg-white/5 transition-all duration-300"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <span className="relative z-10">Learn More</span>
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
         </div>
 
-        {/* Bottom sections */}
-        <div className="space-y-12 md:space-y-16 mt-auto md:mb-12">
-          {/* Buttons Section */}
+        {/* Refined Stats Section */}
+        <div className="mt-12 md:mt-16 w-full">
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-8 w-full max-w-5xl mx-auto px-4 sm:px-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-          >
-            <motion.button
-              onClick={handleGetStarted}
-              className="group relative w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-purple-500/30 overflow-hidden"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 15px 30px -10px rgba(59, 130, 246, 0.4)",
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.span
-                className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"
-                animate={{
-                  x: ["-100%", "100%"],
-                  opacity: [0, 0.5, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  repeatDelay: 1,
-                }}
-              />
-              <span className="relative z-10">{isAuthenticated ? "Find Your Passion →" : "Get Started Now →"}</span>
-            </motion.button>
-
-            <Link to="/learn-more">
-              <motion.button
-                className="group relative w-full sm:w-auto mt-3 sm:mt-0 bg-white/5 backdrop-blur-sm text-white border border-white/20 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl hover:bg-white/10 transition-all duration-300"
-                whileHover={{
-                  scale: 1.05,
-                  backgroundColor: "rgba(255,255,255,0.1)",
-                }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="relative z-10">Learn More</span>
-              </motion.button>
-            </Link>
-          </motion.div>
-
-          {/* Enhanced Stats Section */}
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 lg:gap-8 w-full max-w-4xl mx-auto px-4 sm:px-0"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.8,
-              duration: 0.8,
-              staggerChildren: 0.1,
-            }}
+            transition={{ delay: 0.7, duration: 0.8 }}
           >
             {[
-              { icon: FaUsers, value: "10k+", label: "Causes Discovered", color: "blue" },
-              { icon: FaRocket, value: "500+", label: "Actions Taken", color: "purple" },
-              { icon: FaLightbulb, value: "95%", label: "Success Rate", color: "pink" },
+              { icon: FaUsers, value: "10k+", label: "Active Community Members", color: "blue" },
+              { icon: FaRocket, value: "500+", label: "Environmental Actions", color: "indigo" },
+              { icon: FaLightbulb, value: "95%", label: "Success Rate", color: "blue" },
             ].map((stat, index) => (
               <motion.div
                 key={index}
-                className="relative overflow-hidden flex flex-col items-center p-5 sm:p-6 md:p-8 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 group"
+                className="relative overflow-hidden flex flex-col items-center p-6 sm:p-7 bg-white/[0.03] rounded-lg backdrop-blur-[2px] border border-white/[0.05] group"
                 whileHover={{
-                  y: -5,
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  transition: { duration: 0.3 },
+                  y: -4,
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  transition: { duration: 0.2 },
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 + index * 0.15, duration: 0.6 }}
+                transition={{ delay: 0.8 + index * 0.15, duration: 0.6 }}
               >
-                {/* Shimmering effect */}
+                {/* Subtle shimmer effect */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
                   style={{ skewX: "-20deg" }}
                   animate={{
                     x: ["-100%", "100%"],
                   }}
                   transition={{
-                    duration: 2.5,
+                    duration: 3,
                     repeat: Infinity,
                     ease: "easeInOut",
-                    repeatDelay: 1,
-                    delay: index * 0.5,
+                    repeatDelay: 2,
                   }}
                 />
 
-                <motion.div
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
-                  <stat.icon className={`text-3xl md:text-4xl text-${stat.color}-400 mb-3 md:mb-4`} />
-                </motion.div>
+                {/* Refined icon */}
+                <div className={`text-${stat.color}-400 text-2xl md:text-3xl mb-4`}>
+                  <stat.icon />
+                </div>
 
-                <span className={`font-bold text-2xl md:text-3xl text-${stat.color}-400 mb-1 md:mb-2`}>
-                  {stat.value}
-                </span>
-                <span className="text-slate-300 text-sm md:text-base text-center group-hover:text-white transition-colors duration-300">
-                  {stat.label}
-                </span>
+                {/* Improved stat display */}
+                <span className={`font-semibold text-xl md:text-2xl text-white mb-1`}>{stat.value}</span>
+                <span className="text-slate-300/80 text-sm md:text-base text-center">{stat.label}</span>
               </motion.div>
             ))}
           </motion.div>
         </div>
-      </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.5 }}
+          style={{ opacity: useTransform(scrollYProgress, [0, 0.05], [0.7, 0]) }}
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="w-6 h-9 border-2 border-white/20 rounded-full flex justify-center items-start p-1"
+          >
+            <motion.div
+              animate={{ height: ["20%", "60%", "20%"] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-1.5 bg-blue-400/50 rounded-full"
+            />
+          </motion.div>
+          <span className="mt-2 text-xs text-slate-400/70">Scroll to explore</span>
+        </motion.div>
+      </motion.div>
+
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} />
     </section>
   );
