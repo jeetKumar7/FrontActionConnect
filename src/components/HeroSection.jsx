@@ -106,14 +106,24 @@ export default function HeroSection() {
     >
       {/* Professional background elements */}
       <div className="absolute inset-0 top-16 z-0">
-        {/* Background video */}
+        {/* Background video with Cloudinary */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           {!isMobile && (
-            <video className="absolute w-full h-full object-cover opacity-90" autoPlay muted loop playsInline>
-              <source src="/actionbg_1.mp4" type="video/mp4" />
+            <video
+              className="absolute w-full h-full object-cover opacity-90"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="https://res.cloudinary.com/dak1w5wyf/video/upload/q_auto,f_auto,c_fill,g_auto,w_1200/v1/actionconnect/backgrounds/actionbg_1.jpg"
+            >
+              <source
+                src="https://res.cloudinary.com/dak1w5wyf/video/upload/v1745513184/actionbg_1_r3clkf.mp4"
+                type="video/mp4"
+              />
             </video>
           )}
-          {/* Gradient overlay for better text visibility */}
+          {/* Keep your existing gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/80 to-indigo-950/80"></div>
         </div>
 
