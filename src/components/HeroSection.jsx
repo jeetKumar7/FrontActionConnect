@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { FaMapMarkerAlt, FaUsers, FaComments, FaLightbulb, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { SignUpModal } from "./auth/AuthModals";
-import { FaMapMarkerAlt, FaUsers, FaComments, FaLightbulb, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 
 export default function HeroSection() {
   const [showSignUp, setShowSignUp] = useState(false);
