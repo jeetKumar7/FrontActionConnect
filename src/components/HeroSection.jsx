@@ -225,14 +225,69 @@ export default function HeroSection() {
 
             {/* Fill the blank space with a gradient background */}
             <div className="absolute inset-[60px] rounded-full bg-gradient-to-br from-indigo-600/20 via-violet-500/10 to-purple-800/20 backdrop-blur-sm shadow-2xl">
-              {/* Add visible pattern */}
-              <div className="absolute inset-0 rounded-full opacity-30 mix-blend-overlay network-pattern"></div>
+              {/* Add visible pattern with improved visibility */}
+              <div
+                className="absolute inset-0 rounded-full opacity-30 mix-blend-overlay"
+                style={{
+                  background: `
+                    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                    radial-gradient(circle at 35% 65%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                    radial-gradient(circle at 65% 35%, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+                  `,
+                  backgroundSize: "40px 40px",
+                }}
+              ></div>
 
-              {/* Additional content to ensure visibility */}
+              {/* Dynamic hub visualization instead of just "AC" */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-indigo-500/30 to-violet-500/30 flex items-center justify-center">
-                  <div className="text-white/50 text-4xl font-light">AC</div>
-                </div>
+                <motion.div
+                  className="relative w-40 h-40"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+                >
+                  {/* Cause icons arranged in a circle */}
+                  {[...Array(6)].map((_, i) => {
+                    const angle = (i / 6) * Math.PI * 2;
+                    const x = Math.cos(angle) * 60;
+                    const y = Math.sin(angle) * 60;
+
+                    // Different cause icons
+                    const icons = [
+                      <FaHandsHelping key="hands" className="text-indigo-300" />,
+                      <FaUsers key="users" className="text-violet-300" />,
+                      <FaChartLine key="chart" className="text-purple-300" />,
+                    ];
+
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/30 to-violet-500/30 flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2"
+                        style={{
+                          left: `calc(50% + ${x}px)`,
+                          top: `calc(50% + ${y}px)`,
+                        }}
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.6, 1, 0.6],
+                        }}
+                        transition={{
+                          duration: 3 + i,
+                          repeat: Infinity,
+                          delay: i * 0.5,
+                          ease: "easeInOut",
+                        }}
+                      >
+                        {icons[i % 3]}
+                      </motion.div>
+                    );
+                  })}
+
+                  {/* Center hub */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-r from-indigo-600/40 to-violet-600/40 flex items-center justify-center z-10 backdrop-blur-md">
+                    <div className="text-white/80 text-lg font-medium">AC</div>
+                  </div>
+                </motion.div>
               </div>
             </div>
 
