@@ -249,16 +249,6 @@ export default function HeroSection() {
           >
             {/* Gradient background */}
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-900/30 via-violet-900/20 to-purple-900/30 backdrop-blur-sm shadow-2xl border border-indigo-500/10 overflow-hidden">
-              {/* Subtle grid pattern */}
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
-                  backgroundSize: "20px 20px",
-                }}
-              ></div>
-
               {/* Feature showcase header */}
               <div className="absolute top-0 left-0 right-0 px-6 py-4 bg-gradient-to-b from-indigo-900/80 to-transparent z-10">
                 <h3 className="text-xl font-medium text-white/90">Platform Features</h3>
