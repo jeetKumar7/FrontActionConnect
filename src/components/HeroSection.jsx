@@ -438,12 +438,13 @@ const FeatureShowcase = () => {
       </AnimatePresence>
 
       {/* Navigation arrows */}
-      <div className="absolute top-140 left-0 right-0 flex justify-between items-center px-4">
+      <div className="absolute top-120 left-0 right-0 flex justify-between items-center px-4 z-50">
         <motion.button
           className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
           onClick={prevFeature}
           whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
           whileTap={{ scale: 0.9 }}
+          style={{ zIndex: 50 }}
         >
           <FaArrowLeft className="text-xs" />
         </motion.button>
@@ -457,6 +458,7 @@ const FeatureShowcase = () => {
                 activeFeature === idx ? "bg-white w-6" : "bg-white/30"
               }`}
               onClick={() => setActiveFeature(idx)}
+              style={{ zIndex: 50 }}
             />
           ))}
         </div>
@@ -466,6 +468,7 @@ const FeatureShowcase = () => {
           onClick={nextFeature}
           whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
           whileTap={{ scale: 0.9 }}
+          style={{ zIndex: 50 }}
         >
           <FaArrowRight className="text-xs" />
         </motion.button>
