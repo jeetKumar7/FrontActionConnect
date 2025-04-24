@@ -236,14 +236,14 @@ const Navbar = () => {
                 <motion.div key={link.name} whileHover={{ y: -2 }} className="relative mx-2 group">
                   <Link
                     to={link.path}
-                    onClick={(e) => {
-                      // Only prevent default for protected routess
-                      const requiresAuth = ["/passion", "/community", "/map"];
-                      if (requiresAuth.includes(link.path) && !isAuthenticated) {
-                        e.preventDefault();
-                        handleProtectedNavigation(e, link.path);
-                      }
-                    }}
+                    // onClick={(e) => {
+                    //   // Only prevent default for protected routess
+                    //   const requiresAuth = ["/passion", "/community", "/map"];
+                    //   if (requiresAuth.includes(link.path) && !isAuthenticated) {
+                    //     e.preventDefault();
+                    //     handleProtectedNavigation(e, link.path);
+                    //   }
+                    // }}
                     className="block text-slate-200 hover:text-white text-sm font-semibold px-4 py-2 rounded-md transition-all tracking-wide"
                   >
                     <span className="whitespace-nowrap relative">
