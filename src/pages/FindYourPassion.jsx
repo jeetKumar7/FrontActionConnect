@@ -792,19 +792,8 @@ const FindPassion = () => {
       ref={sectionRef}
       className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80 text-white pt-20"
     >
-      {/* Background Elements */}
-      <div className="absolute inset-0 top-20 z-0">
-        {/* Background video */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          {!isMobile && (
-            <video className="absolute w-full h-full object-cover opacity-90" autoPlay muted loop playsInline>
-              <source src="/actionbg.mp4" type="video/mp4" />
-            </video>
-          )}
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/80 to-indigo-950/80"></div>
-        </div>
-
+      {/* Background Elements - Removed video */}
+      <div className="absolute inset-0 top-20 z-0 pointer-events-none">
         {/* Subtle noise texture */}
         <div className="absolute inset-0 opacity-[0.015] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]">
           <div className="absolute inset-0 bg-noise"></div>
