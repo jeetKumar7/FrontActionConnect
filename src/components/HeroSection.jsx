@@ -34,14 +34,25 @@ export default function HeroSection() {
   // Mouse tracking
   useEffect(() => {
     const handleMouseMove = (e) => {
-      setMousePosition({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-      });
+      // Apply smoothing by using a smaller fraction of the mouse movement
+      setMousePosition((prev) => ({
+        x: prev.x + (e.clientX / window.innerWidth - prev.x) * 0.05,
+        y: prev.y + (e.clientY / window.innerHeight - prev.y) * 0.05,
+      }));
     };
 
+    // Add a gentle animation frame loop for smoother updates
+    let animationFrameId;
+    const updateMousePosition = () => {
+      animationFrameId = requestAnimationFrame(updateMousePosition);
+    };
+    updateMousePosition();
+
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   const handleGetStarted = () => {
@@ -92,6 +103,7 @@ export default function HeroSection() {
         {/* Dynamic lighting effect */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
 
+        {/* Update the glowing background with smoother transitions */}
         <motion.div
           className="absolute w-[800px] h-[800px] rounded-full blur-[180px] opacity-20 pointer-events-none"
           style={{
@@ -100,7 +112,12 @@ export default function HeroSection() {
             x: useTransform(() => mousePosition.x * window.innerWidth - 400),
             y: useTransform(() => mousePosition.y * window.innerHeight - 400),
           }}
-          transition={{ type: "spring", stiffness: 40, damping: 25 }}
+          transition={{
+            type: "spring",
+            stiffness: 20, // Lower stiffness for smoother movement
+            damping: 40, // Higher damping to reduce oscillation
+            mass: 2, // Increase mass to make it feel heavier/less reactive
+          }}
         />
       </div>
 
@@ -204,7 +221,7 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-[url('../public/earth_texture.png')] bg-cover opacity-20 mix-blend-overlay rounded-full"></div>
             </div>
 
-            {/* Floating elements */}
+            {/* Floating elements with reduced movement */}
             {[...Array(5)].map((_, i) => (
               <motion.div
                 key={i}
@@ -214,11 +231,11 @@ export default function HeroSection() {
                   top: `${25 + Math.random() * 50}%`,
                 }}
                 animate={{
-                  y: [0, -20, 0],
-                  opacity: [0.4, 0.8, 0.4],
+                  y: [0, -10, 0], // Reduced movement range from -20 to -10
+                  opacity: [0.4, 0.7, 0.4], // Softer opacity changes
                 }}
                 transition={{
-                  duration: 3 + Math.random() * 2,
+                  duration: 4 + Math.random() * 3, // Slower, longer animations
                   repeat: Infinity,
                   delay: Math.random() * 2,
                   ease: "easeInOut",
