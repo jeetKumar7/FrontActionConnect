@@ -233,13 +233,13 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Interactive Feature Showcase - Reduced height from 500px to 460px */}
+        {/* Right: Interactive Feature Showcase */}
         <motion.div className="hidden lg:block w-full lg:w-1/2 lg:pl-8 relative" style={{ y: imageY }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-            className="relative h-[460px] w-full max-w-[500px] mx-auto"
+            className="relative h-[500px] w-full max-w-[500px] mx-auto"
           >
             {/* Gradient background */}
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-900/30 via-violet-900/20 to-purple-900/30 backdrop-blur-sm shadow-2xl border border-indigo-500/10 overflow-hidden">
@@ -431,8 +431,8 @@ const FeatureShowcase = () => {
         </AnimatePresence>
       </div>
 
-      {/* Navigation arrows - Reduced vertical spacing */}
-      <div className="flex justify-between items-center py-2 mt-2">
+      {/* Navigation arrows - MOVED OUTSIDE the animated content so they stay in place */}
+      <div className="flex justify-between items-center py-3 mt-4">
         <motion.button
           className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
           onClick={prevFeature}
