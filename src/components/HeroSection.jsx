@@ -117,12 +117,6 @@ export default function HeroSection() {
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/80 to-indigo-950/80"></div>
         </div>
 
-        {/* Grid pattern - keep existing elements */}
-        <motion.div
-          className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"
-          style={{ y: backgroundY }}
-        ></motion.div>
-
         {/* Subtle noise texture */}
         <div className="absolute inset-0 opacity-[0.015] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]">
           <div className="absolute inset-0 bg-noise"></div>
