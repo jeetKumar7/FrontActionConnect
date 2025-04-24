@@ -240,6 +240,7 @@ const Navbar = () => {
                       // Only prevent default for protected routess
                       const requiresAuth = ["/passion", "/community", "/map"];
                       if (requiresAuth.includes(link.path) && !isAuthenticated) {
+                        e.preventDefault();
                         handleProtectedNavigation(e, link.path);
                       }
                     }}
