@@ -41,8 +41,9 @@ const Navbar = () => {
     setShowSignUp(true);
   };
 
-  // Update this function to ensure navigation works properly
   const handleProtectedNavigation = (e, path) => {
+    e.preventDefault(); // Prevent default navigation
+
     // Define routes requiring authentication
     const requiresAuth = ["/passion", "/community", "/map"];
 
@@ -53,9 +54,8 @@ const Navbar = () => {
       // Show signup modal for non-authenticated users
       setShowSignUp(true);
     } else {
-      // Close mobile menu if open
-      setIsOpen(false);
       // Navigate to the path directly
+      setIsOpen(false);
       navigate(path);
     }
   };
@@ -222,7 +222,8 @@ const Navbar = () => {
             <div className="flex items-center">
               {navLinks.map((link) => (
                 <motion.div key={link.name} whileHover={{ y: -2 }} className="relative mx-2 group">
-                  <button
+                  <a
+                    href={link.path}
                     onClick={(e) => handleProtectedNavigation(e, link.path)}
                     className="text-slate-200 hover:text-white text-sm font-semibold px-4 py-2 rounded-md transition-all tracking-wide"
                   >
@@ -230,7 +231,7 @@ const Navbar = () => {
                       {link.name}
                       <span className="absolute -bottom-0.5 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-400 to-violet-400 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
                     </span>
-                  </button>
+                  </a>
                   <div className="absolute top-0 left-0 right-0 bottom-0 rounded-md bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </motion.div>
               ))}
@@ -348,14 +349,15 @@ const Navbar = () => {
             >
               <div className="flex flex-col space-y-1 px-2">
                 {navLinks.map((link) => (
-                  <motion.button
+                  <motion.a
                     key={link.name}
+                    href={link.path}
                     onClick={(e) => handleProtectedNavigation(e, link.path)}
-                    className="flex items-center text-left w-full text-slate-200 hover:text-white text-sm font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                    className="flex items-center text-slate-200 hover:text-white text-sm font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
                     whileHover={{ x: 5 }}
                   >
                     <span>{link.name}</span>
-                  </motion.button>
+                  </motion.a>
                 ))}
 
                 {/* Mobile Divider - No changes needed */}
