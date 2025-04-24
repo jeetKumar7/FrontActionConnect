@@ -303,298 +303,301 @@ const ContentLibrary = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 py-16">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:14px_24px]" />
-        <div className="relative container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">Discover Impactful Content</h1>
-          <p className="text-xl text-center text-white/80 mb-8 max-w-2xl mx-auto">
-            Explore curated videos, articles, books, and talks about social causes and make a difference.
-          </p>
+      {/* Add a top margin to account for the navbar */}
+      <div className="mt-14">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 py-16">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:14px_24px]" />
+          <div className="relative container mx-auto px-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">Discover Impactful Content</h1>
+            <p className="text-xl text-center text-white/80 mb-8 max-w-2xl mx-auto">
+              Explore curated videos, articles, books, and talks about social causes and make a difference.
+            </p>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
-            <input
-              type="text"
-              placeholder="Search for content..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
-            />
-            <button className="absolute right-4 top-1/2 -translate-y-1/2">
-              <FaSearch className="text-white/60" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
-        {/* Trending Topics */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Trending Topics</h2>
-          <div className="flex flex-wrap gap-2">
-            {trendingTopics.map((topic, idx) => (
-              <motion.button
-                key={idx}
-                onClick={() => setSearchQuery(topic)}
-                className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-sm transition-all"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {topic}
-              </motion.button>
-            ))}
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto relative">
+              <input
+                type="text"
+                placeholder="Search for content..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
+              />
+              <button className="absolute right-4 top-1/2 -translate-y-1/2">
+                <FaSearch className="text-white/60" />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Content Controls */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          {/* Tabs */}
-          <div className="flex gap-2 w-full sm:w-auto scrollbar-none hover:scrollbar-none pb-2 sm:pb-0">
-            {[
-              { icon: <FaVideo />, label: "All", value: "all" },
-              { icon: <FaVideo />, label: "Videos", value: "videos" },
-              { icon: <FaNewspaper />, label: "Articles", value: "articles" },
-              { icon: <FaBook />, label: "Books", value: "books" },
-              { icon: <FaMicrophone />, label: "Talks", value: "talks" },
-            ].map((tab) => (
-              <motion.button
-                key={tab.value}
-                onClick={() => setActiveTab(tab.value)}
-                className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg ${
-                  activeTab === tab.value
-                    ? "bg-gradient-to-r from-blue-500 to-purple-500"
-                    : "bg-white/5 hover:bg-white/10"
-                } transition-all`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Filter Button with active filter indicator */}
-          <motion.button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 relative"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FaFilter
-              className={
-                filters.date !== "any" || filters.source.length > 0 || filters.sortBy !== "relevance"
-                  ? "text-blue-400"
-                  : ""
-              }
-            />
-            <span>Filters</span>
-            {(filters.date !== "any" || filters.source.length > 0 || filters.sortBy !== "relevance") && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-500 rounded-full text-xs flex items-center justify-center">
-                {(filters.date !== "any" ? 1 : 0) +
-                  (filters.source.length > 0 ? 1 : 0) +
-                  (filters.sortBy !== "relevance" ? 1 : 0)}
-              </span>
-            )}
-          </motion.button>
-        </div>
-
-        {/* Filter Panel */}
-        {showFilters && (
-          <motion.div
-            className="w-full bg-slate-800/90 backdrop-blur-md border border-white/10 rounded-xl p-4 mt-4 shadow-xl"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold">Filters</h3>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={clearFilters}
-                  className="text-sm flex items-center gap-1 text-white/60 hover:text-white"
+        {/* Main Content */}
+        <div className="container mx-auto px-4 py-12">
+          {/* Trending Topics */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">Trending Topics</h2>
+            <div className="flex flex-wrap gap-2">
+              {trendingTopics.map((topic, idx) => (
+                <motion.button
+                  key={idx}
+                  onClick={() => setSearchQuery(topic)}
+                  className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-sm transition-all"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <FaTimesCircle size={14} />
-                  Clear all
-                </button>
-                <button onClick={() => setShowFilters(false)} className="text-white/60 hover:text-white">
-                  <FaTimesCircle size={16} />
-                </button>
-              </div>
+                  {topic}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
+          {/* Content Controls */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            {/* Tabs */}
+            <div className="flex gap-2 w-full sm:w-auto scrollbar-none hover:scrollbar-none pb-2 sm:pb-0">
+              {[
+                { icon: <FaVideo />, label: "All", value: "all" },
+                { icon: <FaVideo />, label: "Videos", value: "videos" },
+                { icon: <FaNewspaper />, label: "Articles", value: "articles" },
+                { icon: <FaBook />, label: "Books", value: "books" },
+                { icon: <FaMicrophone />, label: "Talks", value: "talks" },
+              ].map((tab) => (
+                <motion.button
+                  key={tab.value}
+                  onClick={() => setActiveTab(tab.value)}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg ${
+                    activeTab === tab.value
+                      ? "bg-gradient-to-r from-blue-500 to-purple-500"
+                      : "bg-white/5 hover:bg-white/10"
+                  } transition-all`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </motion.button>
+              ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Date Filter */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-white/80">
-                  <FaCalendarAlt />
-                  <span>Date</span>
-                </div>
-                <div className="relative">
-                  <select
-                    value={filters.date}
-                    onChange={(e) => handleFilterChange("date", e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white appearance-none"
-                    style={{ colorScheme: "dark" }}
+            {/* Filter Button with active filter indicator */}
+            <motion.button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 relative"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaFilter
+                className={
+                  filters.date !== "any" || filters.source.length > 0 || filters.sortBy !== "relevance"
+                    ? "text-blue-400"
+                    : ""
+                }
+              />
+              <span>Filters</span>
+              {(filters.date !== "any" || filters.source.length > 0 || filters.sortBy !== "relevance") && (
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-500 rounded-full text-xs flex items-center justify-center">
+                  {(filters.date !== "any" ? 1 : 0) +
+                    (filters.source.length > 0 ? 1 : 0) +
+                    (filters.sortBy !== "relevance" ? 1 : 0)}
+                </span>
+              )}
+            </motion.button>
+          </div>
+
+          {/* Filter Panel */}
+          {showFilters && (
+            <motion.div
+              className="w-full bg-slate-800/90 backdrop-blur-md border border-white/10 rounded-xl p-4 mt-4 shadow-xl"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-semibold">Filters</h3>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm flex items-center gap-1 text-white/60 hover:text-white"
                   >
-                    {dateOptions.map((option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                        style={{ backgroundColor: "#1e293b", color: "white" }}
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <FaChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" size={12} />
+                    <FaTimesCircle size={14} />
+                    Clear all
+                  </button>
+                  <button onClick={() => setShowFilters(false)} className="text-white/60 hover:text-white">
+                    <FaTimesCircle size={16} />
+                  </button>
                 </div>
               </div>
 
-              {/* Sort By Filter */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-white/80">
-                  <FaSort />
-                  <span>Sort By</span>
-                </div>
-                <div className="relative">
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => handleFilterChange("sortBy", e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white appearance-none"
-                    style={{ colorScheme: "dark" }}
-                  >
-                    {sortOptions.map((option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                        style={{ backgroundColor: "#1e293b", color: "white" }}
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <FaChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" size={12} />
-                </div>
-              </div>
-
-              {/* Rating Filter */}
-              {/* <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-white/80">
-                  <FaStar />
-                  <span>Minimum Rating</span>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="range"
-                    min="0"
-                    max="5"
-                    step="1"
-                    value={filters.rating}
-                    onChange={(e) => handleFilterChange("rating", parseInt(e.target.value))}
-                    className="w-full bg-white/10 rounded-lg appearance-none h-2 cursor-pointer"
-                  />
-                  <span className="ml-2 min-w-[24px] text-center">{filters.rating > 0 ? filters.rating : "Any"}</span>
-                </div>
-              </div> */}
-            </div>
-
-            {/* Source Filters - only show if there are sources */}
-            {getSources.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
-                  <span>Sources</span>
-                </div>
-                <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto pr-2">
-                  {getSources.map((source) => (
-                    <button
-                      key={source}
-                      onClick={() => {
-                        if (filters.source.includes(source)) {
-                          handleFilterChange(
-                            "source",
-                            filters.source.filter((s) => s !== source)
-                          );
-                        } else {
-                          handleFilterChange("source", [...filters.source, source]);
-                        }
-                      }}
-                      className={`px-3 py-1 text-sm rounded-full transition-all ${
-                        filters.source.includes(source)
-                          ? "bg-blue-500 text-white"
-                          : "bg-white/5 text-white/70 hover:bg-white/10"
-                      }`}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Date Filter */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-white/80">
+                    <FaCalendarAlt />
+                    <span>Date</span>
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={filters.date}
+                      onChange={(e) => handleFilterChange("date", e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white appearance-none"
+                      style={{ colorScheme: "dark" }}
                     >
-                      {source}
-                    </button>
-                  ))}
+                      {dateOptions.map((option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                          style={{ backgroundColor: "#1e293b", color: "white" }}
+                        >
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <FaChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" size={12} />
+                  </div>
                 </div>
-              </div>
-            )}
 
-            {/* Active Filters */}
-            {(filters.date !== "any" || filters.source.length > 0 || filters.sortBy !== "relevance") && (
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
-                  <span>Active Filters:</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {filters.date !== "any" && (
-                    <div className="px-3 py-1 text-sm rounded-full bg-blue-500/20 text-blue-400 flex items-center gap-1">
-                      <span>{dateOptions.find((o) => o.value === filters.date)?.label}</span>
-                      <button onClick={() => handleFilterChange("date", "any")} className="ml-1">
-                        <FaTimesCircle size={12} />
-                      </button>
-                    </div>
-                  )}
-
-                  {filters.sortBy !== "relevance" && (
-                    <div className="px-3 py-1 text-sm rounded-full bg-purple-500/20 text-purple-400 flex items-center gap-1">
-                      <span>Sort: {sortOptions.find((o) => o.value === filters.sortBy)?.label}</span>
-                      <button onClick={() => handleFilterChange("sortBy", "relevance")} className="ml-1">
-                        <FaTimesCircle size={12} />
-                      </button>
-                    </div>
-                  )}
-
-                  {filters.source.map((source) => (
-                    <div
-                      key={source}
-                      className="px-3 py-1 text-sm rounded-full bg-green-500/20 text-green-400 flex items-center gap-1"
+                {/* Sort By Filter */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-white/80">
+                    <FaSort />
+                    <span>Sort By</span>
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={filters.sortBy}
+                      onChange={(e) => handleFilterChange("sortBy", e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white appearance-none"
+                      style={{ colorScheme: "dark" }}
                     >
-                      <span>{source}</span>
+                      {sortOptions.map((option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                          style={{ backgroundColor: "#1e293b", color: "white" }}
+                        >
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <FaChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" size={12} />
+                  </div>
+                </div>
+
+                {/* Rating Filter */}
+                {/* <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-white/80">
+                    <FaStar />
+                    <span>Minimum Rating</span>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="range"
+                      min="0"
+                      max="5"
+                      step="1"
+                      value={filters.rating}
+                      onChange={(e) => handleFilterChange("rating", parseInt(e.target.value))}
+                      className="w-full bg-white/10 rounded-lg appearance-none h-2 cursor-pointer"
+                    />
+                    <span className="ml-2 min-w-[24px] text-center">{filters.rating > 0 ? filters.rating : "Any"}</span>
+                  </div>
+                </div> */}
+              </div>
+
+              {/* Source Filters - only show if there are sources */}
+              {getSources.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
+                    <span>Sources</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto pr-2">
+                    {getSources.map((source) => (
                       <button
-                        onClick={() =>
-                          handleFilterChange(
-                            "source",
-                            filters.source.filter((s) => s !== source)
-                          )
-                        }
-                        className="ml-1"
+                        key={source}
+                        onClick={() => {
+                          if (filters.source.includes(source)) {
+                            handleFilterChange(
+                              "source",
+                              filters.source.filter((s) => s !== source)
+                            );
+                          } else {
+                            handleFilterChange("source", [...filters.source, source]);
+                          }
+                        }}
+                        className={`px-3 py-1 text-sm rounded-full transition-all ${
+                          filters.source.includes(source)
+                            ? "bg-blue-500 text-white"
+                            : "bg-white/5 text-white/70 hover:bg-white/10"
+                        }`}
                       >
-                        <FaTimesCircle size={12} />
+                        {source}
                       </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              {/* Active Filters */}
+              {(filters.date !== "any" || filters.source.length > 0 || filters.sortBy !== "relevance") && (
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
+                    <span>Active Filters:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {filters.date !== "any" && (
+                      <div className="px-3 py-1 text-sm rounded-full bg-blue-500/20 text-blue-400 flex items-center gap-1">
+                        <span>{dateOptions.find((o) => o.value === filters.date)?.label}</span>
+                        <button onClick={() => handleFilterChange("date", "any")} className="ml-1">
+                          <FaTimesCircle size={12} />
+                        </button>
+                      </div>
+                    )}
+
+                    {filters.sortBy !== "relevance" && (
+                      <div className="px-3 py-1 text-sm rounded-full bg-purple-500/20 text-purple-400 flex items-center gap-1">
+                        <span>Sort: {sortOptions.find((o) => o.value === filters.sortBy)?.label}</span>
+                        <button onClick={() => handleFilterChange("sortBy", "relevance")} className="ml-1">
+                          <FaTimesCircle size={12} />
+                        </button>
+                      </div>
+                    )}
+
+                    {filters.source.map((source) => (
+                      <div
+                        key={source}
+                        className="px-3 py-1 text-sm rounded-full bg-green-500/20 text-green-400 flex items-center gap-1"
+                      >
+                        <span>{source}</span>
+                        <button
+                          onClick={() =>
+                            handleFilterChange(
+                              "source",
+                              filters.source.filter((s) => s !== source)
+                            )
+                          }
+                          className="ml-1"
+                        >
+                          <FaTimesCircle size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* Content Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {isLoading ? (
+              <LoadingSkeleton />
+            ) : filteredContent.length > 0 ? (
+              filteredContent.map((item) => <ContentCard key={item.id || item.url} item={item} />)
+            ) : (
+              <div className="col-span-full">
+                <EmptyState />
               </div>
             )}
-          </motion.div>
-        )}
-
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {isLoading ? (
-            <LoadingSkeleton />
-          ) : filteredContent.length > 0 ? (
-            filteredContent.map((item) => <ContentCard key={item.id || item.url} item={item} />)
-          ) : (
-            <div className="col-span-full">
-              <EmptyState />
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
