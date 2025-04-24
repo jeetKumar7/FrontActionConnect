@@ -310,7 +310,7 @@ export default function HeroSection() {
 // Interactive Feature Showcase Component
 const FeatureShowcase = () => {
   const [activeFeature, setActiveFeature] = useState(0);
-  const navigate = useNavigate(); // Use React Router's navigate function
+  const navigate = useNavigate();
 
   const features = [
     {
@@ -320,7 +320,7 @@ const FeatureShowcase = () => {
         "Discover local initiatives and connect with like-minded individuals in your area working on environmental and social causes.",
       icon: FaMapMarkerAlt,
       color: "from-blue-600 to-cyan-500",
-      path: "/map", // Add a path for navigation
+      path: "/map",
     },
     {
       id: "community",
@@ -329,7 +329,7 @@ const FeatureShowcase = () => {
         "Join a vibrant community of change-makers sharing ideas, resources, and supporting each other's initiatives.",
       icon: FaUsers,
       color: "from-purple-600 to-pink-500",
-      path: "/community", // Add a path for navigation
+      path: "/community",
     },
     {
       id: "discussions",
@@ -337,7 +337,7 @@ const FeatureShowcase = () => {
       description: "Engage in real-time discussions with topic experts and passionate advocates in dedicated channels.",
       icon: FaComments,
       color: "from-indigo-600 to-blue-500",
-      path: "/discussions", // Add a path for navigation
+      path: "/discussions",
     },
     {
       id: "personalization",
@@ -346,7 +346,7 @@ const FeatureShowcase = () => {
         "Find your passion with our interactive quiz and get matched with causes that align with your values.",
       icon: FaLightbulb,
       color: "from-green-600 to-emerald-500",
-      path: "/personalization", // Add a path for navigation
+      path: "/personalization",
     },
   ];
 
@@ -409,8 +409,24 @@ const FeatureShowcase = () => {
                   </div>
                 </div>
 
-                {/* Navigation arrows - MOVED HERE, below visual representation */}
-                <div className="flex justify-between items-center py-3 mb-3">
+                {/* Feature content */}
+                <div className="flex-1 flex flex-col mb-3">
+                  <h3 className="text-xl font-bold mb-2 text-white">{feature.title}</h3>
+                  <p className="text-white/80 text-sm leading-relaxed mb-4">{feature.description}</p>
+
+                  <motion.button
+                    onClick={handleExploreFeature}
+                    className="mt-auto self-start px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center gap-2 text-sm"
+                    whileHover={{ scale: 1.05, x: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>Explore Feature</span>
+                    <FaArrowRight className="text-xs" />
+                  </motion.button>
+                </div>
+
+                {/* Navigation arrows - MOVED HERE, below the Explore Feature button */}
+                <div className="flex justify-between items-center py-3 mt-auto">
                   <motion.button
                     className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
                     onClick={prevFeature}
@@ -439,22 +455,6 @@ const FeatureShowcase = () => {
                     whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <FaArrowRight className="text-xs" />
-                  </motion.button>
-                </div>
-
-                {/* Feature content */}
-                <div className="flex-1 flex flex-col">
-                  <h3 className="text-xl font-bold mb-2 text-white">{feature.title}</h3>
-                  <p className="text-white/80 text-sm leading-relaxed mb-4">{feature.description}</p>
-
-                  <motion.button
-                    onClick={handleExploreFeature}
-                    className="mt-auto self-start px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center gap-2 text-sm"
-                    whileHover={{ scale: 1.05, x: 5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span>Explore Feature</span>
                     <FaArrowRight className="text-xs" />
                   </motion.button>
                 </div>
