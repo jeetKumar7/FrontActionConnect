@@ -390,7 +390,7 @@ const FeatureShowcase = () => {
                 transition={{ duration: 0.5, ease: "easeInOut" }}
               >
                 {/* Feature visual representation */}
-                <div className="relative h-[220px] rounded-xl mb-4 overflow-hidden group">
+                <div className="relative h-[220px] rounded-xl overflow-hidden group">
                   <motion.div
                     className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-40`}
                     whileHover={{ opacity: 0.6 }}
@@ -409,13 +409,47 @@ const FeatureShowcase = () => {
                   </div>
                 </div>
 
+                {/* Navigation arrows - MOVED HERE, below visual representation */}
+                <div className="flex justify-between items-center py-3 mb-3">
+                  <motion.button
+                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
+                    onClick={prevFeature}
+                    whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <FaArrowLeft className="text-xs" />
+                  </motion.button>
+
+                  {/* Indicator dots */}
+                  <div className="flex space-x-2">
+                    {features.map((_, idx) => (
+                      <button
+                        key={idx}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          activeFeature === idx ? "bg-white w-5" : "bg-white/30"
+                        }`}
+                        onClick={() => setActiveFeature(idx)}
+                      />
+                    ))}
+                  </div>
+
+                  <motion.button
+                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
+                    onClick={nextFeature}
+                    whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <FaArrowRight className="text-xs" />
+                  </motion.button>
+                </div>
+
                 {/* Feature content */}
                 <div className="flex-1 flex flex-col">
                   <h3 className="text-xl font-bold mb-2 text-white">{feature.title}</h3>
                   <p className="text-white/80 text-sm leading-relaxed mb-4">{feature.description}</p>
 
                   <motion.button
-                    onClick={handleExploreFeature} // Add the click handler here
+                    onClick={handleExploreFeature}
                     className="mt-auto self-start px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center gap-2 text-sm"
                     whileHover={{ scale: 1.05, x: 5 }}
                     whileTap={{ scale: 0.95 }}
@@ -428,40 +462,6 @@ const FeatureShowcase = () => {
             )
         )}
       </AnimatePresence>
-
-      {/* Navigation arrows */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-between items-center px-4 z-50">
-        <motion.button
-          className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
-          onClick={prevFeature}
-          whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <FaArrowLeft className="text-xs" />
-        </motion.button>
-
-        {/* Indicator dots */}
-        <div className="flex space-x-2">
-          {features.map((_, idx) => (
-            <button
-              key={idx}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                activeFeature === idx ? "bg-white w-6" : "bg-white/30"
-              }`}
-              onClick={() => setActiveFeature(idx)}
-            />
-          ))}
-        </div>
-
-        <motion.button
-          className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
-          onClick={nextFeature}
-          whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <FaArrowRight className="text-xs" />
-        </motion.button>
-      </div>
     </div>
   );
 };
