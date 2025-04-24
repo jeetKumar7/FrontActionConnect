@@ -201,7 +201,7 @@ export default function HeroSection() {
             <div className="absolute inset-[40px] rounded-full border-[2px] border-green-400/20 animate-reverse-spin"></div>
 
             <div className="absolute inset-[80px] rounded-full bg-gradient-to-br from-emerald-600/40 via-teal-500/20 to-green-800/30 backdrop-blur-sm shadow-2xl">
-              <div className="absolute inset-0 bg-[url('/earth-texture.png')] bg-cover opacity-20 mix-blend-overlay rounded-full"></div>
+              <div className="absolute inset-0 bg-[url('../public/earth_texture.png')] bg-cover opacity-20 mix-blend-overlay rounded-full"></div>
             </div>
 
             {/* Floating elements */}
