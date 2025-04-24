@@ -216,21 +216,23 @@ const Navbar = () => {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Removed icons */}
+          {/* Desktop Navigation - Enhanced text styling */}
           <div className="hidden lg:flex items-center">
             {/* Main Navigation */}
             <div className="flex items-center">
               {navLinks.map((link) => (
-                <motion.div key={link.name} whileHover={{ y: -1 }} className="relative mx-1 group">
+                <motion.div key={link.name} whileHover={{ y: -2 }} className="relative mx-2 group">
                   <a
                     href={link.path}
                     onClick={(e) => handleProtectedNavigation(e, link.path)}
-                    className="text-slate-300 hover:text-white text-sm font-medium px-4 py-2 rounded-md transition-all"
+                    className="text-slate-200 hover:text-white text-sm font-semibold px-4 py-2 rounded-md transition-all tracking-wide"
                   >
-                    {/* Removed icon spans, keeping only text */}
-                    <span className="whitespace-nowrap">{link.name}</span>
+                    <span className="whitespace-nowrap relative">
+                      {link.name}
+                      <span className="absolute -bottom-0.5 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-400 to-violet-400 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                    </span>
                   </a>
-                  <div className="absolute bottom-0 left-0 right-0 mx-3 h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+                  <div className="absolute top-0 left-0 right-0 bottom-0 rounded-md bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </motion.div>
               ))}
             </div>
@@ -335,7 +337,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu - Removed icons from links */}
+        {/* Mobile Menu - Updated text styling */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -351,10 +353,9 @@ const Navbar = () => {
                     key={link.name}
                     href={link.path}
                     onClick={(e) => handleProtectedNavigation(e, link.path)}
-                    className="flex items-center text-slate-300 hover:text-white text-sm font-medium py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
-                    whileHover={{ x: 3 }}
+                    className="flex items-center text-slate-200 hover:text-white text-sm font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                    whileHover={{ x: 5 }}
                   >
-                    {/* Removed icon spans, keeping only text */}
                     <span>{link.name}</span>
                   </motion.a>
                 ))}
