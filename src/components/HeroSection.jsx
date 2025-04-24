@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FaLeaf, FaHandsHelping, FaChartLine } from "react-icons/fa";
+import { FaLeaf, FaHandsHelping, FaChartLine, FaUsers } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { SignUpModal } from "./auth/AuthModals";
 
@@ -55,7 +55,7 @@ export default function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-900 to-emerald-950"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-indigo-900 to-purple-950"
     >
       {/* Nature-inspired background elements */}
       <div className="absolute inset-0 z-0">
@@ -113,17 +113,17 @@ export default function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-green-400/10 border border-green-400/20 mb-6">
-              <span className="text-green-300 text-sm font-medium">Our Mission</span>
+            <div className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-blue-400/10 to-purple-400/10 border border-blue-400/20 mb-6">
+              <span className="text-blue-300 text-sm font-medium">Our Mission</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
-              Connect, <span className="text-green-300">Inspire</span>, and Catalyze Meaningful Change
+              Discover, <span className="text-blue-300">Connect</span>, and Drive Meaningful Change
             </h1>
 
             <p className="mt-6 text-lg text-gray-200/90 leading-relaxed max-w-lg">
-              We bring together passionate individuals, actionable ideas, and sustainable solutions that deepen
-              awareness and transform shared vision into collective impact.
+              We bring together passionate individuals with diverse social causes, sparking conversations that deepen
+              understanding and transform shared vision into collective impact.
             </p>
 
             {/* CTA buttons with new design */}
@@ -160,12 +160,12 @@ export default function HeroSection() {
               </Link>
             </div>
 
-            {/* Stats with new design */}
+            {/* Stats with updated focus on diverse social causes */}
             <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8">
               {[
-                { icon: FaLeaf, value: "10k+", label: "Trees Planted", color: "green" },
-                { icon: FaHandsHelping, value: "500+", label: "Community Actions", color: "emerald" },
-                { icon: FaChartLine, value: "95%", label: "Success Rate", color: "teal" },
+                { icon: FaHandsHelping, value: "10k+", label: "Causes Supported", color: "blue" },
+                { icon: FaUsers, value: "500+", label: "Community Actions", color: "indigo" },
+                { icon: FaChartLine, value: "95%", label: "Success Rate", color: "purple" },
               ].map((stat, index) => (
                 <motion.div
                   key={index}
