@@ -149,14 +149,14 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className="fixed w-full top-0 z-50 transition-all duration-500 py-3 bg-gradient-to-r from-slate-900/90 to-slate-800/90 backdrop-blur-lg border-b border-white/10"
+      className="fixed w-full top-0 z-50 transition-all duration-500 py-3 bg-gradient-to-r from-slate-950/90 via-slate-900/90 to-indigo-950/90 backdrop-blur-lg border-b border-indigo-500/10"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="max-w-[90rem] mx-auto px-4 lg:px-8">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo */}
+          {/* Logo - Updated with indigo gradient */}
           <Link to="/" className="flex-shrink-0">
             <motion.div
               className="flex items-center gap-3"
@@ -165,7 +165,7 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="relative h-9 w-9 md:h-11 md:w-11 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden">
+              <div className="relative h-9 w-9 md:h-11 md:w-11 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_70%)]"></div>
                 <svg
                   viewBox="0 0 24 24"
@@ -206,27 +206,27 @@ const Navbar = () => {
                     fill="white"
                   />
                 </svg>
-                <div className="absolute w-full h-full bg-gradient-to-br from-blue-400/10 to-purple-400/10"></div>
+                <div className="absolute w-full h-full bg-gradient-to-br from-indigo-400/10 to-violet-400/10"></div>
               </div>
               <div className="flex flex-col">
                 <span className="text-lg md:text-xl font-bold text-white tracking-tight">ActionConnect</span>
-                <span className="text-[10px] md:text-xs text-blue-400/80 font-medium uppercase tracking-wider -mt-1">
+                <span className="text-[10px] md:text-xs text-indigo-400/80 font-medium uppercase tracking-wider -mt-1">
                   Community Platform
                 </span>
               </div>
             </motion.div>
           </Link>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Updated colors */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+            className="lg:hidden p-2 rounded-lg text-white hover:bg-indigo-500/10 transition-colors"
             aria-label="Toggle menu"
           >
             {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
           </button>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Updated hover effects */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map((link) => (
               <motion.div key={link.name} whileHover={{ y: -2 }} className="relative group">
@@ -238,26 +238,13 @@ const Navbar = () => {
                   <span className="text-base xl:text-lg">{link.icon}</span>
                   <span className="whitespace-nowrap">{link.name}</span>
                 </a>
-                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300" />
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500 group-hover:w-full transition-all duration-300" />
               </motion.div>
             ))}
           </div>
 
-          {/* Right Section */}
+          {/* Auth Buttons - Updated gradient colors to match hero */}
           <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-            {/* Search */}
-            {/* <div className="relative">
-              <div className="flex items-center bg-white/5 rounded-full pl-3 pr-4 py-1.5 border border-white/10 hover:bg-white/10 transition-colors duration-300">
-                <FaSearch className="text-slate-400 mr-2" size={14} />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="bg-transparent w-32 xl:w-40 text-sm text-white placeholder-slate-400 focus:outline-none"
-                />
-              </div>
-            </div> */}
-
-            {/* Auth Buttons */}
             {!isAuthenticated ? (
               <div className="flex items-center gap-3 xl:gap-4">
                 <motion.button
@@ -269,7 +256,7 @@ const Navbar = () => {
                 </motion.button>
                 <motion.button
                   onClick={handleOpenSignUp}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
+                  className="bg-gradient-to-r from-indigo-600 to-violet-500 hover:from-indigo-700 hover:to-violet-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-300"
                   whileHover={{ scale: 1.05 }}
                 >
                   Get Started
@@ -277,33 +264,26 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                {/* <motion.button className="relative" whileHover={{ scale: 1.1 }}>
-                  <FaBell className="text-slate-400 hover:text-white transition-colors" size={20} />
-                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs text-white">
-                    3
-                  </span>
-                </motion.button> */}
-
-                {/* Profile Menu */}
+                {/* Profile Menu - Updated with indigo accents */}
                 <div className="relative" ref={profileMenuRef}>
                   <motion.button
-                    className="h-9 w-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center"
+                    className="h-9 w-9 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center"
                     whileHover={{ scale: 1.1 }}
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                   >
                     <FaUserCircle size={24} className="text-slate-400 hover:text-white transition-colors" />
                   </motion.button>
 
-                  {/* Dropdown Menu */}
+                  {/* Dropdown Menu - Updated background colors */}
                   <AnimatePresence>
                     {showProfileMenu && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute right-0 mt-2 w-48 bg-slate-800 border border-white/10 rounded-lg py-2 shadow-xl z-50"
+                        className="absolute right-0 mt-2 w-48 bg-slate-900 border border-indigo-500/20 rounded-lg py-2 shadow-xl z-50"
                       >
-                        <div className="px-4 py-2 border-b border-white/10">
+                        <div className="px-4 py-2 border-b border-indigo-500/10">
                           <div className="font-medium text-white">{localStorage.getItem("userName") || "User"}</div>
                           <div className="text-xs text-slate-400 truncate">
                             {localStorage.getItem("userEmail") || "user@example.com"}
@@ -312,23 +292,15 @@ const Navbar = () => {
 
                         <Link
                           to="/profile"
-                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-indigo-500/10 hover:text-white"
                           onClick={() => setShowProfileMenu(false)}
                         >
-                          <FaUserCircle className="text-blue-400" /> Your Profile
+                          <FaUserCircle className="text-indigo-400" /> Your Profile
                         </Link>
-
-                        {/* <Link
-                          to="/settings"
-                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
-                          onClick={() => setShowProfileMenu(false)}
-                        >
-                          <FaCog className="text-slate-400" /> Settings
-                        </Link> */}
 
                         <button
                           onClick={handleLogout}
-                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white border-t border-white/10 mt-1"
+                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-indigo-500/10 hover:text-white border-t border-indigo-500/10 mt-1"
                         >
                           <FaSignOutAlt className="text-red-400" /> Sign Out
                         </button>
@@ -341,7 +313,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Updated colors */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -357,7 +329,7 @@ const Navbar = () => {
                     key={link.name}
                     href={link.path}
                     onClick={(e) => handleProtectedNavigation(e, link.path)}
-                    className="flex items-center gap-2 text-slate-300 hover:text-white text-lg font-medium py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
+                    className="flex items-center gap-2 text-slate-300 hover:text-white text-lg font-medium py-2 px-4 rounded-lg hover:bg-indigo-500/10 transition-colors"
                     whileHover={{ x: 5 }}
                   >
                     <span className="text-xl">{link.icon}</span>
@@ -368,13 +340,13 @@ const Navbar = () => {
                   <>
                     <button
                       onClick={handleOpenSignIn}
-                      className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-lg font-medium text-center"
+                      className="w-full bg-gradient-to-r from-indigo-600 to-violet-500 text-white py-3 px-4 rounded-lg font-medium text-center"
                     >
                       Sign In
                     </button>
                     <button
                       onClick={handleOpenSignUp}
-                      className="w-full bg-white/10 text-white py-3 px-4 rounded-lg font-medium text-center"
+                      className="w-full bg-indigo-500/10 text-white py-3 px-4 rounded-lg font-medium text-center border border-indigo-500/20"
                     >
                       Sign Up
                     </button>
@@ -394,7 +366,7 @@ const Navbar = () => {
         </AnimatePresence>
       </div>
 
-      {/* Auth Modals */}
+      {/* Auth Modals remain unchanged */}
       <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} onSwitchToSignUp={handleOpenSignUp} />
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} onSwitchToSignIn={handleOpenSignIn} />
     </motion.nav>
