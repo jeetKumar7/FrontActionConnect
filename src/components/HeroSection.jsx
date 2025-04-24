@@ -310,56 +310,65 @@ export default function HeroSection() {
 // Interactive Feature Showcase Component
 const FeatureShowcase = () => {
   const [activeFeature, setActiveFeature] = useState(0);
+  const navigate = useNavigate(); // Add this to use navigation
 
-  const features = [
-    {
-      id: "map",
-      title: "Interactive Map",
-      description:
-        "Discover local initiatives and connect with like-minded individuals in your area working on environmental and social causes.",
-      icon: FaMapMarkerAlt,
-      color: "from-blue-600 to-cyan-500",
-    },
-    {
-      id: "community",
-      title: "Community Network",
-      description:
-        "Join a vibrant community of change-makers sharing ideas, resources, and supporting each other's initiatives.",
-      icon: FaUsers,
-      color: "from-purple-600 to-pink-500",
-    },
-    {
-      id: "discussions",
-      title: "Live Chat Channels",
-      description: "Engage in real-time discussions with topic experts and passionate advocates in dedicated channels.",
-      icon: FaComments,
-      color: "from-indigo-600 to-blue-500",
-    },
-    {
-      id: "personalization",
-      title: "Personalized Causes",
-      description:
-        "Find your passion with our interactive quiz and get matched with causes that align with your values.",
-      icon: FaLightbulb,
-      color: "from-green-600 to-emerald-500",
-    },
-  ];
-
-  const nextFeature = () => {
-    setActiveFeature((prev) => (prev + 1) % features.length);
+  // Map feature IDs to their respective routes
+  const featureRoutes = {
+    map: "/map",
+    community: "/community",
+    discussions: "/community/channels",
+    personalization: "/passion",
   };
 
-  const prevFeature = () => {
-    setActiveFeature((prev) => (prev - 1 + features.length) % features.length);
-  };
+  // Check if user is authenticated for protected routes
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
 
-  // Auto-rotate through features
+  // Check authentication on mount
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextFeature();
-    }, 5000); // Change every 5 seconds
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
 
-    return () => clearInterval(interval);
+  // Handle navigation with auth check
+  const handleFeatureClick = (featureId) => {
+    const route = featureRoutes[featureId];
+
+    // These routes require authentication
+    const requiresAuth = ["/passion", "/community", "/map", "/community/channels"];
+
+    if (requiresAuth.includes(route) && !isAuthenticated) {
+      // Show signup modal for non-authenticated users
+      setShowSignUp(true);
+    } else {
+      // Navigate to the feature page
+      navigate(route);
+    }
+  };
+
+  // Generate random nodes for the network visualization
+  const generateNodes = (count) => {
+    return Array.from({ length: count }).map((_, i) => {
+      const angle = (i / count) * Math.PI * 2;
+      const distance = 140 + (i % 3) * 40;
+      const x = Math.cos(angle) * distance + 250;
+      const y = Math.sin(angle) * distance + 250;
+      const size = 4 + Math.random() * 4;
+
+      // Assign different colors based on index
+      const colors = ["blue", "indigo", "violet", "purple"];
+      const colorIndex = i % colors.length;
+
+      return { x, y, size, color: colors[colorIndex], index: i };
+    });
+  };
+
+  const nodes = generateNodes(12);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -427,6 +436,7 @@ const FeatureShowcase = () => {
                     className="mt-auto self-start px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center gap-2 text-sm"
                     whileHover={{ scale: 1.05, x: 5 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => handleFeatureClick(feature.id)}
                   >
                     <span>Explore Feature</span>
                     <FaArrowRight className="text-xs" />
@@ -470,6 +480,9 @@ const FeatureShowcase = () => {
           <FaArrowRight className="text-xs" />
         </motion.button>
       </div>
+
+      {/* Add SignUpModal for authentication */}
+      <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} />
     </div>
   );
 };
