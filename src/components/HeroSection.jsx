@@ -310,6 +310,7 @@ export default function HeroSection() {
 // Interactive Feature Showcase Component
 const FeatureShowcase = () => {
   const [activeFeature, setActiveFeature] = useState(0);
+  const navigate = useNavigate(); // Use React Router's navigate function
 
   const features = [
     {
@@ -319,6 +320,7 @@ const FeatureShowcase = () => {
         "Discover local initiatives and connect with like-minded individuals in your area working on environmental and social causes.",
       icon: FaMapMarkerAlt,
       color: "from-blue-600 to-cyan-500",
+      path: "/map", // Add a path for navigation
     },
     {
       id: "community",
@@ -327,6 +329,7 @@ const FeatureShowcase = () => {
         "Join a vibrant community of change-makers sharing ideas, resources, and supporting each other's initiatives.",
       icon: FaUsers,
       color: "from-purple-600 to-pink-500",
+      path: "/community", // Add a path for navigation
     },
     {
       id: "discussions",
@@ -334,6 +337,7 @@ const FeatureShowcase = () => {
       description: "Engage in real-time discussions with topic experts and passionate advocates in dedicated channels.",
       icon: FaComments,
       color: "from-indigo-600 to-blue-500",
+      path: "/discussions", // Add a path for navigation
     },
     {
       id: "personalization",
@@ -342,6 +346,7 @@ const FeatureShowcase = () => {
         "Find your passion with our interactive quiz and get matched with causes that align with your values.",
       icon: FaLightbulb,
       color: "from-green-600 to-emerald-500",
+      path: "/personalization", // Add a path for navigation
     },
   ];
 
@@ -361,6 +366,13 @@ const FeatureShowcase = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleExploreFeature = () => {
+    const feature = features[activeFeature];
+    if (feature.path) {
+      navigate(feature.path); // Navigate to the feature's path
+    }
+  };
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -395,27 +407,6 @@ const FeatureShowcase = () => {
                   <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center border border-white/20">
                     <feature.icon className="text-white text-xl" />
                   </div>
-
-                  {/* Interactive elements that respond to mouse movement */}
-                  {[...Array(6)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-2 h-2 rounded-full bg-white/60"
-                      style={{
-                        left: `${20 + i * 15}%`,
-                        top: `${30 + Math.sin(i) * 15}%`,
-                      }}
-                      animate={{
-                        y: [0, -10 - i * 2, 0],
-                        opacity: [0.3, 0.7, 0.3],
-                      }}
-                      transition={{
-                        duration: 3 + i,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    />
-                  ))}
                 </div>
 
                 {/* Feature content */}
@@ -424,6 +415,7 @@ const FeatureShowcase = () => {
                   <p className="text-white/80 text-sm leading-relaxed mb-4">{feature.description}</p>
 
                   <motion.button
+                    onClick={handleExploreFeature} // Add the click handler here
                     className="mt-auto self-start px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center gap-2 text-sm"
                     whileHover={{ scale: 1.05, x: 5 }}
                     whileTap={{ scale: 0.95 }}
@@ -438,13 +430,12 @@ const FeatureShowcase = () => {
       </AnimatePresence>
 
       {/* Navigation arrows */}
-      <div className="absolute top-120 left-0 right-0 flex justify-between items-center px-4 z-50">
+      <div className="absolute bottom-6 left-0 right-0 flex justify-between items-center px-4 z-50">
         <motion.button
           className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
           onClick={prevFeature}
           whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
           whileTap={{ scale: 0.9 }}
-          style={{ zIndex: 50 }}
         >
           <FaArrowLeft className="text-xs" />
         </motion.button>
@@ -458,7 +449,6 @@ const FeatureShowcase = () => {
                 activeFeature === idx ? "bg-white w-6" : "bg-white/30"
               }`}
               onClick={() => setActiveFeature(idx)}
-              style={{ zIndex: 50 }}
             />
           ))}
         </div>
@@ -468,7 +458,6 @@ const FeatureShowcase = () => {
           onClick={nextFeature}
           whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
           whileTap={{ scale: 0.9 }}
-          style={{ zIndex: 50 }}
         >
           <FaArrowRight className="text-xs" />
         </motion.button>
