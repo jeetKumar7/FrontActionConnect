@@ -218,18 +218,6 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center">
-            {/* Search Bar */}
-            <div className="relative mr-4 w-60">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaSearch className="h-3.5 w-3.5 text-slate-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search for causes..."
-                className="w-full py-2 pl-10 pr-3 bg-slate-800/50 border border-indigo-500/10 rounded-md text-sm text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/30"
-              />
-            </div>
-
             {/* Main Navigation */}
             <div className="flex items-center">
               {navLinks.map((link) => (
@@ -269,14 +257,6 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                {/* Notification */}
-                <motion.button
-                  className="h-8 w-8 rounded-md bg-slate-800/50 border border-indigo-500/10 flex items-center justify-center"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <FaBell size={16} className="text-slate-400" />
-                </motion.button>
-
                 {/* Profile */}
                 <div className="relative" ref={profileMenuRef}>
                   <motion.button
