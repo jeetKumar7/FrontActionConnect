@@ -236,7 +236,94 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Auth & Profile Section - No changes needed */}
+          {/* Auth & Profile Section */}
+          <div className="hidden lg:flex items-center gap-3 ml-4">
+            {!isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <motion.button
+                  onClick={handleOpenSignIn}
+                  className="text-slate-300 hover:text-white text-sm font-medium px-3 py-1.5 hover:bg-white/5 rounded-md transition-colors"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  Sign in
+                </motion.button>
+                <motion.button
+                  onClick={handleOpenSignUp}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  Get Started
+                </motion.button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                {/* Notification */}
+                <motion.button
+                  className="h-8 w-8 rounded-md bg-slate-800/50 border border-indigo-500/10 flex items-center justify-center"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <FaBell size={16} className="text-slate-400" />
+                </motion.button>
+
+                {/* Profile */}
+                <div className="relative" ref={profileMenuRef}>
+                  <motion.button
+                    className="h-8 w-8 rounded-md bg-slate-800/50 border border-indigo-500/10 flex items-center justify-center"
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  >
+                    <FaUserCircle size={16} className="text-slate-400" />
+                  </motion.button>
+
+                  {/* Dropdown Menu */}
+                  <AnimatePresence>
+                    {showProfileMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 5 }}
+                        className="absolute right-0 mt-2 w-52 bg-slate-900 border border-indigo-500/15 rounded-md py-1.5 shadow-2xl z-50"
+                      >
+                        <div className="px-3 py-2 border-b border-indigo-500/10">
+                          <div className="font-medium text-white">{localStorage.getItem("userName") || "User"}</div>
+                          <div className="text-xs text-slate-400 truncate">
+                            {localStorage.getItem("userEmail") || "user@example.com"}
+                          </div>
+                        </div>
+
+                        {/* Profile Links */}
+                        <div className="py-1">
+                          <Link
+                            to="/profile"
+                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-indigo-500/10"
+                            onClick={() => setShowProfileMenu(false)}
+                          >
+                            <FaUserCircle className="text-indigo-400 text-xs" /> Your Profile
+                          </Link>
+                          <Link
+                            to="/settings"
+                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-indigo-500/10"
+                            onClick={() => setShowProfileMenu(false)}
+                          >
+                            <FaCog className="text-indigo-400 text-xs" /> Settings
+                          </Link>
+                        </div>
+
+                        <div className="border-t border-indigo-500/10 mt-1 pt-1">
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-indigo-500/10"
+                          >
+                            <FaSignOutAlt className="text-red-400 text-xs" /> Sign Out
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Mobile Menu Button - No changes needed */}
           <button
