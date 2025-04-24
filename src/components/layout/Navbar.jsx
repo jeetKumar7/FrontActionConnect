@@ -237,7 +237,7 @@ const Navbar = () => {
                   <Link
                     to={link.path}
                     onClick={(e) => {
-                      // Only prevent default for protected routes
+                      // Only prevent default for protected routess
                       const requiresAuth = ["/passion", "/community", "/map"];
                       if (requiresAuth.includes(link.path) && !isAuthenticated) {
                         handleProtectedNavigation(e, link.path);
