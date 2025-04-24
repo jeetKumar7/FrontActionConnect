@@ -109,7 +109,7 @@ export default function HeroSection() {
         {/* Background video */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           {!isMobile && (
-            <video className="absolute w-full h-full object-cover opacity-20" autoPlay muted loop playsInline>
+            <video className="absolute w-full h-full object-cover opacity-70" autoPlay muted loop playsInline>
               <source src="/actionbg.mp4" type="video/mp4" />
             </video>
           )}
