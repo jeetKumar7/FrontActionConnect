@@ -438,7 +438,7 @@ const FeatureShowcase = () => {
       </AnimatePresence>
 
       {/* Navigation arrows */}
-      <div className="absolute top-16 left-0 right-0 flex justify-between items-center px-4">
+      <div className="absolute top-40 left-0 right-0 flex justify-between items-center px-4">
         <motion.button
           className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:bg-white/20"
           onClick={prevFeature}
