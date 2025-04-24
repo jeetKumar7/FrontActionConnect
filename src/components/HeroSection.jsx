@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FaLeaf, FaHandsHelping, FaChartLine, FaUsers } from "react-icons/fa";
+import { FaHandsHelping, FaUsers, FaChartLine, FaArrowDown } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { SignUpModal } from "./auth/AuthModals";
 
@@ -8,7 +8,7 @@ export default function HeroSection() {
   const [showSignUp, setShowSignUp] = useState(false);
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
 
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -16,8 +16,10 @@ export default function HeroSection() {
     offset: ["start start", "end start"],
   });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -20]);
+  const imageY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -15]);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.6]);
 
   // Authentication check
   useEffect(() => {
@@ -31,17 +33,15 @@ export default function HeroSection() {
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
-  // Mouse tracking
+  // Mouse tracking with improved smoothing
   useEffect(() => {
     const handleMouseMove = (e) => {
-      // Apply smoothing by using a smaller fraction of the mouse movement
       setMousePosition((prev) => ({
-        x: prev.x + (e.clientX / window.innerWidth - prev.x) * 0.05,
-        y: prev.y + (e.clientY / window.innerHeight - prev.y) * 0.05,
+        x: prev.x + (e.clientX / window.innerWidth - prev.x) * 0.03,
+        y: prev.y + (e.clientY / window.innerHeight - prev.y) * 0.03,
       }));
     };
 
-    // Add a gentle animation frame loop for smoother updates
     let animationFrameId;
     const updateMousePosition = () => {
       animationFrameId = requestAnimationFrame(updateMousePosition);
@@ -63,112 +63,119 @@ export default function HeroSection() {
     }
   };
 
+  // Generate random nodes for the network visualization
+  const generateNodes = (count) => {
+    return Array.from({ length: count }).map((_, i) => {
+      const angle = (i / count) * Math.PI * 2;
+      const distance = 140 + (i % 3) * 40;
+      const x = Math.cos(angle) * distance + 250;
+      const y = Math.sin(angle) * distance + 250;
+      const size = 4 + Math.random() * 4;
+
+      // Assign different colors based on index
+      const colors = ["blue", "indigo", "violet", "purple"];
+      const colorIndex = i % colors.length;
+
+      return { x, y, size, color: colors[colorIndex], index: i };
+    });
+  };
+
+  const nodes = generateNodes(12);
+
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-indigo-900 to-purple-950"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80"
     >
-      {/* Nature-inspired background elements */}
+      {/* Professional background elements */}
       <div className="absolute inset-0 z-0">
-        {/* Organic patterns */}
-        <svg className="absolute opacity-5 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="leaf-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-              <path d="M20,20 Q40,5 60,20 T100,20 Q120,5 140,20 T180,20" stroke="white" fill="none" strokeWidth="1" />
-              <path d="M20,50 Q40,35 60,50 T100,50 Q120,35 140,50 T180,50" stroke="white" fill="none" strokeWidth="1" />
-              <path d="M20,80 Q40,65 60,80 T100,80 Q120,65 140,80 T180,80" stroke="white" fill="none" strokeWidth="1" />
-              <path
-                d="M20,110 Q40,95 60,110 T100,110 Q120,95 140,110 T180,110"
-                stroke="white"
-                fill="none"
-                strokeWidth="1"
-              />
-              <path
-                d="M20,140 Q40,125 60,140 T100,140 Q120,125 140,140 T180,140"
-                stroke="white"
-                fill="none"
-                strokeWidth="1"
-              />
-              <path
-                d="M20,170 Q40,155 60,170 T100,170 Q120,155 140,170 T180,170"
-                stroke="white"
-                fill="none"
-                strokeWidth="1"
-              />
-            </pattern>
-          </defs>
-          <rect x="0" y="0" width="100%" height="100%" fill="url(#leaf-pattern)" />
-        </svg>
-
-        {/* Dynamic lighting effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-
-        {/* Update the glowing background with smoother transitions */}
+        {/* Grid pattern */}
         <motion.div
-          className="absolute w-[800px] h-[800px] rounded-full blur-[180px] opacity-20 pointer-events-none"
+          className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"
+          style={{ y: backgroundY }}
+        ></motion.div>
+
+        {/* Subtle noise texture */}
+        <div className="absolute inset-0 opacity-[0.015] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]">
+          <div className="absolute inset-0 bg-noise"></div>
+        </div>
+
+        {/* Gradient accent lights */}
+        <div className="absolute -left-1/4 top-1/4 w-1/2 aspect-square rounded-full bg-indigo-900/20 blur-[120px]"></div>
+        <div className="absolute -right-1/4 bottom-1/4 w-1/2 aspect-square rounded-full bg-violet-900/20 blur-[120px]"></div>
+
+        {/* Responsive glow following cursor */}
+        <motion.div
+          className="absolute w-[600px] h-[600px] rounded-full blur-[140px] opacity-[0.07] pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle, rgba(74, 222, 128, 0.4) 0%, rgba(5, 150, 105, 0.2) 40%, transparent 70%)",
-            x: useTransform(() => mousePosition.x * window.innerWidth - 400),
-            y: useTransform(() => mousePosition.y * window.innerHeight - 400),
+              "radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(79, 70, 229, 0.2) 40%, transparent 70%)",
+            x: useTransform(() => mousePosition.x * window.innerWidth - 300),
+            y: useTransform(() => mousePosition.y * window.innerHeight - 300),
           }}
           transition={{
             type: "spring",
-            stiffness: 20, // Lower stiffness for smoother movement
-            damping: 40, // Higher damping to reduce oscillation
-            mass: 2, // Increase mass to make it feel heavier/less reactive
+            stiffness: 10,
+            damping: 50,
+            mass: 3,
           }}
         />
       </div>
 
-      {/* Content with asymmetric layout */}
+      {/* Main content layout */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-screen flex flex-col lg:flex-row items-center justify-between py-12">
-        {/* Left: Main content */}
-        <motion.div className="w-full lg:w-1/2 lg:pr-8 mb-10 lg:mb-0 z-10" style={{ y: contentY }}>
+        {/* Left: Content section */}
+        <motion.div className="w-full lg:w-1/2 lg:pr-8 mb-10 lg:mb-0 z-10" style={{ y: contentY, opacity }}>
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="max-w-lg"
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-blue-400/10 to-purple-400/10 border border-blue-400/20 mb-6">
-              <span className="text-blue-300 text-sm font-medium">Our Mission</span>
+            {/* Badge */}
+            <div className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-6">
+              <span className="text-indigo-300 text-sm font-medium">Social Impact Platform</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
-              Discover, <span className="text-blue-300">Connect</span>, and Drive Meaningful Change
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
+              Connect, <span className="text-indigo-400">Inspire</span>, and Catalyze Change
             </h1>
 
-            <p className="mt-6 text-lg text-gray-200/90 leading-relaxed max-w-lg">
-              We bring together passionate individuals with diverse social causes, sparking conversations that deepen
-              understanding and transform shared vision into collective impact.
+            {/* Description */}
+            <p className="mt-6 text-lg text-slate-300/90 leading-relaxed max-w-lg">
+              We bring together passionate individuals and diverse social causes, sparking meaningful conversations that
+              transform shared vision into measurable societal impact.
             </p>
 
-            {/* CTA buttons with new design */}
+            {/* CTA buttons */}
             <div className="mt-10 flex flex-wrap gap-4 items-center">
               <motion.button
                 onClick={handleGetStarted}
-                className="group relative bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-md font-medium shadow-xl shadow-green-900/30 hover:shadow-green-600/20 overflow-hidden"
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: "0 20px 25px -5px rgba(4, 120, 87, 0.2)",
-                }}
+                className="group relative bg-indigo-600 text-white px-8 py-4 rounded-md font-medium shadow-lg shadow-indigo-900/30 hover:bg-indigo-700 transition-all"
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="relative z-10">
-                  {isAuthenticated ? "Find Your Passion" : "Join The Movement"}
-                  <span className="group-hover:translate-x-1 inline-block transition-transform">→</span>
+                <span className="relative z-10 flex items-center">
+                  {isAuthenticated ? "Find Your Cause" : "Join The Movement"}
+                  <motion.span
+                    className="ml-1.5 inline-block"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      ease: "easeInOut",
+                    }}
+                  >
+                    →
+                  </motion.span>
                 </span>
-                <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500"
-                  initial={{ x: "100%", opacity: 0 }}
-                  whileHover={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
               </motion.button>
 
               <Link to="/learn-more">
                 <motion.button
-                  className="text-white border border-white/20 hover:border-white/40 px-8 py-4 rounded-md font-medium transition-all"
+                  className="text-white border border-slate-700 hover:border-slate-500 px-8 py-4 rounded-md font-medium transition-all"
                   whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -177,11 +184,11 @@ export default function HeroSection() {
               </Link>
             </div>
 
-            {/* Stats with updated focus on diverse social causes */}
+            {/* Stats section with professional styling */}
             <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8">
               {[
-                { icon: FaHandsHelping, value: "10k+", label: "Causes Supported", color: "blue" },
-                { icon: FaUsers, value: "500+", label: "Community Actions", color: "indigo" },
+                { icon: FaHandsHelping, value: "10k+", label: "Causes Supported", color: "indigo" },
+                { icon: FaUsers, value: "500+", label: "Community Actions", color: "violet" },
                 { icon: FaChartLine, value: "95%", label: "Success Rate", color: "purple" },
               ].map((stat, index) => (
                 <motion.div
@@ -191,12 +198,12 @@ export default function HeroSection() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1 + index * 0.15, duration: 0.6 }}
                 >
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center bg-${stat.color}-500/20`}>
-                    <stat.icon className={`text-${stat.color}-400 text-xl`} />
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-indigo-500/10">
+                    <stat.icon className="text-indigo-400 text-xl" />
                   </div>
                   <div>
                     <span className="block font-bold text-2xl text-white">{stat.value}</span>
-                    <span className="block text-sm text-gray-300/80">{stat.label}</span>
+                    <span className="block text-sm text-slate-400">{stat.label}</span>
                   </div>
                 </motion.div>
               ))}
@@ -204,38 +211,42 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Visual element */}
+        {/* Right: Network visualization */}
         <motion.div className="hidden lg:block w-full lg:w-1/2 lg:pl-8 relative" style={{ y: imageY }}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
             className="relative h-[500px] w-[500px] mx-auto"
           >
-            {/* Earth visualization */}
-            <div className="absolute inset-0 rounded-full border-[15px] border-green-500/10 animate-spin-slow"></div>
+            {/* Network visualization */}
+            <div className="absolute inset-0 rounded-full border-[12px] border-indigo-500/10 animate-spin-slow"></div>
 
-            <div className="absolute inset-[40px] rounded-full border-[2px] border-green-400/20 animate-reverse-spin"></div>
+            <div className="absolute inset-[30px] rounded-full border-[1px] border-indigo-400/20 animate-reverse-spin"></div>
 
-            <div className="absolute inset-[80px] rounded-full bg-gradient-to-br from-emerald-600/40 via-teal-500/20 to-green-800/30 backdrop-blur-sm shadow-2xl">
-              <div className="absolute inset-0 bg-[url('../public/earth_texture.png')] bg-cover opacity-20 mix-blend-overlay rounded-full"></div>
+            <div className="absolute inset-[60px] rounded-full bg-gradient-to-br from-indigo-600/20 via-violet-500/10 to-purple-800/20 backdrop-blur-sm shadow-2xl">
+              <div className="absolute inset-0 rounded-full opacity-20 mix-blend-overlay bg-network-texture"></div>
             </div>
 
-            {/* Floating elements with reduced movement */}
-            {[...Array(5)].map((_, i) => (
+            {/* Nodes */}
+            {nodes.map((node) => (
               <motion.div
-                key={i}
-                className="absolute w-3 h-3 rounded-full bg-green-300"
+                key={node.index}
+                className={`absolute w-${Math.floor(node.size)} h-${Math.floor(node.size)} rounded-full bg-${
+                  node.color
+                }-400`}
                 style={{
-                  left: `${25 + Math.random() * 50}%`,
-                  top: `${25 + Math.random() * 50}%`,
+                  left: node.x,
+                  top: node.y,
+                  width: node.size,
+                  height: node.size,
                 }}
                 animate={{
-                  y: [0, -10, 0], // Reduced movement range from -20 to -10
-                  opacity: [0.4, 0.7, 0.4], // Softer opacity changes
+                  scale: [1, 1.2, 1],
+                  opacity: [0.6, 1, 0.6],
                 }}
                 transition={{
-                  duration: 4 + Math.random() * 3, // Slower, longer animations
+                  duration: 3 + Math.random() * 2,
                   repeat: Infinity,
                   delay: Math.random() * 2,
                   ease: "easeInOut",
@@ -245,30 +256,57 @@ export default function HeroSection() {
 
             {/* Connection lines */}
             <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <line x1="50%" y1="0%" x2="80%" y2="30%" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="1" />
-              <line x1="90%" y1="50%" x2="30%" y2="80%" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="1" />
-              <line x1="20%" y1="40%" x2="70%" y2="70%" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="1" />
+              {nodes.map((source, i) => (
+                <motion.line
+                  key={i}
+                  x1={source.x + source.size / 2}
+                  y1={source.y + source.size / 2}
+                  x2={nodes[(i + 3) % nodes.length].x + nodes[(i + 3) % nodes.length].size / 2}
+                  y2={nodes[(i + 3) % nodes.length].y + nodes[(i + 3) % nodes.length].size / 2}
+                  stroke={`rgba(120, 120, 255, ${0.1 + Math.random() * 0.1})`}
+                  strokeWidth="1"
+                  strokeDasharray="4,4"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{
+                    pathLength: 1,
+                    opacity: [0.3, 0.6, 0.3],
+                  }}
+                  transition={{
+                    duration: 4 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
             </svg>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Floating message */}
+      {/* Professional scroll indicator */}
       <motion.div
-        className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-xs text-gray-300/70 py-2 px-4 rounded-full bg-white/5 backdrop-blur-sm z-50"
-        initial={{ opacity: 0, y: 20 }}
+        className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 text-xs text-indigo-300/90 py-2 px-4 rounded-full bg-indigo-900/10 backdrop-blur-sm border border-indigo-500/10 z-50"
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2, duration: 0.5 }}
         style={{ opacity: useTransform(scrollYProgress, [0, 0.05], [1, 0]) }}
       >
         <motion.div
-          animate={{ y: [0, -3, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="text-green-400"
+          animate={{
+            y: [0, 3, 0],
+            opacity: [0.7, 1, 0.7],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="text-indigo-400"
         >
-          ↓
+          <FaArrowDown />
         </motion.div>
-        <span>Scroll to discover how we make a difference</span>
+        <span>Discover Our Impact</span>
       </motion.div>
 
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} />
