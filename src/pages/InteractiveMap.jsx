@@ -679,7 +679,7 @@ const InteractiveMap = () => {
                         <span>Add Initiative</span>
                       </motion.button>
                     ) : (
-                      <Link to="/login" className="text-sm text-blue-400 hover:text-blue-300">
+                      <Link to="/" className="text-sm text-blue-400 hover:text-blue-300">
                         Login to create initiatives
                       </Link>
                     )}
