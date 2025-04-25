@@ -122,8 +122,9 @@ export default function HeroSection() {
               />
             </video>
           )}
-          {/* Updated gradient overlay with fresh colors */}
-          <div className="absolute inset-0 bg-gradient-to-b from-cyan-950/80 via-slate-900/70 to-fuchsia-900/70"></div>
+
+          {/* Simple black overlay for better video visibility */}
+          <div className="absolute inset-0 bg-black/50"></div>
         </div>
 
         {/* Keep noise texture */}
