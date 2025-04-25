@@ -218,49 +218,6 @@ export default function HeroSection() {
             </div>
           </motion.div>
         </motion.div>
-
-        {/* Right side feature showcase */}
-        <motion.div className="hidden lg:block w-full lg:w-1/2 lg:pl-8 relative" style={{ y: imageY }}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-            className="relative h-[500px] w-full max-w-[500px] mx-auto"
-          >
-            {/* Updated showcase container with fresh gradient */}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-800/30 via-teal-700/20 to-amber-700/30 backdrop-blur-sm shadow-2xl border border-cyan-400/10 overflow-hidden">
-              {/* Updated header */}
-              <div className="absolute top-0 left-0 right-0 px-6 py-4 bg-gradient-to-b from-cyan-800/80 to-transparent z-10">
-                <h3 className="text-xl font-medium text-white/90">Platform Features</h3>
-                <div className="h-0.5 w-16 bg-cyan-400/60 mt-1"></div>
-              </div>
-
-              {/* Feature showcase content stays the same */}
-              <div className="absolute inset-0 pt-16 px-6 pb-16">
-                <FeatureShowcase />
-              </div>
-            </div>
-
-            {/* Updated decorative elements */}
-            <motion.div
-              className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-500/30 blur-xl"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.5, 0.3],
-              }}
-              transition={{ duration: 7, repeat: Infinity }}
-            />
-
-            <motion.div
-              className="absolute -bottom-10 -left-5 w-28 h-28 rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-400/20 blur-xl"
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.2, 0.4, 0.2],
-              }}
-              transition={{ duration: 8, repeat: Infinity, delay: 1 }}
-            />
-          </motion.div>
-        </motion.div>
       </div>
 
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} />
