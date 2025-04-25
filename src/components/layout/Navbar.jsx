@@ -161,10 +161,11 @@ const Navbar = () => {
   ];
 
   return (
-    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-gradient-to-r from-slate-950/95 to-indigo-950/95 backdrop-blur-xl border-b border-indigo-500/15 shadow-md shadow-black/10">
+    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 shadow-md shadow-black/10">
+      {/* Container remains the same */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          {/* Logo - No changes needed */}
+          {/* Logo simplified */}
           <Link to="/" className="flex-shrink-0">
             <motion.div
               className="flex items-center gap-2.5"
@@ -173,7 +174,7 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="relative h-9 w-9 md:h-10 md:w-10 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 overflow-hidden">
+              <div className="relative h-9 w-9 md:h-10 md:w-10 rounded-lg bg-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-900/20 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,transparent_70%)]"></div>
                 <svg
                   viewBox="0 0 24 24"
@@ -217,14 +218,14 @@ const Navbar = () => {
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-bold text-white tracking-tight">ActionConnect</span>
-                <span className="text-[10px] text-indigo-400/80 font-medium uppercase tracking-wider -mt-1">
+                <span className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider -mt-1">
                   Impact Platform
                 </span>
               </div>
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Updated for all caps and single line */}
+          {/* Navigation links simplified */}
           <div className="hidden lg:flex items-center">
             <div className="flex items-center">
               {navLinks.map((link) => (
@@ -232,14 +233,13 @@ const Navbar = () => {
                   <Link
                     to={link.path}
                     onClick={(e) => {
-                      // Only prevent default for protected routes
                       const requiresAuth = ["/passion", "/community", "/map"];
                       if (requiresAuth.includes(link.path) && !isAuthenticated) {
                         e.preventDefault();
                         handleProtectedNavigation(e, link.path);
                       }
                     }}
-                    className="flex items-center text-left w-full text-slate-200 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
+                    className="flex items-center text-left w-full text-slate-300 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
                   >
                     <span>{link.name}</span>
                   </Link>
@@ -248,7 +248,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Auth & Profile Section */}
+          {/* Auth buttons simplified */}
           <div className="hidden lg:flex items-center gap-3 ml-4">
             {!isAuthenticated ? (
               <div className="flex items-center gap-2">
@@ -261,7 +261,7 @@ const Navbar = () => {
                 </motion.button>
                 <motion.button
                   onClick={handleOpenSignUp}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
                   whileHover={{ scale: 1.02 }}
                 >
                   Get Started
@@ -271,7 +271,7 @@ const Navbar = () => {
               <div className="flex items-center gap-3">
                 {/* Notification */}
                 <motion.button
-                  className="h-8 w-8 rounded-md bg-slate-800/50 border border-indigo-500/10 flex items-center justify-center"
+                  className="h-8 w-8 rounded-md bg-slate-800 border border-white/10 flex items-center justify-center"
                   whileHover={{ scale: 1.05 }}
                 >
                   <FaBell size={16} className="text-slate-400" />
@@ -280,23 +280,23 @@ const Navbar = () => {
                 {/* Profile */}
                 <div className="relative" ref={profileMenuRef}>
                   <motion.button
-                    className="h-8 w-8 rounded-md bg-slate-800/50 border border-indigo-500/10 flex items-center justify-center"
+                    className="h-8 w-8 rounded-md bg-slate-800 border border-white/10 flex items-center justify-center"
                     whileHover={{ scale: 1.05 }}
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                   >
                     <FaUserCircle size={16} className="text-slate-400" />
                   </motion.button>
 
-                  {/* Dropdown Menu */}
+                  {/* Dropdown Menu simplified */}
                   <AnimatePresence>
                     {showProfileMenu && (
                       <motion.div
                         initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 5 }}
-                        className="absolute right-0 mt-2 w-52 bg-slate-900 border border-indigo-500/15 rounded-md py-1.5 shadow-2xl z-50"
+                        className="absolute right-0 mt-2 w-52 bg-slate-800 border border-white/10 rounded-md py-1.5 shadow-2xl z-50"
                       >
-                        <div className="px-3 py-2 border-b border-indigo-500/10">
+                        <div className="px-3 py-2 border-b border-white/10">
                           <div className="font-medium text-white">{localStorage.getItem("userName") || "User"}</div>
                           <div className="text-xs text-slate-400 truncate">
                             {localStorage.getItem("userEmail") || "user@example.com"}
@@ -307,24 +307,24 @@ const Navbar = () => {
                         <div className="py-1">
                           <Link
                             to="/profile"
-                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-indigo-500/10"
+                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
                             onClick={() => setShowProfileMenu(false)}
                           >
-                            <FaUserCircle className="text-indigo-400 text-xs" /> Your Profile
+                            <FaUserCircle className="text-cyan-400 text-xs" /> Your Profile
                           </Link>
                           <Link
                             to="/settings"
-                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-indigo-500/10"
+                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
                             onClick={() => setShowProfileMenu(false)}
                           >
-                            <FaCog className="text-indigo-400 text-xs" /> Settings
+                            <FaCog className="text-cyan-400 text-xs" /> Settings
                           </Link>
                         </div>
 
-                        <div className="border-t border-indigo-500/10 mt-1 pt-1">
+                        <div className="border-t border-white/10 mt-1 pt-1">
                           <button
                             onClick={handleLogout}
-                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-indigo-500/10"
+                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
                           >
                             <FaSignOutAlt className="text-red-400 text-xs" /> Sign Out
                           </button>
@@ -337,17 +337,17 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button - No changes needed */}
+          {/* Mobile menu button simplified */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 rounded-md text-white hover:bg-indigo-500/10 transition-colors"
+            className="lg:hidden p-2 rounded-md text-white hover:bg-white/5 transition-colors"
             aria-label="Toggle menu"
           >
             {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
           </button>
         </div>
 
-        {/* Mobile Menu - Updated for all caps and single line */}
+        {/* Mobile menu simplified */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -355,7 +355,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden mt-2 pb-3 border-t border-indigo-500/10 pt-2"
+              className="lg:hidden mt-2 pb-3 border-t border-white/10 pt-2"
             >
               <div className="flex flex-col space-y-1 px-2">
                 {navLinks.map((link) => (
@@ -363,33 +363,32 @@ const Navbar = () => {
                     <Link
                       to={link.path}
                       onClick={(e) => {
-                        // Only prevent default for protected routes
                         const requiresAuth = ["/passion", "/community", "/map"];
                         if (requiresAuth.includes(link.path) && !isAuthenticated) {
                           e.preventDefault();
                           handleProtectedNavigation(e, link.path);
                         }
                       }}
-                      className="flex items-center text-left w-full text-slate-200 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
+                      className="flex items-center text-left w-full text-slate-300 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
                     >
                       <span>{link.name}</span>
                     </Link>
                   </motion.div>
                 ))}
 
-                {/* Mobile Divider - No changes needed */}
-                <div className="border-t border-indigo-500/10 my-2 pt-2">
+                {/* Mobile divider */}
+                <div className="border-t border-white/10 my-2 pt-2">
                   {!isAuthenticated ? (
                     <div className="flex flex-col gap-2">
                       <button
                         onClick={handleOpenSignIn}
-                        className="w-full bg-slate-800/50 text-white py-2.5 px-3 rounded-md font-medium text-center text-sm border border-indigo-500/10"
+                        className="w-full bg-slate-800 text-white py-2.5 px-3 rounded-md font-medium text-center text-sm border border-white/10"
                       >
                         Sign In
                       </button>
                       <button
                         onClick={handleOpenSignUp}
-                        className="w-full bg-indigo-600 text-white py-2.5 px-3 rounded-md font-medium text-center text-sm"
+                        className="w-full bg-cyan-600 text-white py-2.5 px-3 rounded-md font-medium text-center text-sm"
                       >
                         Get Started
                       </button>
@@ -400,7 +399,7 @@ const Navbar = () => {
                         to="/profile"
                         className="flex items-center gap-2 text-slate-300 hover:text-white text-sm font-medium py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
                       >
-                        <FaUserCircle className="text-indigo-400" /> Your Profile
+                        <FaUserCircle className="text-cyan-400" /> Your Profile
                       </Link>
                       <button
                         onClick={handleLogout}
@@ -417,7 +416,7 @@ const Navbar = () => {
         </AnimatePresence>
       </div>
 
-      {/* Auth Modals - No changes needed */}
+      {/* Auth Modals remain unchanged */}
       <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} onSwitchToSignUp={handleOpenSignUp} />
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} onSwitchToSignIn={handleOpenSignIn} />
     </motion.nav>
