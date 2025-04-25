@@ -44,28 +44,6 @@ export default function HeroSection() {
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
-  // Mouse tracking with improved smoothing
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition((prev) => ({
-        x: prev.x + (e.clientX / window.innerWidth - prev.x) * 0.03,
-        y: prev.y + (e.clientY / window.innerHeight - prev.y) * 0.03,
-      }));
-    };
-
-    let animationFrameId;
-    const updateMousePosition = () => {
-      animationFrameId = requestAnimationFrame(updateMousePosition);
-    };
-    updateMousePosition();
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
   const handleGetStarted = () => {
     if (isAuthenticated) {
       navigate("/passion");
@@ -104,12 +82,12 @@ export default function HeroSection() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-gradient-to-b from-cyan-950 via-slate-900 to-fuchsia-900/70 pt-16"
     >
-      {/* Background video section remains the same */}
+      {/* Background video section with improved visibility */}
       <div className="absolute inset-0 top-16 z-0">
         <div className="absolute inset-0 z-0 overflow-hidden">
           {!isMobile && (
             <video
-              className="absolute w-full h-full object-cover opacity-90"
+              className="absolute w-full h-full object-cover opacity-100" // Increased opacity to 100%
               autoPlay
               muted
               loop
@@ -122,37 +100,19 @@ export default function HeroSection() {
               />
             </video>
           )}
-
-          {/* Simple black overlay for better video visibility */}
-          <div className="absolute inset-0 bg-black/50"></div>
+          {/* Lighter black overlay for better video visibility */}
+          <div className="absolute inset-0 bg-black/40"></div> {/* Reduced opacity from 50% to 40% */}
         </div>
 
         {/* Keep noise texture */}
-        <div className="absolute inset-0 opacity-[0.015] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]">
+        <div className="absolute inset-0 opacity-[0.01] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]">
           <div className="absolute inset-0 bg-noise"></div>
         </div>
 
-        {/* Updated accent lights with fresh colors */}
-        <div className="absolute -left-1/4 top-1/4 w-1/2 aspect-square rounded-full bg-cyan-600/30 blur-[120px]"></div>
-        <div className="absolute -right-1/4 bottom-1/4 w-1/2 aspect-square rounded-full bg-amber-500/20 blur-[120px]"></div>
-        <div className="absolute right-1/3 top-1/3 w-1/3 aspect-square rounded-full bg-emerald-500/20 blur-[120px]"></div>
-
-        {/* Updated cursor gradient */}
-        <motion.div
-          className="absolute w-[600px] h-[600px] rounded-full blur-[140px] opacity-[0.1] pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(45, 212, 191, 0.5) 0%, rgba(16, 185, 129, 0.3) 40%, transparent 70%)",
-            x: useTransform(() => mousePosition.x * window.innerWidth - 300),
-            y: useTransform(() => mousePosition.y * window.innerHeight - 300),
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 10,
-            damping: 50,
-            mass: 3,
-          }}
-        />
+        {/* Softer accent lights with reduced intensity */}
+        <div className="absolute -left-1/4 top-1/4 w-1/2 aspect-square rounded-full bg-cyan-600/20 blur-[120px]"></div>
+        <div className="absolute -right-1/4 bottom-1/4 w-1/2 aspect-square rounded-full bg-amber-500/10 blur-[120px]"></div>
+        <div className="absolute right-1/3 top-1/3 w-1/3 aspect-square rounded-full bg-emerald-500/10 blur-[120px]"></div>
       </div>
 
       {/* Main content layout stays the same */}
