@@ -125,11 +125,6 @@ export default function HeroSection() {
             transition={{ duration: 1, ease: "easeOut" }}
             className="max-w-lg"
           >
-            {/* Updated badge with fresh gradient */}
-            <div className="inline-block px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-teal-500/20 border border-cyan-400/30 mb-6">
-              <span className="text-cyan-300 text-sm font-medium">Social Impact Platform</span>
-            </div>
-
             {/* Updated heading with gradient text */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
               Connect,{" "}
@@ -267,31 +262,6 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Updated scroll indicator */}
-      <motion.div
-        className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 text-xs text-cyan-300/90 py-2 px-4 rounded-full bg-cyan-900/10 backdrop-blur-sm border border-cyan-400/10 z-50"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2, duration: 0.5 }}
-        style={{ opacity: useTransform(scrollYProgress, [0, 0.05], [1, 0]) }}
-      >
-        <motion.div
-          animate={{
-            y: [0, 3, 0],
-            opacity: [0.7, 1, 0.7],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="text-cyan-400"
-        >
-          <FaArrowDown />
-        </motion.div>
-        <span>Discover Our Impact</span>
-      </motion.div>
 
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} />
     </section>
