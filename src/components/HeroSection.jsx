@@ -118,7 +118,7 @@ export default function HeroSection() {
               poster="https://res.cloudinary.com/dak1w5wyf/video/upload/q_auto,f_auto,c_fill,g_auto,w_1200/v1/actionconnect/backgrounds/actionbg_1.jpg"
             >
               <source
-                src="https://res.cloudinary.com/dak1w5wyf/video/upload/v1745513184/actionbg_1_r3clkf.mp4"
+                src="https://res.cloudinary.com/dak1w5wyf/video/upload/v1745567292/bg_video_mwddnj.mp4"
                 type="video/mp4"
               />
             </video>
