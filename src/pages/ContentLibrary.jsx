@@ -387,7 +387,18 @@ const ContentLibrary = () => {
       <div className="relative z-10 mt-14">
         {/* Hero Section */}
         <div className="relative overflow-hidden bg-gradient-to-r from-indigo-900/70 to-purple-900/70 py-20">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:14px_24px]" />
+          {/* Background Video */}
+          <video className="absolute inset-0 w-full h-full object-cover opacity-90" autoPlay loop muted playsInline>
+            <source
+              src="https://res.cloudinary.com/dak1w5wyf/video/upload/v1745846381/10070127-hd_1920_1080_24fps_1_utluuj.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/50"></div>
+
           <motion.div
             className="relative container mx-auto px-4"
             style={{ y: contentY, opacity }}

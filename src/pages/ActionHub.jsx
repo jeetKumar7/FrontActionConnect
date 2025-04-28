@@ -551,7 +551,18 @@ const ActionHub = () => {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:14px_24px]" />
+        {/* Background Video */}
+        <video className="absolute inset-0 w-full h-full object-cover opacity-80" autoPlay loop muted playsInline>
+          <source
+            src="https://res.cloudinary.com/dak1w5wyf/video/upload/v1745846757/3129671-uhd_3840_2160_30fps_1_efxoei.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/50"></div>
+
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <motion.h1
