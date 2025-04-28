@@ -269,14 +269,6 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                {/* Notification */}
-                <motion.button
-                  className="h-8 w-8 rounded-md bg-slate-800 border border-white/10 flex items-center justify-center"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <FaBell size={16} className="text-slate-400" />
-                </motion.button>
-
                 {/* Profile */}
                 <div className="relative" ref={profileMenuRef}>
                   <motion.button
