@@ -266,21 +266,6 @@ const ActionHub = () => {
     setPagination((prev) => ({ ...prev, currentPage: pageNumber }));
   };
 
-  // Toggle "My Items" filter
-  // const toggleMyItems = () => {
-  //   // Check if user is authenticated
-  //   const userId = user?._id || localStorage.getItem("userId");
-
-  //   if (!userId) {
-  //     setError("Please log in to view your items");
-  //     return;
-  //   }
-
-  //   console.log("Toggling My Items filter, current user ID:", userId);
-  //   setShowOnlyMyItems(!showOnlyMyItems);
-  //   setPagination((prev) => ({ ...prev, currentPage: 1 }));
-  // };
-
   // Open form modal
   const openModal = () => {
     // Initialize form based on active tab
@@ -635,18 +620,6 @@ const ActionHub = () => {
               {/* More categories dropdown */}
               {categories.length > 6 && (
                 <div className="relative">
-                  {/* <motion.button
-                    onClick={() => {
-                      console.log("More button clicked, current state:", moreMenuOpen);
-                      setMoreMenuOpen(!moreMenuOpen);
-                    }}
-                    className="px-4 py-2 rounded-lg whitespace-nowrap bg-white/5 hover:bg-white/10 transition-all"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    More <FaFilter className="inline ml-1" />
-                  </motion.button> */}
-
                   {/* Invisible overlay to capture clicks outside */}
                   {moreMenuOpen && <div className="fixed inset-0 z-40" onClick={() => setMoreMenuOpen(false)}></div>}
 
