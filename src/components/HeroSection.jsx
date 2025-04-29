@@ -18,7 +18,6 @@ export default function HeroSection() {
   const [showSignUp, setShowSignUp] = useState(false);
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const sectionRef = useRef(null);
@@ -27,9 +26,8 @@ export default function HeroSection() {
     offset: ["start start", "end start"],
   });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -15]);
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+
   const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.6]);
 
   // Authentication check
@@ -51,25 +49,6 @@ export default function HeroSection() {
       setShowSignUp(true);
     }
   };
-
-  // Generate random nodes for the network visualization
-  const generateNodes = (count) => {
-    return Array.from({ length: count }).map((_, i) => {
-      const angle = (i / count) * Math.PI * 2;
-      const distance = 140 + (i % 3) * 40;
-      const x = Math.cos(angle) * distance + 250;
-      const y = Math.sin(angle) * distance + 250;
-      const size = 4 + Math.random() * 4;
-
-      // Assign different colors based on index
-      const colors = ["blue", "indigo", "violet", "purple"];
-      const colorIndex = i % colors.length;
-
-      return { x, y, size, color: colors[colorIndex], index: i };
-    });
-  };
-
-  const nodes = generateNodes(12);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
