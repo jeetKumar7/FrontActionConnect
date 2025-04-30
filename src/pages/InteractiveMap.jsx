@@ -581,6 +581,17 @@ const InteractiveMap = () => {
                   View Profile
                 </button>
               </div>
+              {/* Connect Button */}
+              {user.email && (
+                <div className="mt-2">
+                  <a
+                    href={`mailto:${user.email}`}
+                    className="bg-green-500 text-[var(--text-primary)] text-xs px-2 py-1 rounded hover:bg-green-600"
+                  >
+                    Connect
+                  </a>
+                </div>
+              )}
             </div>
           </Popup>
         </Marker>
@@ -1063,6 +1074,19 @@ const InteractiveMap = () => {
                     })}
                   </div>
                 </div>
+
+                {/* Connect Button */}
+                {selectedUser.email && (
+                  <div className="mt-4">
+                    <a
+                      href={`mailto:${selectedUser.email}`}
+                      className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg font-medium text-[var(--text-primary)] flex items-center justify-center gap-2"
+                    >
+                      <FaUserFriends />
+                      Connect via Email
+                    </a>
+                  </div>
+                )}
 
                 {/* Shared Initiatives */}
                 <div className="mt-4 pt-4 border-t border-white/10">
