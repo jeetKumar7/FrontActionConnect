@@ -40,19 +40,19 @@ export const SignInModal = ({ isOpen, onClose }) => {
 
         // Show success state
         setSuccess(true);
-        
+
         // Wait for success animation
         setTimeout(() => {
           // Trigger auth state update
           window.dispatchEvent(new Event("storage"));
-          
+
           // Close modal
           onClose();
-          
+
           // Reset form and states
           setFormData({ email: "", password: "" });
           setSuccess(false);
-          
+
           // Refresh page
           window.location.reload();
         }, 1500);
@@ -101,7 +101,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
               type="email"
               placeholder="Email address"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
@@ -114,7 +114,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
               type="password"
               placeholder="Password"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
@@ -134,7 +134,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
         <motion.button
           type="submit"
           disabled={loading}
-          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
+          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-[var(--text-primary)] py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           whileHover={loading ? {} : { scale: 1.02 }}
@@ -154,7 +154,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
           <motion.button
             type="button"
             onClick={() => (window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/google`)}
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-white hover:bg-white/5 w-full"
+            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5 w-full"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -162,7 +162,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
           </motion.button>
           {/* <motion.button
             type="button"
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-white hover:bg-white/5"
+            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -216,19 +216,19 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
         // Show success state
         setSuccess(true);
-        
+
         // Wait for success animation
         setTimeout(() => {
           // Trigger auth state update
           window.dispatchEvent(new Event("storage"));
-          
+
           // Close modal
           onClose();
-          
+
           // Reset form and states
           setFormData({ name: "", email: "", password: "", confirmPassword: "" });
           setSuccess(false);
-          
+
           // Refresh page
           window.location.reload();
         }, 1500);
@@ -280,7 +280,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
               type="text"
               placeholder="Full name"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -293,7 +293,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
               type="email"
               placeholder="Email address"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
@@ -306,7 +306,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
               type="password"
               placeholder="Password"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
@@ -319,7 +319,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
               type="password"
               placeholder="Confirm password"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
             />
@@ -335,7 +335,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         <motion.button
           type="submit"
           disabled={loading}
-          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
+          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-[var(--text-primary)] py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           whileHover={loading ? {} : { scale: 1.02 }}
@@ -355,7 +355,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           <motion.button
             type="button"
             onClick={() => (window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/google`)}
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-white hover:bg-white/5 w-full"
+            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5 w-full"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -363,7 +363,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           </motion.button>
           {/* <motion.button
             type="button"
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-white hover:bg-white/5"
+            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >

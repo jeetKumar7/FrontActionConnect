@@ -53,7 +53,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="bg-red-500/20 p-4 rounded-lg border border-red-500/50 text-white">
+        <div className="bg-red-500/20 p-4 rounded-lg border border-red-500/50 text-[var(--text-primary)]">
           <h3 className="font-bold mb-2">Something went wrong</h3>
           <button
             onClick={() => {
@@ -572,7 +572,7 @@ const InteractiveMap = () => {
               {user.location && <p className="text-sm">{user.location}</p>}
               <div className="mt-2">
                 <button
-                  className="bg-blue-500 text-white text-xs px-2 py-1 rounded"
+                  className="bg-blue-500 text-[var(--text-primary)] text-xs px-2 py-1 rounded"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleSelectUser(user);
@@ -589,17 +589,21 @@ const InteractiveMap = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">
       {/* Notifications */}
       {error && (
-        <div className="fixed top-20 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">{error}</div>
+        <div className="fixed top-20 right-4 bg-red-500 text-[var(--text-primary)] px-4 py-2 rounded shadow-lg z-50">
+          {error}
+        </div>
       )}
       {success && (
-        <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">{success}</div>
+        <div className="fixed top-20 right-4 bg-green-500 text-[var(--text-primary)] px-4 py-2 rounded shadow-lg z-50">
+          {success}
+        </div>
       )}
 
       {/* Header */}
-      <div className="bg-slate-900/50 border-b border-white/10 backdrop-blur-sm py-6">
+      <div className="bg-[var(--bg-secondary)]/50 border-b border-white/10 backdrop-blur-sm py-6">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             {/* Search */}
@@ -609,9 +613,9 @@ const InteractiveMap = () => {
                 placeholder={showPeopleTab ? "Search people..." : "Search initiatives..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-blue-500"
+                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500"
               />
-              <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40" />
+              <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-primary)]/40" />
             </div>
 
             {/* Toggle Initiatives/People */}
@@ -649,7 +653,7 @@ const InteractiveMap = () => {
               </motion.button>
             )}
             {isLoadingUserLocation && (
-              <div className="px-4 py-2 text-white/60">
+              <div className="px-4 py-2 text-[var(--text-primary)]/60">
                 <span className="animate-pulse">Locating...</span>
               </div>
             )}
@@ -722,7 +726,7 @@ const InteractiveMap = () => {
                       // Loading animation
                       <div className="col-span-2 flex flex-col items-center justify-center py-12 space-y-3">
                         <FaSpinner className="animate-spin text-3xl text-blue-400" />
-                        <p className="text-white/60">Loading initiatives...</p>
+                        <p className="text-[var(--text-primary)]/60">Loading initiatives...</p>
                       </div>
                     ) : filteredInitiatives.length > 0 ? (
                       // Map over initiatives when we have data
@@ -762,8 +766,8 @@ const InteractiveMap = () => {
                                     </span>
                                   )}
                                 </h3>
-                                <p className="text-sm text-white/60 mb-2">{initiative.location}</p>
-                                <div className="flex items-center gap-4 text-sm text-white/40">
+                                <p className="text-sm text-[var(--text-primary)]/60 mb-2">{initiative.location}</p>
+                                <div className="flex items-center gap-4 text-sm text-[var(--text-primary)]/40">
                                   <div className="flex items-center gap-1">
                                     <FaCalendarAlt className="w-4 h-4" />
 
@@ -784,8 +788,8 @@ const InteractiveMap = () => {
                     ) : (
                       // No results found
                       <div className="col-span-2 bg-white/5 rounded-lg p-6 text-center">
-                        <FaMapMarkerAlt className="mx-auto text-3xl text-white/30 mb-3" />
-                        <p className="text-white/60">No initiatives found matching your search.</p>
+                        <FaMapMarkerAlt className="mx-auto text-3xl text-[var(--text-primary)]/30 mb-3" />
+                        <p className="text-[var(--text-primary)]/60">No initiatives found matching your search.</p>
                       </div>
                     )}
                   </div>
@@ -800,7 +804,9 @@ const InteractiveMap = () => {
 
                 {/* Cause Selector */}
                 <div className="mb-6">
-                  <label className="block text-sm text-white/60 mb-2">Select a cause to find people:</label>
+                  <label className="block text-sm text-[var(--text-primary)]/60 mb-2">
+                    Select a cause to find people:
+                  </label>
                   <div className="flex flex-wrap gap-2">
                     {causes.map((cause) => (
                       <motion.button
@@ -829,8 +835,8 @@ const InteractiveMap = () => {
                     </div>
                   ) : selectedCauseFilter && usersWithCause.length === 0 ? (
                     <div className="bg-white/5 rounded-lg p-6 text-center">
-                      <FaUsers className="mx-auto text-3xl text-white/30 mb-3" />
-                      <p className="text-white/60">
+                      <FaUsers className="mx-auto text-3xl text-[var(--text-primary)]/30 mb-3" />
+                      <p className="text-[var(--text-primary)]/60">
                         No users found supporting this cause.
                         <br />
                         Be the first to support it!
@@ -860,7 +866,9 @@ const InteractiveMap = () => {
                             </div>
                             <div className="flex-1">
                               <h3 className="font-semibold mb-1">{user.name}</h3>
-                              {user.location && <p className="text-sm text-white/60 mb-2">{user.location}</p>}
+                              {user.location && (
+                                <p className="text-sm text-[var(--text-primary)]/60 mb-2">{user.location}</p>
+                              )}
                               <div className="flex flex-wrap gap-2 mt-2">
                                 {user.supportedCauses?.map((causeId) => {
                                   const cause = causes.find((c) => c.id === causeId);
@@ -925,17 +933,17 @@ const InteractiveMap = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className={`absolute bottom-6 right-6 ${
                   isOverlayMinimized ? "w-64" : "w-96"
-                } max-w-[calc(100%-3rem)] bg-slate-900/90 backdrop-blur-sm rounded-xl border border-white/10 p-6 z-[1000]`}
+                } max-w-[calc(100%-3rem)] bg-[var(--bg-secondary)]/90 backdrop-blur-sm rounded-xl border border-white/10 p-6 z-[1000]`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h2 className="text-xl font-semibold mb-1">{selectedInitiative.title}</h2>
-                    <p className="text-white/60">{selectedInitiative.location}</p>
+                    <p className="text-[var(--text-primary)]/60">{selectedInitiative.location}</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => setIsOverlayMinimized(!isOverlayMinimized)}
-                      className="p-1 rounded hover:bg-white/10 text-white/60 hover:text-white"
+                      className="p-1 rounded hover:bg-white/10 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]"
                       title={isOverlayMinimized ? "Expand" : "Minimize"}
                     >
                       {isOverlayMinimized ? (
@@ -959,7 +967,7 @@ const InteractiveMap = () => {
                 {/* Only show detailed content when not minimized */}
                 {!isOverlayMinimized && (
                   <>
-                    <p className="text-white/80 text-sm mb-4">{selectedInitiative.description}</p>
+                    <p className="text-[var(--text-primary)]/80 text-sm mb-4">{selectedInitiative.description}</p>
 
                     <div className="flex flex-wrap gap-2 mb-4">
                       {selectedInitiative.tags
@@ -971,7 +979,7 @@ const InteractiveMap = () => {
                         ))}
                     </div>
 
-                    <div className="flex justify-between items-center text-sm text-white/60 mb-4">
+                    <div className="flex justify-between items-center text-sm text-[var(--text-primary)]/60 mb-4">
                       <div className="flex items-center gap-2">
                         <FaClock />
                         <span>
@@ -1013,7 +1021,7 @@ const InteractiveMap = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute bottom-6 right-6 w-96 max-w-[calc(100%-3rem)] bg-slate-900/90 backdrop-blur-sm rounded-xl border border-white/10 p-6 z-[1000]"
+                className="absolute bottom-6 right-6 w-96 max-w-[calc(100%-3rem)] bg-[var(--bg-secondary)]/90 backdrop-blur-sm rounded-xl border border-white/10 p-6 z-[1000]"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -1022,17 +1030,22 @@ const InteractiveMap = () => {
                     </div>
                     <div>
                       <h2 className="text-xl font-semibold">{selectedUser.name}</h2>
-                      {selectedUser.location && <p className="text-white/60">{selectedUser.location}</p>}
+                      {selectedUser.location && (
+                        <p className="text-[var(--text-primary)]/60">{selectedUser.location}</p>
+                      )}
                     </div>
                   </div>
-                  <button onClick={() => setSelectedUser(null)} className="text-white/40 hover:text-white">
+                  <button
+                    onClick={() => setSelectedUser(null)}
+                    className="text-[var(--text-primary)]/40 hover:text-[var(--text-primary)]"
+                  >
                     ×
                   </button>
                 </div>
 
                 {/* Supported Causes */}
                 <div className="mb-4">
-                  <h3 className="text-sm font-medium text-white/70 mb-2">Supported Causes:</h3>
+                  <h3 className="text-sm font-medium text-[var(--text-primary)]/70 mb-2">Supported Causes:</h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedUser.supportedCauses?.map((causeId) => {
                       const cause = causes.find((c) => c.id === causeId);
@@ -1053,7 +1066,7 @@ const InteractiveMap = () => {
 
                 {/* Shared Initiatives */}
                 <div className="mt-4 pt-4 border-t border-white/10">
-                  <h3 className="text-sm font-medium text-white/70 mb-2">Common Interests:</h3>
+                  <h3 className="text-sm font-medium text-[var(--text-primary)]/70 mb-2">Common Interests:</h3>
                   <div className="space-y-2">
                     {initiatives
                       .filter((initiative) =>
@@ -1073,7 +1086,9 @@ const InteractiveMap = () => {
 
                     {initiatives.filter((initiative) =>
                       initiative.tags?.some((tag) => selectedUser.supportedCauses?.includes(tag))
-                    ).length === 0 && <p className="text-sm text-white/40">No common initiatives found</p>}
+                    ).length === 0 && (
+                      <p className="text-sm text-[var(--text-primary)]/40">No common initiatives found</p>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -1088,7 +1103,7 @@ const InteractiveMap = () => {
                 onClick={centerOnUserLocation}
                 title="Show your location"
               >
-                <FaLocationArrow className="text-white" />
+                <FaLocationArrow className="text-[var(--text-primary)]" />
               </motion.button>
             )}
           </div>
@@ -1110,7 +1125,7 @@ const InteractiveMap = () => {
                 <h2 className="text-2xl font-bold">Create New Initiative</h2>
                 <button
                   onClick={() => setShowAddInitiativeModal(false)}
-                  className="text-white/60 hover:text-white text-xl"
+                  className="text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] text-xl"
                 >
                   &times;
                 </button>
@@ -1118,7 +1133,7 @@ const InteractiveMap = () => {
 
               <form onSubmit={handleAddInitiative} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
                     Title <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -1126,13 +1141,13 @@ const InteractiveMap = () => {
                     name="title"
                     value={newInitiative.title}
                     onChange={handleInitiativeFormChange}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
                     Category <span className="text-red-400">*</span>
                   </label>
                   <div className="relative">
@@ -1143,7 +1158,7 @@ const InteractiveMap = () => {
                       onFocus={() => setShowCategorySuggestions(true)}
                       onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 200)}
                       placeholder="Select or type a category"
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                       required
                     />
                     {showCategorySuggestions && categoryInput && (
@@ -1152,14 +1167,16 @@ const InteractiveMap = () => {
                           filteredCategories.map((category) => (
                             <div
                               key={category}
-                              className="px-4 py-2 cursor-pointer hover:bg-slate-600 text-white"
+                              className="px-4 py-2 cursor-pointer hover:bg-slate-600 text-[var(--text-primary)]"
                               onClick={() => handleCategorySelect(category)}
                             >
                               {category}
                             </div>
                           ))
                         ) : (
-                          <div className="px-4 py-2 text-white/60 italic">Custom category: "{categoryInput}"</div>
+                          <div className="px-4 py-2 text-[var(--text-primary)]/60 italic">
+                            Custom category: "{categoryInput}"
+                          </div>
                         )}
                       </div>
                     )}
@@ -1167,7 +1184,7 @@ const InteractiveMap = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
                     Description <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -1175,13 +1192,13 @@ const InteractiveMap = () => {
                     value={newInitiative.description}
                     onChange={handleInitiativeFormChange}
                     rows={4}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                     required
                   ></textarea>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
                     Location <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -1190,37 +1207,39 @@ const InteractiveMap = () => {
                     value={newInitiative.location}
                     onChange={handleInitiativeFormChange}
                     placeholder="e.g. New York, NY"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">Tags (comma separated)</label>
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
+                    Tags (comma separated)
+                  </label>
                   <input
                     type="text"
                     name="tagsInput"
                     value={newInitiative.tagsInput}
                     onChange={handleInitiativeFormChange}
                     placeholder="e.g. climate, education, community"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">Website URL</label>
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">Website URL</label>
                   <input
                     type="url"
                     name="website"
                     value={newInitiative.website}
                     onChange={handleInitiativeFormChange}
                     placeholder="https://example.com"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">Status</label>
                   <div className="flex gap-4">
                     <label className="flex items-center">
                       <input
@@ -1231,7 +1250,7 @@ const InteractiveMap = () => {
                         onChange={handleInitiativeFormChange}
                         className="mr-2"
                       />
-                      <span className="text-white/80">Active</span>
+                      <span className="text-[var(--text-primary)]/80">Active</span>
                     </label>
                     <label className="flex items-center">
                       <input
@@ -1242,13 +1261,13 @@ const InteractiveMap = () => {
                         onChange={handleInitiativeFormChange}
                         className="mr-2"
                       />
-                      <span className="text-white/80">Upcoming</span>
+                      <span className="text-[var(--text-primary)]/80">Upcoming</span>
                     </label>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1">
+                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
                     Next Event Date <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -1256,13 +1275,15 @@ const InteractiveMap = () => {
                     name="nextEvent"
                     value={newInitiative.nextEvent}
                     onChange={handleInitiativeFormChange}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                     required
                   />
                 </div>
 
                 {formError && (
-                  <div className="bg-red-500/30 border border-red-500/50 text-white p-3 rounded-lg">{formError}</div>
+                  <div className="bg-red-500/30 border border-red-500/50 text-[var(--text-primary)] p-3 rounded-lg">
+                    {formError}
+                  </div>
                 )}
 
                 <div className="flex justify-end gap-3 pt-2">
@@ -1302,7 +1323,7 @@ const InteractiveMap = () => {
             className="bg-slate-800 border border-red-500/30 rounded-xl p-6 w-full max-w-md"
           >
             <h3 className="text-xl font-bold mb-4">Delete Initiative</h3>
-            <p className="mb-6 text-white/80">
+            <p className="mb-6 text-[var(--text-primary)]/80">
               Are you sure you want to delete <strong>{selectedInitiative.title}</strong>? This action cannot be undone.
             </p>
             <div className="flex justify-end gap-3">

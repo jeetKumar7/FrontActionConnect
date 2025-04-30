@@ -161,7 +161,7 @@ const Navbar = () => {
   ];
 
   return (
-    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 shadow-md shadow-black/10">
+    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-[var(--bg-primary)] backdrop-blur-xl border-b border-white/10 shadow-md shadow-black/10">
       {/* Container remains the same */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
@@ -178,7 +178,7 @@ const Navbar = () => {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,transparent_70%)]"></div>
                 <svg
                   viewBox="0 0 24 24"
-                  className="w-5 h-5 md:w-6 md:h-6 text-white"
+                  className="w-5 h-5 md:w-6 md:h-6 text-[var(--text-primary)]"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -217,7 +217,7 @@ const Navbar = () => {
                 </svg>
               </div>
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-white tracking-tight">ActionConnect</span>
+                <span className="text-lg font-bold text-[var(--text-primary)] tracking-tight">ActionConnect</span>
                 <span className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider -mt-1">
                   Impact Platform
                 </span>
@@ -239,7 +239,7 @@ const Navbar = () => {
                         handleProtectedNavigation(e, link.path);
                       }
                     }}
-                    className="flex items-center text-left w-full text-slate-300 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
+                    className="flex items-center text-left w-full text-slate-300 hover:text-[var(--text-primary)] text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
                   >
                     <span>{link.name}</span>
                   </Link>
@@ -254,14 +254,14 @@ const Navbar = () => {
               <div className="flex items-center gap-2">
                 <motion.button
                   onClick={handleOpenSignIn}
-                  className="text-slate-300 hover:text-white text-sm font-medium px-3 py-1.5 hover:bg-white/5 rounded-md transition-colors"
+                  className="text-slate-300 hover:text-[var(--text-primary)] text-sm font-medium px-3 py-1.5 hover:bg-white/5 rounded-md transition-colors"
                   whileHover={{ scale: 1.02 }}
                 >
                   Sign in
                 </motion.button>
                 <motion.button
                   onClick={handleOpenSignUp}
-                  className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
+                  className="bg-cyan-600 hover:bg-cyan-700 text-[var(--text-primary)] px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
                   whileHover={{ scale: 1.02 }}
                 >
                   Get Started
@@ -289,7 +289,9 @@ const Navbar = () => {
                         className="absolute right-0 mt-2 w-52 bg-slate-800 border border-white/10 rounded-md py-1.5 shadow-2xl z-50"
                       >
                         <div className="px-3 py-2 border-b border-white/10">
-                          <div className="font-medium text-white">{localStorage.getItem("userName") || "User"}</div>
+                          <div className="font-medium text-[var(--text-primary)]">
+                            {localStorage.getItem("userName") || "User"}
+                          </div>
                           <div className="text-xs text-slate-400 truncate">
                             {localStorage.getItem("userEmail") || "user@example.com"}
                           </div>
@@ -332,7 +334,7 @@ const Navbar = () => {
           {/* Mobile menu button simplified */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 rounded-md text-white hover:bg-white/5 transition-colors"
+            className="lg:hidden p-2 rounded-md text-[var(--text-primary)] hover:bg-white/5 transition-colors"
             aria-label="Toggle menu"
           >
             {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
@@ -361,7 +363,7 @@ const Navbar = () => {
                           handleProtectedNavigation(e, link.path);
                         }
                       }}
-                      className="flex items-center text-left w-full text-slate-300 hover:text-white text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
+                      className="flex items-center text-left w-full text-slate-300 hover:text-[var(--text-primary)] text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
                     >
                       <span>{link.name}</span>
                     </Link>
@@ -374,13 +376,13 @@ const Navbar = () => {
                     <div className="flex flex-col gap-2">
                       <button
                         onClick={handleOpenSignIn}
-                        className="w-full bg-slate-800 text-white py-2.5 px-3 rounded-md font-medium text-center text-sm border border-white/10"
+                        className="w-full bg-slate-800 text-[var(--text-primary)] py-2.5 px-3 rounded-md font-medium text-center text-sm border border-white/10"
                       >
                         Sign In
                       </button>
                       <button
                         onClick={handleOpenSignUp}
-                        className="w-full bg-cyan-600 text-white py-2.5 px-3 rounded-md font-medium text-center text-sm"
+                        className="w-full bg-cyan-600 text-[var(--text-primary)] py-2.5 px-3 rounded-md font-medium text-center text-sm"
                       >
                         Get Started
                       </button>
@@ -389,7 +391,7 @@ const Navbar = () => {
                     <div className="flex flex-col gap-2">
                       <Link
                         to="/profile"
-                        className="flex items-center gap-2 text-slate-300 hover:text-white text-sm font-medium py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                        className="flex items-center gap-2 text-slate-300 hover:text-[var(--text-primary)] text-sm font-medium py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
                       >
                         <FaUserCircle className="text-cyan-400" /> Your Profile
                       </Link>

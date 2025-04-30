@@ -570,13 +570,13 @@ const ChatChannels = () => {
                           placeholder="Channel name"
                           value={newChannelData.name}
                           onChange={(e) => setNewChannelData({ ...newChannelData, name: e.target.value })}
-                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-blue-500"
+                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500"
                         />
                         <textarea
                           placeholder="Description (optional)"
                           value={newChannelData.description}
                           onChange={(e) => setNewChannelData({ ...newChannelData, description: e.target.value })}
-                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-blue-500 resize-none"
+                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 resize-none"
                           rows="2"
                         />
                       </div>
@@ -584,13 +584,13 @@ const ChatChannels = () => {
                         <button
                           type="button"
                           onClick={() => setShowCreateChannel(false)}
-                          className="px-3 py-1.5 text-white/60 hover:text-white text-sm"
+                          className="px-3 py-1.5 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] text-sm"
                         >
                           Cancel
                         </button>
                         <button
                           type="submit"
-                          className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm"
+                          className="px-3 py-1.5 bg-blue-500 text-[var(--text-primary)] rounded-lg text-sm"
                           disabled={loading}
                         >
                           {loading ? <FaSpinner className="animate-spin" /> : "Create"}
@@ -604,7 +604,7 @@ const ChatChannels = () => {
               {/* Channel List */}
               {fetchingChannels ? (
                 <div className="flex justify-center py-4">
-                  <FaSpinner className="animate-spin text-white/40" />
+                  <FaSpinner className="animate-spin text-[var(--text-primary)]/40" />
                 </div>
               ) : (
                 <nav className="space-y-6">
@@ -612,7 +612,7 @@ const ChatChannels = () => {
                     <div key={category.category}>
                       <button
                         onClick={() => setExpandedCategory(category.category)}
-                        className="flex items-center gap-2 px-2 py-1 w-full text-left font-semibold text-white/60 hover:text-white"
+                        className="flex items-center gap-2 px-2 py-1 w-full text-left font-semibold text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]"
                       >
                         <span>{category.category}</span>
                       </button>
@@ -626,7 +626,7 @@ const ChatChannels = () => {
                           >
                             <div className="space-y-1 mt-2">
                               {category.channels.length === 0 ? (
-                                <div className="px-4 py-3 text-sm text-white/40">
+                                <div className="px-4 py-3 text-sm text-[var(--text-primary)]/40">
                                   No channels yet. Create one to get started!
                                 </div>
                               ) : (
@@ -636,8 +636,8 @@ const ChatChannels = () => {
                                       onClick={() => setSelectedChannel(channel.id)}
                                       className={`flex items-center gap-2 w-full px-4 py-2 rounded-lg transition-all ${
                                         selectedChannel === channel.id
-                                          ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white"
-                                          : "text-white/60 hover:bg-white/5 hover:text-white"
+                                          ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-[var(--text-primary)]"
+                                          : "text-[var(--text-primary)]/60 hover:bg-white/5 hover:text-[var(--text-primary)]"
                                       }`}
                                       whileHover={{ x: 4 }}
                                     >
@@ -659,7 +659,7 @@ const ChatChannels = () => {
           </div>
 
           {/* Chat Area */}
-          <div className="flex flex-col bg-slate-900/30 h-full overflow-hidden">
+          <div className="flex flex-col bg-[var(--bg-secondary)]/30 h-full overflow-hidden">
             {/* Chat Header */}
             {selectedChannel ? (
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
@@ -671,7 +671,7 @@ const ChatChannels = () => {
                     <h3 className="font-semibold">
                       {channels.flatMap((cat) => cat.channels).find((c) => c.id === selectedChannel)?.name || "Channel"}
                     </h3>
-                    <p className="text-sm text-white/40">
+                    <p className="text-sm text-[var(--text-primary)]/40">
                       {channels.find((cat) => cat.channels.some((c) => c.id === selectedChannel))?.category ||
                         "Channel"}
                     </p>
@@ -679,7 +679,7 @@ const ChatChannels = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center px-6 py-4 border-b border-white/10 text-white/40">
+              <div className="flex items-center justify-center px-6 py-4 border-b border-white/10 text-[var(--text-primary)]/40">
                 Select a channel or create a new one to start chatting
               </div>
             )}
@@ -696,11 +696,11 @@ const ChatChannels = () => {
                 {fetchingMessages ? (
                   <div className="text-center py-8">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
-                    <p className="text-white/60">Loading messages...</p>
+                    <p className="text-[var(--text-primary)]/60">Loading messages...</p>
                   </div>
                 ) : messages.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-white/40">No messages yet. Start the conversation!</p>
+                    <p className="text-[var(--text-primary)]/40">No messages yet. Start the conversation!</p>
                   </div>
                 ) : (
                   messages.map((msg) => (
@@ -713,20 +713,22 @@ const ChatChannels = () => {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-semibold">{msg.sender?.name || "Unknown User"}</span>
-                          <span className="text-sm text-white/40">{new Date(msg.createdAt).toLocaleTimeString()}</span>
+                          <span className="text-sm text-[var(--text-primary)]/40">
+                            {new Date(msg.createdAt).toLocaleTimeString()}
+                          </span>
 
                           {/* Only show edit/delete for the user's own messages */}
                           {msg.sender?._id === localStorage.getItem("userId") && (
                             <div className="ml-auto flex gap-2">
                               <button
                                 onClick={() => handleEditMessage(msg._id)}
-                                className="text-white/40 hover:text-white p-1 rounded-full hover:bg-white/5"
+                                className="text-[var(--text-primary)]/40 hover:text-[var(--text-primary)] p-1 rounded-full hover:bg-white/5"
                               >
                                 <FaEdit className="w-3 h-3" />
                               </button>
                               <button
                                 onClick={() => handleDeleteMessage(msg._id)}
-                                className="text-white/40 hover:text-red-400 p-1 rounded-full hover:bg-white/5"
+                                className="text-[var(--text-primary)]/40 hover:text-red-400 p-1 rounded-full hover:bg-white/5"
                               >
                                 <FaTrash className="w-3 h-3" />
                               </button>
@@ -739,13 +741,13 @@ const ChatChannels = () => {
                             <textarea
                               value={editMessage}
                               onChange={(e) => setEditMessage(e.target.value)}
-                              className="w-full bg-transparent border-none focus:outline-none text-white resize-none"
+                              className="w-full bg-transparent border-none focus:outline-none text-[var(--text-primary)] resize-none"
                               rows="2"
                             />
                             <div className="flex justify-end gap-2 mt-2">
                               <button
                                 onClick={() => setEditingMessageId(null)}
-                                className="px-2 py-1 text-xs text-white/60 hover:text-white"
+                                className="px-2 py-1 text-xs text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]"
                               >
                                 Cancel
                               </button>
@@ -758,7 +760,7 @@ const ChatChannels = () => {
                             </div>
                           </div>
                         ) : (
-                          <p className="text-white/80 bg-white/5 rounded-lg px-4 py-2">{msg.content}</p>
+                          <p className="text-[var(--text-primary)]/80 bg-white/5 rounded-lg px-4 py-2">{msg.content}</p>
                         )}
                       </div>
                     </div>
@@ -766,9 +768,9 @@ const ChatChannels = () => {
                 )}
               </div>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-white/40">
+              <div className="flex-1 flex items-center justify-center text-[var(--text-primary)]/40">
                 <div className="text-center">
-                  <FaHashtag className="text-4xl mx-auto mb-4 text-white/20" />
+                  <FaHashtag className="text-4xl mx-auto mb-4 text-[var(--text-primary)]/20" />
                   <h3 className="text-xl font-medium mb-1">Welcome to Channels</h3>
                   <p>Create or select a channel to start chatting</p>
                 </div>

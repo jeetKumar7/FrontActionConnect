@@ -239,7 +239,10 @@ const UserProfile = () => {
       <div className="flex justify-center items-center h-screen">
         <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-4 rounded-lg">
           <p>{error}</p>
-          <button onClick={() => window.location.reload()} className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg">
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 px-4 py-2 bg-red-500 text-[var(--text-primary)] rounded-lg"
+          >
             Retry
           </button>
         </div>
@@ -248,12 +251,12 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20 pb-12">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Your Profile</h1>
-          <p className="text-white/60">Manage your account and preferences</p>
+          <p className="text-[var(--text-primary)]/60">Manage your account and preferences</p>
         </div>
 
         {/* Action Feedback Message */}
@@ -266,7 +269,7 @@ const UserProfile = () => {
                   : actionFeedback.type === "error"
                   ? "bg-red-500/80"
                   : "bg-blue-500/80"
-              } backdrop-blur-sm text-white`}
+              } backdrop-blur-sm text-[var(--text-primary)]`}
               initial={{ opacity: 0, y: -20, x: 20 }}
               animate={{ opacity: 1, y: 0, x: 0 }}
               exit={{ opacity: 0, y: -20, x: 20 }}
@@ -321,24 +324,24 @@ const UserProfile = () => {
                 <h3 className="text-xl font-semibold mb-4 pb-2 border-b border-white/10">Account Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <p className="text-white/60 text-sm mb-1">Name</p>
+                    <p className="text-[var(--text-primary)]/60 text-sm mb-1">Name</p>
                     <p className="text-lg">{userData?.name}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm mb-1">Email</p>
+                    <p className="text-[var(--text-primary)]/60 text-sm mb-1">Email</p>
                     <p className="text-lg">{userData?.email}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm mb-1">Location</p>
+                    <p className="text-[var(--text-primary)]/60 text-sm mb-1">Location</p>
                     <p className="text-lg flex items-center gap-2">
-                      <FaMapMarkerAlt className="text-white/40" />
+                      <FaMapMarkerAlt className="text-[var(--text-primary)]/40" />
                       {userData?.location || "Not specified"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm mb-1">Member Since</p>
+                    <p className="text-[var(--text-primary)]/60 text-sm mb-1">Member Since</p>
                     <p className="text-lg flex items-center gap-2">
-                      <FaCalendarAlt className="text-white/40" />
+                      <FaCalendarAlt className="text-[var(--text-primary)]/40" />
                       {userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString() : "Unknown"}
                     </p>
                   </div>
@@ -375,7 +378,7 @@ const UserProfile = () => {
                     })}
                   </div>
                 ) : (
-                  <p className="text-white/60">
+                  <p className="text-[var(--text-primary)]/60">
                     You haven't supported any causes yet. Take the{" "}
                     <a href="/passion" className="text-blue-400 hover:underline">
                       Find Your Passion
@@ -394,7 +397,9 @@ const UserProfile = () => {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium mb-1">Password</h4>
-                    <p className="text-sm text-white/60 mb-2">Keep your account secure with a strong password</p>
+                    <p className="text-sm text-[var(--text-primary)]/60 mb-2">
+                      Keep your account secure with a strong password
+                    </p>
 
                     {!showPasswordForm ? (
                       <button
@@ -419,38 +424,40 @@ const UserProfile = () => {
 
                         <form onSubmit={handlePasswordChange} className="space-y-3">
                           <div>
-                            <label className="block text-sm text-white/60 mb-1">Current Password</label>
+                            <label className="block text-sm text-[var(--text-primary)]/60 mb-1">Current Password</label>
                             <input
                               type="password"
                               name="currentPassword"
                               value={passwordData.currentPassword}
                               onChange={handlePasswordInputChange}
-                              className="w-full px-3 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                              className="w-full px-3 py-2 bg-[var(--bg-secondary)]/50 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                               required
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm text-white/60 mb-1">New Password</label>
+                            <label className="block text-sm text-[var(--text-primary)]/60 mb-1">New Password</label>
                             <input
                               type="password"
                               name="newPassword"
                               value={passwordData.newPassword}
                               onChange={handlePasswordInputChange}
-                              className="w-full px-3 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                              className="w-full px-3 py-2 bg-[var(--bg-secondary)]/50 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                               required
                               minLength={6}
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm text-white/60 mb-1">Confirm New Password</label>
+                            <label className="block text-sm text-[var(--text-primary)]/60 mb-1">
+                              Confirm New Password
+                            </label>
                             <input
                               type="password"
                               name="confirmPassword"
                               value={passwordData.confirmPassword}
                               onChange={handlePasswordInputChange}
-                              className="w-full px-3 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                              className="w-full px-3 py-2 bg-[var(--bg-secondary)]/50 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
                               required
                             />
                           </div>
@@ -498,7 +505,7 @@ const UserProfile = () => {
             <form onSubmit={handleUpdateProfile} className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-white/60 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-[var(--text-primary)]/60 mb-2">
                     Name
                   </label>
                   <input
@@ -507,11 +514,11 @@ const UserProfile = () => {
                     name="name"
                     value={editFormData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-white/60 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-[var(--text-primary)]/60 mb-2">
                     Email
                   </label>
                   <input
@@ -520,11 +527,11 @@ const UserProfile = () => {
                     name="email"
                     value={editFormData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
                   />
                 </div>
                 <div>
-                  <label htmlFor="location" className="block text-sm font-medium text-white/60 mb-2">
+                  <label htmlFor="location" className="block text-sm font-medium text-[var(--text-primary)]/60 mb-2">
                     Location
                   </label>
                   <input
@@ -534,7 +541,7 @@ const UserProfile = () => {
                     value={editFormData.location}
                     onChange={handleInputChange}
                     placeholder="City, State, Country"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
                   />
                 </div>
               </div>
@@ -570,7 +577,7 @@ const UserProfile = () => {
               exit={{ scale: 0.9, opacity: 0 }}
             >
               <h3 className="text-xl font-bold mb-4 text-red-400">Delete Your Account?</h3>
-              <p className="mb-6 text-white/80">
+              <p className="mb-6 text-[var(--text-primary)]/80">
                 This action is irreversible. All your data, including posts, comments, and profile information will be
                 permanently deleted.
               </p>
@@ -585,7 +592,7 @@ const UserProfile = () => {
                 <button
                   onClick={handleDeleteAccount}
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-[var(--text-primary)] rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
                   Confirm Delete

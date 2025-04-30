@@ -68,7 +68,7 @@ const PassionSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen bg-slate-900 py-16">
+    <section className="relative min-h-screen bg-[var(--bg-secondary)] py-16">
       {/* Subtle Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute -left-1/4 top-1/4 w-1/2 aspect-square rounded-full bg-cyan-600/10 blur-[120px]"></div>
@@ -84,7 +84,7 @@ const PassionSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6">
             Discover Your{" "}
             <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">Passion</span>
           </h2>
@@ -110,11 +110,11 @@ const PassionSection = () => {
                 <div className={`${item.color} text-4xl mb-4`}>
                   <item.icon />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">{item.name}</h3>
+                <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{item.name}</h3>
                 <p className="text-slate-300 text-sm">{item.description}</p>
                 <div className="mt-6 flex items-center">
                   <motion.button
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/5"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--text-primary)] bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/5"
                     whileHover={{ x: 5 }}
                     whileTap={{ scale: 0.95 }}
                   >

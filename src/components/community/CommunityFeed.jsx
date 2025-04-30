@@ -259,10 +259,10 @@ const CommunityFeed = () => {
         <form onSubmit={handlePost}>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-              <FaLeaf className="w-6 h-6 text-white" />
+              <FaLeaf className="w-6 h-6 text-[var(--text-primary)]" />
             </div>
             <select
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 appearance-none"
+              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[var(--text-primary)] focus:outline-none focus:border-blue-500 appearance-none"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={{
@@ -294,7 +294,7 @@ const CommunityFeed = () => {
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             placeholder="Share your environmental initiatives and ideas..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors mb-4"
+            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors mb-4"
             rows="3"
           />
 
@@ -313,7 +313,7 @@ const CommunityFeed = () => {
               <button
                 type="button"
                 onClick={() => setImageUrl("")}
-                className="absolute top-2 right-2 bg-red-500 rounded-full p-1 text-white"
+                className="absolute top-2 right-2 bg-red-500 rounded-full p-1 text-[var(--text-primary)]"
                 disabled={imageLoading}
               >
                 ✕
@@ -326,8 +326,8 @@ const CommunityFeed = () => {
               <label
                 className={`p-2 rounded-lg ${
                   imageLoading
-                    ? "bg-white/5 text-white/30 cursor-wait"
-                    : "hover:bg-white/5 text-white/60 hover:text-white cursor-pointer"
+                    ? "bg-white/5 text-[var(--text-primary)]/30 cursor-wait"
+                    : "hover:bg-white/5 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] cursor-pointer"
                 } transition-colors`}
               >
                 <input
@@ -347,13 +347,13 @@ const CommunityFeed = () => {
               </label>
               {/* <button
                 type="button"
-                className="p-2 rounded-lg hover:bg-white/5 text-white/60 hover:text-white transition-colors"
+                className="p-2 rounded-lg hover:bg-white/5 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] transition-colors"
               >
                 <FaVideo className="w-5 h-5" />
               </button>
               <button
                 type="button"
-                className="p-2 rounded-lg hover:bg-white/5 text-white/60 hover:text-white transition-colors"
+                className="p-2 rounded-lg hover:bg-white/5 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] transition-colors"
               >
                 <FaLink className="w-5 h-5" />
               </button> */}
@@ -378,13 +378,13 @@ const CommunityFeed = () => {
         {fetchingPosts ? (
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
-            <p className="text-white/60">Loading posts...</p>
+            <p className="text-[var(--text-primary)]/60">Loading posts...</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-12 bg-slate-800/30 rounded-2xl border border-white/5">
-            <FaLeaf className="mx-auto text-4xl text-white/20 mb-4" />
+            <FaLeaf className="mx-auto text-4xl text-[var(--text-primary)]/20 mb-4" />
             <h3 className="text-xl font-semibold mb-2">No posts yet</h3>
-            <p className="text-white/60">Be the first to share something with the community!</p>
+            <p className="text-[var(--text-primary)]/60">Be the first to share something with the community!</p>
           </div>
         ) : (
           posts.map((post) => (
@@ -404,9 +404,9 @@ const CommunityFeed = () => {
                 <div>
                   <h3 className="font-semibold">{post.author.name}</h3>
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-white/40">{post.author.role || "Member"}</span>
-                    <span className="text-white/40">•</span>
-                    <span className="text-white/40">
+                    <span className="text-[var(--text-primary)]/40">{post.author.role || "Member"}</span>
+                    <span className="text-[var(--text-primary)]/40">•</span>
+                    <span className="text-[var(--text-primary)]/40">
                       {new Date(post.createdAt).toLocaleDateString()} at {new Date(post.createdAt).toLocaleTimeString()}
                     </span>
                   </div>
@@ -416,13 +416,13 @@ const CommunityFeed = () => {
                 </span>
               </div>
 
-              <p className="text-white/80 mb-4 leading-relaxed">{post.content}</p>
+              <p className="text-[var(--text-primary)]/80 mb-4 leading-relaxed">{post.content}</p>
               {post.imageUrl && (
                 <img src={post.imageUrl} alt="Post content" className="w-full h-64 object-cover rounded-xl mb-4" />
               )}
 
               {/* Interactions */}
-              <div className="flex gap-6 text-white/60 border-t border-white/10 pt-4">
+              <div className="flex gap-6 text-[var(--text-primary)]/60 border-t border-white/10 pt-4">
                 <motion.button
                   onClick={() => handleLike(post._id)}
                   className="flex items-center gap-2 hover:text-blue-400 transition-colors"
@@ -457,7 +457,7 @@ const CommunityFeed = () => {
               {/* Comments Section */}
               {post.comments && post.comments.length > 0 && (
                 <div className="mt-4 space-y-3 border-t border-white/10 pt-4">
-                  <h4 className="text-sm font-medium text-white/60">Comments</h4>
+                  <h4 className="text-sm font-medium text-[var(--text-primary)]/60">Comments</h4>
                   {post.comments.slice(0, 3).map((comment, idx) => (
                     <div key={idx} className="flex gap-3">
                       <img
@@ -467,7 +467,7 @@ const CommunityFeed = () => {
                       />
                       <div className="bg-white/5 px-3 py-2 rounded-lg flex-1">
                         <div className="text-sm font-medium">{comment.user.name}</div>
-                        <p className="text-sm text-white/70">{comment.content}</p>
+                        <p className="text-sm text-[var(--text-primary)]/70">{comment.content}</p>
                       </div>
                     </div>
                   ))}
@@ -493,7 +493,7 @@ const CommunityFeed = () => {
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                         placeholder="Write a comment..."
-                        className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors text-sm"
                         rows="2"
                       />
                       <div className="flex justify-end mt-2">

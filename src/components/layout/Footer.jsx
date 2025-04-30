@@ -37,7 +37,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-slate-900 border-t border-white/10">
+    <footer className="bg-[var(--bg-secondary)] border-t border-white/10">
       {/* Updated to match container style from Hero Section */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -47,7 +47,7 @@ const Footer = () => {
               <div className="h-10 w-10 rounded-xl bg-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-900/20">
                 <span className="text-2xl">⚡</span>
               </div>
-              <span className="text-xl font-bold text-white">ActionConnect</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">ActionConnect</span>
             </div>
             <p className="text-slate-400 mb-6 max-w-md">
               Empowering individuals to make meaningful change through community connection and purposeful action.
@@ -59,7 +59,7 @@ const Footer = () => {
                   href={social.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="text-slate-400 hover:text-[var(--text-primary)] transition-colors"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
@@ -73,11 +73,14 @@ const Footer = () => {
           <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
             {Object.entries(footerLinks).map(([category, links]) => (
               <div key={category}>
-                <h4 className="text-white font-semibold mb-4 capitalize">{category}</h4>
+                <h4 className="text-[var(--text-primary)] font-semibold mb-4 capitalize">{category}</h4>
                 <ul className="space-y-3">
                   {links.map((link) => (
                     <li key={link.name}>
-                      <Link to={link.path} className="text-slate-400 hover:text-white transition-colors">
+                      <Link
+                        to={link.path}
+                        className="text-slate-400 hover:text-[var(--text-primary)] transition-colors"
+                      >
                         {link.name}
                       </Link>
                     </li>

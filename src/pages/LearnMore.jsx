@@ -59,7 +59,7 @@ export default function LearnMore() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-16">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:14px_24px]" />
@@ -72,7 +72,7 @@ export default function LearnMore() {
             About ActionConnect
           </motion.h1>
           <motion.p
-            className="text-xl text-center text-white/80 max-w-3xl mx-auto"
+            className="text-xl text-center text-[var(--text-primary)]/80 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -96,7 +96,7 @@ export default function LearnMore() {
             >
               <feature.icon className="w-8 h-8 text-blue-400 mb-4" />
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-white/60">{feature.description}</p>
+              <p className="text-[var(--text-primary)]/60">{feature.description}</p>
             </motion.div>
           ))}
         </div>
@@ -111,7 +111,7 @@ export default function LearnMore() {
           transition={{ delay: 0.6 }}
         >
           <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
-          <p className="text-white/60 mb-8 max-w-2xl mx-auto">
+          <p className="text-[var(--text-primary)]/60 mb-8 max-w-2xl mx-auto">
             Join our community of changemakers and start contributing to environmental causes that matter.
           </p>
           <motion.button

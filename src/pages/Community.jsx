@@ -14,7 +14,7 @@ const Community = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)]">
       {/* Page Header */}
       <div className="pt-20 pb-6 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4">
@@ -26,8 +26,8 @@ const Community = () => {
               to="/community/feed"
               className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
                 isActive("feed")
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-[var(--text-primary)] shadow-lg"
+                  : "text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] hover:bg-white/5"
               }`}
             >
               <FaRss className="w-4 h-4" />
@@ -37,8 +37,8 @@ const Community = () => {
               to="/community/channels"
               className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
                 isActive("channels")
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-[var(--text-primary)] shadow-lg"
+                  : "text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] hover:bg-white/5"
               }`}
             >
               <FaHashtag className="w-4 h-4" />
@@ -49,8 +49,8 @@ const Community = () => {
               to="/community/events"
               className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
                 isActive("events")
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-[var(--text-primary)] shadow-lg"
+                  : "text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] hover:bg-white/5"
               }`}
             >
               <FaRegCalendarCheck className="w-4 h-4" />

@@ -105,7 +105,7 @@ export default function HeroSection() {
             className="max-w-lg"
           >
             {/* Updated heading with gradient text */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[var(--text-primary)] leading-tight tracking-tight">
               Connect,{" "}
               <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">Inspire</span>,
               and Catalyze Change
@@ -121,7 +121,7 @@ export default function HeroSection() {
             <div className="mt-10 flex flex-wrap gap-4 items-center">
               <motion.button
                 onClick={handleGetStarted}
-                className="group relative bg-gradient-to-r from-cyan-600 to-teal-600 text-white px-8 py-4 rounded-md font-medium shadow-lg shadow-cyan-700/20 hover:from-cyan-500 hover:to-teal-500 transition-all"
+                className="group relative bg-gradient-to-r from-cyan-600 to-teal-600 text-[var(--text-primary)] px-8 py-4 rounded-md font-medium shadow-lg shadow-cyan-700/20 hover:from-cyan-500 hover:to-teal-500 transition-all"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -144,7 +144,7 @@ export default function HeroSection() {
 
               <Link to="/learn-more">
                 <motion.button
-                  className="text-white border border-teal-700/30 hover:border-teal-600/60 px-8 py-4 rounded-md font-medium transition-all"
+                  className="text-[var(--text-primary)] border border-teal-700/30 hover:border-teal-600/60 px-8 py-4 rounded-md font-medium transition-all"
                   whileHover={{ backgroundColor: "rgba(20, 184, 166, 0.1)" }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -189,7 +189,7 @@ export default function HeroSection() {
                     <stat.icon className={`${stat.iconColor} text-xl`} />
                   </div>
                   <div>
-                    <span className="block font-bold text-2xl text-white">{stat.value}</span>
+                    <span className="block font-bold text-2xl text-[var(--text-primary)]">{stat.value}</span>
                     <span className="block text-sm text-slate-300">{stat.label}</span>
                   </div>
                 </motion.div>

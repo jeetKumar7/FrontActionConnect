@@ -43,8 +43,8 @@ const Modal = ({ isOpen, onClose, children, title }) => {
           exit={{ opacity: 0, scale: 0.9 }}
         >
           <div className="flex items-center justify-between p-6 border-b border-white/10">
-            <h2 className="text-xl font-semibold text-white">{title}</h2>
-            <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">{title}</h2>
+            <button onClick={onClose} className="text-slate-400 hover:text-[var(--text-primary)] transition-colors">
               <FaTimes size={20} />
             </button>
           </div>

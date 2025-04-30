@@ -63,7 +63,7 @@ const AuthCallback = () => {
   }, [location, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">
       <div className="max-w-md mx-auto p-8 bg-slate-800/50 rounded-2xl border border-white/10 backdrop-blur-sm">
         <h2 className="text-2xl font-bold mb-4 text-center">{error ? "Authentication Error" : "Completing Sign In"}</h2>
 
@@ -77,7 +77,7 @@ const AuthCallback = () => {
             <div className="flex justify-center mb-4">
               <div className="w-10 h-10 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
             </div>
-            <p className="text-white/70">Please wait while we complete your sign in...</p>
+            <p className="text-[var(--text-primary)]/70">Please wait while we complete your sign in...</p>
           </div>
         )}
       </div>

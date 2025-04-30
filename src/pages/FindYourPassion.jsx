@@ -643,7 +643,7 @@ const FindPassion = () => {
                     {answers[question.id] === option.value && (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-white"
+                        className="h-4 w-4 text-[var(--text-primary)]"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -668,7 +668,7 @@ const FindPassion = () => {
       case "multiple-select":
         return (
           <div className="space-y-4">
-            <p className="text-sm text-white/60 mb-2">
+            <p className="text-sm text-[var(--text-primary)]/60 mb-2">
               {question.maxSelections ? `Select up to ${question.maxSelections} options` : "Select all that apply"}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -724,7 +724,7 @@ const FindPassion = () => {
                   ? `bg-${section.color}-500/30 border-2 border-${section.color}-500`
                   : idx < quizSections.findIndex((s) => s.id === currentSection)
                   ? "bg-green-500/20 text-green-400"
-                  : "bg-white/10 text-white/40"
+                  : "bg-white/10 text-[var(--text-primary)]/40"
               }`}
             >
               {React.createElement(section.icon, {
@@ -759,7 +759,7 @@ const FindPassion = () => {
 
     return (
       <div className="mb-6">
-        <div className="flex justify-between text-sm text-white/60 mb-1">
+        <div className="flex justify-between text-sm text-[var(--text-primary)]/60 mb-1">
           <span>Your progress</span>
           <span>{overallProgress}% complete</span>
         </div>
@@ -779,10 +779,10 @@ const FindPassion = () => {
   const currentSectionData = quizSections.find((s) => s.id === currentSection);
 
   const LoadingQuestionIndicator = () => (
-    <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm z-10 rounded-2xl">
+    <div className="absolute inset-0 flex items-center justify-center bg-[var(--bg-secondary)]/50 backdrop-blur-sm z-10 rounded-2xl">
       <div className="flex flex-col items-center">
         <FaSpinner className="text-3xl text-indigo-400 animate-spin mb-3" />
-        <p className="text-white/80">Loading next question...</p>
+        <p className="text-[var(--text-primary)]/80">Loading next question...</p>
       </div>
     </div>
   );
@@ -790,7 +790,7 @@ const FindPassion = () => {
   return (
     <div
       ref={sectionRef}
-      className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80 text-white pt-20"
+      className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80 text-[var(--text-primary)] pt-20"
     >
       {/* Background Elements - Removed video */}
       <div className="absolute inset-0 top-20 z-0 pointer-events-none">
@@ -864,7 +864,7 @@ const FindPassion = () => {
               )}
             </motion.h1>
             <motion.p
-              className="text-xl text-white/80 mb-8"
+              className="text-xl text-[var(--text-primary)]/80 mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -881,7 +881,7 @@ const FindPassion = () => {
         <AnimatePresence>
           {actionFeedback.message && (
             <motion.div
-              className={`fixed top-24 right-4 z-50 p-4 rounded-lg shadow-lg backdrop-blur-sm text-white ${
+              className={`fixed top-24 right-4 z-50 p-4 rounded-lg shadow-lg backdrop-blur-sm text-[var(--text-primary)] ${
                 actionFeedback.type === "success"
                   ? "bg-green-500/80"
                   : actionFeedback.type === "error"
@@ -912,7 +912,7 @@ const FindPassion = () => {
                   <FaLightbulb className="text-3xl text-indigo-400" />
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Ready to Find Your Environmental Passion?</h2>
-                <p className="text-white/70 max-w-xl mx-auto">
+                <p className="text-[var(--text-primary)]/70 max-w-xl mx-auto">
                   This interactive quiz will help match you with environmental and social causes that align with your
                   values, interests, and preferred ways of making a difference. The quiz takes about 5-7 minutes to
                   complete.
@@ -931,7 +931,7 @@ const FindPassion = () => {
                     </div>
                     <div>
                       <h3 className="font-medium mb-1">{section.title}</h3>
-                      <p className="text-sm text-white/60">{section.description}</p>
+                      <p className="text-sm text-[var(--text-primary)]/60">{section.description}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -985,7 +985,7 @@ const FindPassion = () => {
                       </div>
                       <h2>{currentSectionData.title}</h2>
                     </div>
-                    <p className="text-white/60 text-sm">{currentSectionData.description}</p>
+                    <p className="text-[var(--text-primary)]/60 text-sm">{currentSectionData.description}</p>
                   </div>
                 )}
 
@@ -1014,7 +1014,7 @@ const FindPassion = () => {
                     <span>Back</span>
                   </motion.button>
 
-                  <div className="text-sm text-white/50">
+                  <div className="text-sm text-[var(--text-primary)]/50">
                     {currentSection && (
                       <>
                         Question {step + 1} of {questionsBySection[currentSection]?.length}
@@ -1069,7 +1069,7 @@ const FindPassion = () => {
                   <FaLeaf className="text-3xl text-indigo-400" />
                 </motion.div>
                 <h2 className="text-3xl font-bold mb-2">Your Matched Causes</h2>
-                <p className="text-white/70 mb-4 max-w-xl mx-auto">
+                <p className="text-[var(--text-primary)]/70 mb-4 max-w-xl mx-auto">
                   Based on your responses, we've identified these causes that align with your values and interests.
                 </p>
 
@@ -1122,7 +1122,7 @@ const FindPassion = () => {
                               <span className="text-xs">match</span>
                             </div>
                           </div>
-                          <p className="text-white/60 text-sm mt-1">{cause.description}</p>
+                          <p className="text-[var(--text-primary)]/60 text-sm mt-1">{cause.description}</p>
                         </div>
                       </div>
 
@@ -1147,7 +1147,7 @@ const FindPassion = () => {
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
                               supportedCauses.includes(cause.id.toString())
                                 ? "bg-green-500/30 text-green-400 border border-green-500/50"
-                                : "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                                : "bg-gradient-to-r from-indigo-500 to-purple-500 text-[var(--text-primary)]"
                             }`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}

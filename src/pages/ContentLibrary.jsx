@@ -63,7 +63,7 @@ const EmptyState = () => (
     <div className="w-16 h-16 mx-auto bg-indigo-500/10 rounded-full flex items-center justify-center mb-4">
       <FaSearch className="text-3xl text-indigo-400" />
     </div>
-    <h3 className="text-xl font-semibold mb-2 text-white">No content found</h3>
+    <h3 className="text-xl font-semibold mb-2 text-[var(--text-primary)]">No content found</h3>
     <p className="text-slate-400">Try adjusting your search or filters</p>
   </div>
 );
@@ -132,7 +132,7 @@ const ContentCard = ({ item }) => {
             {item.title}
           </h3>
           <p className="text-sm text-slate-300/70 mb-4 line-clamp-2">{item.description}</p>
-          <div className="flex items-center justify-between text-sm text-white/40">
+          <div className="flex items-center justify-between text-sm text-[var(--text-primary)]/40">
             <span>{item.source || item.author}</span>
             <span className="flex items-center gap-1">
               <FaClock className="w-3 h-3" />
@@ -352,7 +352,7 @@ const ContentLibrary = () => {
   return (
     <div
       ref={sectionRef}
-      className="relative min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80 text-white"
+      className="relative min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80 text-[var(--text-primary)]"
     >
       {/* Background Elements */}
       <div className="absolute inset-0 z-0">
@@ -413,7 +413,7 @@ const ContentLibrary = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
               Discover <span className="text-indigo-400">Impactful</span> Content
             </h1>
-            <p className="text-xl text-center text-white/80 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-center text-[var(--text-primary)]/80 mb-8 max-w-2xl mx-auto">
               Explore curated videos, articles, books, and talks about social causes and make a difference.
             </p>
 
@@ -429,7 +429,7 @@ const ContentLibrary = () => {
                 placeholder="Search for content..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-indigo-500/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 shadow-lg transition-all"
+                className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-indigo-500/20 text-[var(--text-primary)] placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 shadow-lg transition-all"
               />
               <motion.button
                 className="absolute right-4 top-1/2 -translate-y-1/2"
@@ -554,7 +554,7 @@ const ContentLibrary = () => {
                     </button>
                     <motion.button
                       onClick={() => setShowFilters(false)}
-                      className="text-white/60 hover:text-white"
+                      className="text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                     >
@@ -566,7 +566,7 @@ const ContentLibrary = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Date Filter */}
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-white/80">
+                    <div className="flex items-center gap-2 text-sm text-[var(--text-primary)]/80">
                       <FaCalendarAlt className="text-indigo-400" />
                       <span>Date</span>
                     </div>
@@ -574,7 +574,7 @@ const ContentLibrary = () => {
                       <select
                         value={filters.date}
                         onChange={(e) => handleFilterChange("date", e.target.value)}
-                        className="w-full bg-white/5 border border-indigo-500/20 rounded-lg px-4 py-2 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                        className="w-full bg-white/5 border border-indigo-500/20 rounded-lg px-4 py-2 text-[var(--text-primary)] appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
                         style={{ colorScheme: "dark" }}
                       >
                         {dateOptions.map((option) => (
@@ -593,7 +593,7 @@ const ContentLibrary = () => {
 
                   {/* Sort By Filter */}
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-white/80">
+                    <div className="flex items-center gap-2 text-sm text-[var(--text-primary)]/80">
                       <FaSort className="text-indigo-400" />
                       <span>Sort By</span>
                     </div>
@@ -601,7 +601,7 @@ const ContentLibrary = () => {
                       <select
                         value={filters.sortBy}
                         onChange={(e) => handleFilterChange("sortBy", e.target.value)}
-                        className="w-full bg-white/5 border border-indigo-500/20 rounded-lg px-4 py-2 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                        className="w-full bg-white/5 border border-indigo-500/20 rounded-lg px-4 py-2 text-[var(--text-primary)] appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
                         style={{ colorScheme: "dark" }}
                       >
                         {sortOptions.map((option) => (
@@ -622,7 +622,7 @@ const ContentLibrary = () => {
                 {/* Source Filters - only show if there are sources */}
                 {getSources.length > 0 && (
                   <div className="mt-6 pt-4 border-t border-indigo-500/10">
-                    <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
+                    <div className="flex items-center gap-2 text-sm text-[var(--text-primary)]/80 mb-2">
                       <span>Sources</span>
                     </div>
                     <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto pr-2">
@@ -641,8 +641,8 @@ const ContentLibrary = () => {
                           }}
                           className={`px-3 py-1 text-sm rounded-full transition-all ${
                             filters.source.includes(source)
-                              ? "bg-indigo-600 text-white"
-                              : "bg-white/5 text-white/70 hover:bg-white/10 border border-indigo-500/10"
+                              ? "bg-indigo-600 text-[var(--text-primary)]"
+                              : "bg-white/5 text-[var(--text-primary)]/70 hover:bg-white/10 border border-indigo-500/10"
                           }`}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
@@ -657,7 +657,7 @@ const ContentLibrary = () => {
                 {/* Active Filters */}
                 {(filters.date !== "any" || filters.source.length > 0 || filters.sortBy !== "relevance") && (
                   <div className="mt-6 pt-4 border-t border-indigo-500/10">
-                    <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
+                    <div className="flex items-center gap-2 text-sm text-[var(--text-primary)]/80 mb-2">
                       <span>Active Filters:</span>
                     </div>
                     <div className="flex flex-wrap gap-2">

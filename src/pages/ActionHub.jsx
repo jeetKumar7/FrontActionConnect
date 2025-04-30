@@ -533,7 +533,7 @@ const ActionHub = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white pt-20">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-16 overflow-hidden">
         {/* Background Video */}
@@ -558,7 +558,7 @@ const ActionHub = () => {
               Turn Your Passion Into Action
             </motion.h1>
             <motion.p
-              className="text-xl text-white/80 mb-8"
+              className="text-xl text-[var(--text-primary)]/80 mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -578,9 +578,9 @@ const ActionHub = () => {
                 placeholder="Search for organizations, resources, or opportunities..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
+                className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 text-[var(--text-primary)] placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
               />
-              <FaSearch className="absolute right-6 top-1/2 transform -translate-y-1/2 text-white/60" />
+              <FaSearch className="absolute right-6 top-1/2 transform -translate-y-1/2 text-[var(--text-primary)]/60" />
             </motion.div>
           </div>
         </div>
@@ -645,7 +645,9 @@ const ActionHub = () => {
                             setMoreMenuOpen(false);
                           }}
                           className={`block w-full text-left px-3 py-2 rounded my-1 ${
-                            selectedCategory === category.toLowerCase() ? "bg-blue-500 text-white" : "hover:bg-white/5"
+                            selectedCategory === category.toLowerCase()
+                              ? "bg-blue-500 text-[var(--text-primary)]"
+                              : "hover:bg-white/5"
                           }`}
                         >
                           {category}
@@ -699,7 +701,7 @@ const ActionHub = () => {
         {loading && (
           <div className="flex justify-center items-center py-12">
             <FaSpinner className="animate-spin text-3xl text-blue-500 mr-3" />
-            <span className="text-white/70 text-lg">Loading...</span>
+            <span className="text-[var(--text-primary)]/70 text-lg">Loading...</span>
           </div>
         )}
 
@@ -709,7 +711,7 @@ const ActionHub = () => {
             (activeTab === "resources" && resources.length === 0) ||
             (activeTab === "opportunities" && opportunities.length === 0)) && (
             <div className="text-center py-16 bg-white/5 rounded-xl border border-white/10">
-              <div className="text-6xl mb-4 text-white/20 flex justify-center">
+              <div className="text-6xl mb-4 text-[var(--text-primary)]/20 flex justify-center">
                 {activeTab === "organizations" ? (
                   <FaUsers />
                 ) : activeTab === "resources" ? (
@@ -719,7 +721,7 @@ const ActionHub = () => {
                 )}
               </div>
               <h3 className="text-xl font-semibold mb-2">No {activeTab} found</h3>
-              <p className="text-white/60 max-w-md mx-auto">
+              <p className="text-[var(--text-primary)]/60 max-w-md mx-auto">
                 {searchQuery ? `No results for "${searchQuery}"` : `There are currently no ${activeTab} available.`}
                 {selectedCategory !== "all" && ` Try changing the category filter.`}
                 {showOnlyMyItems && ` You haven't created any ${activeTab} yet.`}
@@ -797,7 +799,7 @@ const ActionHub = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-white/80 mb-4 line-clamp-2">{org.description}</p>
+                    <p className="text-[var(--text-primary)]/80 mb-4 line-clamp-2">{org.description}</p>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {org.opportunities &&
                         org.opportunities.map((opp, idx) => (
@@ -842,7 +844,7 @@ const ActionHub = () => {
                   )}
 
                   <h3 className="text-xl font-semibold mb-2">{resource.title}</h3>
-                  <div className="flex items-center gap-4 text-white/60 text-sm mb-2">
+                  <div className="flex items-center gap-4 text-[var(--text-primary)]/60 text-sm mb-2">
                     <span>{resource.type}</span>
                     {resource.provider && (
                       <>
@@ -861,7 +863,7 @@ const ActionHub = () => {
                       ))}
                   </div>
 
-                  <p className="text-white/80 mb-4 line-clamp-3">{resource.description}</p>
+                  <p className="text-[var(--text-primary)]/80 mb-4 line-clamp-3">{resource.description}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-green-400">{resource.price || "Free"}</span>
                     <motion.a
@@ -900,7 +902,7 @@ const ActionHub = () => {
                   )}
 
                   <h3 className="text-xl font-semibold mb-2">{opportunity.title}</h3>
-                  <p className="text-white/60 mb-2">{opportunity.organization}</p>
+                  <p className="text-[var(--text-primary)]/60 mb-2">{opportunity.organization}</p>
 
                   <div className="flex flex-wrap gap-1 mb-3">
                     {opportunity.categories &&
@@ -911,7 +913,7 @@ const ActionHub = () => {
                       ))}
                   </div>
 
-                  <p className="text-white/80 mb-4 line-clamp-2">{opportunity.description}</p>
+                  <p className="text-[var(--text-primary)]/80 mb-4 line-clamp-2">{opportunity.description}</p>
 
                   <div className="space-y-2 mb-4">
                     {opportunity.amount && (
@@ -921,13 +923,13 @@ const ActionHub = () => {
                       </div>
                     )}
                     {opportunity.deadline && (
-                      <div className="flex items-center gap-2 text-white/60">
+                      <div className="flex items-center gap-2 text-[var(--text-primary)]/60">
                         <FaRegCalendarCheck />
                         <span>Deadline: {new Date(opportunity.deadline).toLocaleDateString()}</span>
                       </div>
                     )}
                     {opportunity.location && (
-                      <div className="flex items-center gap-2 text-white/60">
+                      <div className="flex items-center gap-2 text-[var(--text-primary)]/60">
                         <FaGlobe />
                         <span>{opportunity.location}</span>
                       </div>
@@ -957,8 +959,8 @@ const ActionHub = () => {
                 disabled={pagination.currentPage === 1}
                 className={`px-3 py-1 rounded ${
                   pagination.currentPage === 1
-                    ? "bg-white/5 text-white/40 cursor-not-allowed"
-                    : "bg-white/10 text-white hover:bg-white/20"
+                    ? "bg-white/5 text-[var(--text-primary)]/40 cursor-not-allowed"
+                    : "bg-white/10 text-[var(--text-primary)] hover:bg-white/20"
                 }`}
               >
                 &laquo; Previous
@@ -971,8 +973,8 @@ const ActionHub = () => {
                     onClick={() => handlePageChange(page + 1)}
                     className={`w-8 h-8 rounded-full ${
                       pagination.currentPage === page + 1
-                        ? "bg-blue-500 text-white"
-                        : "bg-white/10 text-white hover:bg-white/20"
+                        ? "bg-blue-500 text-[var(--text-primary)]"
+                        : "bg-white/10 text-[var(--text-primary)] hover:bg-white/20"
                     }`}
                   >
                     {page + 1}
@@ -985,8 +987,8 @@ const ActionHub = () => {
                 disabled={pagination.currentPage === pagination.totalPages}
                 className={`px-3 py-1 rounded ${
                   pagination.currentPage === pagination.totalPages
-                    ? "bg-white/5 text-white/40 cursor-not-allowed"
-                    : "bg-white/10 text-white hover:bg-white/20"
+                    ? "bg-white/5 text-[var(--text-primary)]/40 cursor-not-allowed"
+                    : "bg-white/10 text-[var(--text-primary)] hover:bg-white/20"
                 }`}
               >
                 Next &raquo;
@@ -1014,7 +1016,7 @@ const ActionHub = () => {
                     ? "Add Resource"
                     : "Add Opportunity"}
                 </h3>
-                <button className="text-white/60 hover:text-white" onClick={closeModal}>
+                <button className="text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]" onClick={closeModal}>
                   <FaTimes />
                 </button>
               </div>
@@ -1042,7 +1044,7 @@ const ActionHub = () => {
                   {activeTab === "organizations" && (
                     <>
                       <div>
-                        <label className="block text-white/80 mb-2">Organization Name*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Organization Name*</label>
                         <input
                           type="text"
                           name="name"
@@ -1054,7 +1056,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Description*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Description*</label>
                         <textarea
                           name="description"
                           value={formData.description || ""}
@@ -1065,7 +1067,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Website URL</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Website URL</label>
                         <div className="flex items-center">
                           <FaLink className="text-slate-400 mr-2" />
                           <input
@@ -1081,7 +1083,7 @@ const ActionHub = () => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-white/80 mb-2">Location</label>
+                          <label className="block text-[var(--text-primary)]/80 mb-2">Location</label>
                           <input
                             type="text"
                             name="location"
@@ -1093,7 +1095,7 @@ const ActionHub = () => {
                         </div>
 
                         <div>
-                          <label className="block text-white/80 mb-2">Rating (0-5)</label>
+                          <label className="block text-[var(--text-primary)]/80 mb-2">Rating (0-5)</label>
                           <div className="flex items-center gap-3">
                             {[0, 1, 2, 3, 4, 5].map((value) => (
                               <button
@@ -1102,8 +1104,8 @@ const ActionHub = () => {
                                 onClick={() => setFormData({ ...formData, rating: value })}
                                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
                                   Number(formData.rating) === value
-                                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
-                                    : "bg-slate-700 hover:bg-slate-600 text-white/70"
+                                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-[var(--text-primary)]"
+                                    : "bg-slate-700 hover:bg-slate-600 text-[var(--text-primary)]/70"
                                 }`}
                               >
                                 {value}
@@ -1117,7 +1119,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Image (Optional)</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Image (Optional)</label>
                         {!imagePreview ? (
                           <div
                             className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500/50"
@@ -1142,7 +1144,7 @@ const ActionHub = () => {
                                 setImageFile(null);
                                 setImagePreview(null);
                               }}
-                              className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full"
+                              className="absolute top-2 right-2 bg-red-600 text-[var(--text-primary)] p-1 rounded-full"
                               title="Remove Image"
                             >
                               <FaTimes />
@@ -1152,7 +1154,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Opportunities</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Opportunities</label>
                         <div className="grid grid-cols-2 gap-2">
                           {["Volunteer", "Donate", "Internship", "Job", "Research", "Advocacy"].map((item) => (
                             <label key={item} className="flex items-center space-x-2">
@@ -1174,7 +1176,7 @@ const ActionHub = () => {
                   {activeTab === "resources" && (
                     <>
                       <div>
-                        <label className="block text-white/80 mb-2">Resource Title*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Resource Title*</label>
                         <input
                           type="text"
                           name="title"
@@ -1186,7 +1188,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Resource Type*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Resource Type*</label>
                         <select
                           name="type"
                           value={formData.type || ""}
@@ -1209,7 +1211,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Description</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Description</label>
                         <textarea
                           name="description"
                           value={formData.description || ""}
@@ -1219,7 +1221,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Provider/Author</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Provider/Author</label>
                         <input
                           type="text"
                           name="provider"
@@ -1230,7 +1232,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Resource URL*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Resource URL*</label>
                         <div className="flex items-center">
                           <FaLink className="text-slate-400 mr-2" />
                           <input
@@ -1246,7 +1248,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Price/Access Type</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Price/Access Type</label>
                         <select
                           name="price"
                           value={formData.price || "Free"}
@@ -1267,7 +1269,7 @@ const ActionHub = () => {
                   {activeTab === "opportunities" && (
                     <>
                       <div>
-                        <label className="block text-white/80 mb-2">Opportunity Title*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Opportunity Title*</label>
                         <input
                           type="text"
                           name="title"
@@ -1279,7 +1281,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Organization*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Organization*</label>
                         <input
                           type="text"
                           name="organization"
@@ -1291,7 +1293,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Description</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Description</label>
                         <textarea
                           name="description"
                           value={formData.description || ""}
@@ -1301,7 +1303,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Application URL*</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Application URL*</label>
                         <div className="flex items-center">
                           <FaLink className="text-slate-400 mr-2" />
                           <input
@@ -1318,7 +1320,7 @@ const ActionHub = () => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-white/80 mb-2">Location</label>
+                          <label className="block text-[var(--text-primary)]/80 mb-2">Location</label>
                           <input
                             type="text"
                             name="location"
@@ -1330,7 +1332,7 @@ const ActionHub = () => {
                         </div>
 
                         <div>
-                          <label className="block text-white/80 mb-2">Amount/Compensation</label>
+                          <label className="block text-[var(--text-primary)]/80 mb-2">Amount/Compensation</label>
                           <input
                             type="text"
                             name="amount"
@@ -1343,7 +1345,7 @@ const ActionHub = () => {
                       </div>
 
                       <div>
-                        <label className="block text-white/80 mb-2">Deadline (if applicable)</label>
+                        <label className="block text-[var(--text-primary)]/80 mb-2">Deadline (if applicable)</label>
                         <input
                           type="date"
                           name="deadline"
@@ -1357,7 +1359,7 @@ const ActionHub = () => {
 
                   {/* Categories - common for all types */}
                   <div>
-                    <label className="block text-white/80 mb-2">
+                    <label className="block text-[var(--text-primary)]/80 mb-2">
                       Categories* <span className="text-slate-400 text-sm">(Select at least one)</span>
                     </label>
                     <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 bg-slate-700/30 rounded-lg">
@@ -1370,8 +1372,8 @@ const ActionHub = () => {
                             onClick={() => handleCategorySelect(category)}
                             className={`px-3 py-1 rounded-full text-sm ${
                               selectedCategories.includes(category)
-                                ? "bg-blue-500 text-white"
-                                : "bg-slate-700 text-white/70 hover:bg-slate-600"
+                                ? "bg-blue-500 text-[var(--text-primary)]"
+                                : "bg-slate-700 text-[var(--text-primary)]/70 hover:bg-slate-600"
                             }`}
                           >
                             {category}
