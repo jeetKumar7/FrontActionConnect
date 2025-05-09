@@ -386,7 +386,7 @@ const ContentLibrary = () => {
       {/* Main Content */}
       <div className="relative z-10 mt-14">
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-indigo-900/70 to-purple-900/70 py-20">
+        <div className="relative overflow-hidden bg-[var(--bg-primary)] py-20">
           {/* Background Video */}
           <video className="absolute inset-0 w-full h-full object-cover opacity-90" autoPlay loop muted playsInline>
             <source
