@@ -126,7 +126,7 @@ export default function HeroSection() {
                 whileTap={{ scale: 0.98 }}
               >
                 <span className="relative z-10 flex items-center">
-                  {isAuthenticated ? "Find Your Cause" : "Get Started"}
+                  {isAuthenticated ? "Find Your Passion" : "Get Started"}
                   <motion.span
                     className="ml-1.5 inline-block"
                     animate={{ x: [0, 4, 0] }}
