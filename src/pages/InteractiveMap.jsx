@@ -799,10 +799,10 @@ const InteractiveMap = () => {
                     </div>
 
                     {/* Initiatives List */}
-                    <div className="flex-1 overflow-y-auto">
-                      <div className="p-4 grid gap-3">
+                    <div className="flex-1 overflow-y-auto scrollbar-none">
+                      <div className="p-4 grid gap-3 scrollbar-none">
                         {loading ? (
-                          <div className="flex flex-col items-center justify-center py-12 space-y-3">
+                          <div className="flex flex-col items-center justify-center py-12 space-y-3 scrollbar-none">
                             <FaSpinner className="animate-spin text-3xl text-blue-400" />
                             <p className="text-[var(--text-primary)]/60">Loading initiatives...</p>
                           </div>
