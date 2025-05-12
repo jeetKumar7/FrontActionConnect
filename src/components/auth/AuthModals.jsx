@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaEnvelope, FaLock, FaUser, FaGoogle, FaGithub, FaCheckCircle } from "react-icons/fa";
 import Modal from "../common/Modal";
@@ -12,6 +12,20 @@ export const SignInModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    const handleOpenSignIn = (event) => {
+      if (event.detail?.redirectTo) {
+        localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
+      }
+      onOpen();
+    };
+
+    window.addEventListener("openSignIn", handleOpenSignIn);
+    return () => {
+      window.removeEventListener("openSignIn", handleOpenSignIn);
+    };
+  }, [onOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,8 +67,14 @@ export const SignInModal = ({ isOpen, onClose }) => {
           setFormData({ email: "", password: "" });
           setSuccess(false);
 
-          // Refresh page
-          window.location.reload();
+          // Redirect or refresh page
+          const redirect = localStorage.getItem("redirectAfterAuth");
+          if (redirect) {
+            localStorage.removeItem("redirectAfterAuth");
+            window.location.href = redirect;
+          } else {
+            window.location.reload();
+          }
         }, 1500);
       }
     } catch (err) {
@@ -185,6 +205,20 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    const handleOpenSignUp = (event) => {
+      if (event.detail?.redirectTo) {
+        localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
+      }
+      onOpen();
+    };
+
+    window.addEventListener("openSignUp", handleOpenSignUp);
+    return () => {
+      window.removeEventListener("openSignUp", handleOpenSignUp);
+    };
+  }, [onOpen]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -229,8 +263,14 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           setFormData({ name: "", email: "", password: "", confirmPassword: "" });
           setSuccess(false);
 
-          // Refresh page
-          window.location.reload();
+          // Redirect or refresh page
+          const redirect = localStorage.getItem("redirectAfterAuth");
+          if (redirect) {
+            localStorage.removeItem("redirectAfterAuth");
+            window.location.href = redirect;
+          } else {
+            window.location.reload();
+          }
         }, 1500);
       } else {
         console.error("Invalid response format", response);

@@ -62,6 +62,19 @@ const AuthCallback = () => {
     handleAuthCallback();
   }, [location, navigate]);
 
+  useEffect(() => {
+    // Existing auth callback code...
+
+    // After successful authentication with token storage:
+    const redirect = localStorage.getItem("redirectAfterAuth");
+    if (redirect) {
+      localStorage.removeItem("redirectAfterAuth");
+      navigate(redirect);
+    } else {
+      navigate("/");
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">
       <div className="max-w-md mx-auto p-8 bg-slate-800/50 rounded-2xl border border-white/10 backdrop-blur-sm">

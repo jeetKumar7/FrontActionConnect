@@ -15,13 +15,8 @@ import InteractiveMap from "./pages/InteractiveMap";
 import LearnMore from "./pages/LearnMore";
 import UserProfile from "./components/user/UserProfile";
 import AuthCallback from "./components/auth/AuthCallback";
-
-// const Home = () => <div className="p-6">Home Page</div>;
-const Library = () => <div className="p-6">Content Library</div>;
-const Hub = () => <div className="p-6">Action Hub</div>;
-const Map = () => <div className="p-6">Map Page</div>;
-const Chat = () => <div className="p-6">Community Chat</div>;
-const Feed = () => <div className="p-6">Community Feed</div>;
+import { WelcomeProvider } from "./context/WelcomeContext";
+import AppContent from "./components/layout/AppContent";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,24 +31,9 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/library" element={<ContentLibrary />} />
-          <Route path="/community/*" element={<Community />} />
-          <Route path="/hub" element={<ActionHub />} />
-          <Route path="/chat" element={<ChatChannels />} />
-          <Route path="/feed" element={<CommunityFeed />} />
-          <Route path="/events" element={<UpcomingEvents />} />
-          <Route path="/passion" element={<FindPassion />} />
-          <Route path="/map" element={<InteractiveMap />} />
-          <Route path="/learn-more" element={<LearnMore />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/auth-success" element={<AuthCallback />} />
-        </Routes>
-        <Footer />
-      </div>
+      <WelcomeProvider>
+        <AppContent />
+      </WelcomeProvider>
     </QueryClientProvider>
   );
 }
