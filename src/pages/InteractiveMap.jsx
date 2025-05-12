@@ -203,8 +203,8 @@ const InteractiveMap = () => {
   const [isDeletingInitiative, setIsDeletingInitiative] = useState(false);
 
   // Map state
-  const [mapCenter, setMapCenter] = useState([40.7128, -74.006]); // Default: NYC
-  const [mapZoom, setMapZoom] = useState(11);
+  const [mapCenter, setMapCenter] = useState([20, 0]); // Default: NYC
+  const [mapZoom, setMapZoom] = useState(2);
 
   // User related state
   const [userData, setUserData] = useState(null);
