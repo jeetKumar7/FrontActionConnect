@@ -921,7 +921,7 @@ const FindPassion = () => {
             >
               {userName ? (
                 <>
-                  {userName}, <span className="text-white">Discover Your</span>{" "}
+                  <span className="text-white">{userName}, Discover Your</span>{" "}
                   <span className={isDarkMode ? "text-indigo-400" : "text-indigo-600"}>Passion</span>
                 </>
               ) : (
