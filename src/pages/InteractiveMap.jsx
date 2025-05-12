@@ -22,6 +22,8 @@ import {
   FaBars,
   FaTimes,
   FaFilter,
+  FaHandshake,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -1082,6 +1084,149 @@ const InteractiveMap = () => {
           )}
         </AnimatePresence>
       </div>
+      {/* Initiative Details Panel */}
+      <AnimatePresence>
+        {selectedInitiative && (
+          <motion.div
+            className={`fixed bottom-4 right-4 w-80 lg:w-96 z-30 ${
+              isDarkMode
+                ? "bg-slate-800/95 backdrop-blur-md border-white/10"
+                : "bg-white/95 backdrop-blur-md border-slate-200"
+            } border rounded-xl shadow-xl overflow-hidden`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ type: "spring", bounce: 0.1, duration: 0.5 }}
+          >
+            <div className="flex items-start justify-between p-4 border-b border-white/10">
+              <h3 className="text-lg font-bold">{selectedInitiative.title}</h3>
+              <button
+                onClick={() => setSelectedInitiative(null)}
+                className={isDarkMode ? "text-white/60 hover:text-white" : "text-slate-400 hover:text-slate-900"}
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="p-4 max-h-[60vh] overflow-y-auto">
+              <div className="flex items-center gap-2 mb-4">
+                <span
+                  className={`px-3 py-1 text-xs rounded-full ${
+                    isDarkMode
+                      ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                      : "bg-blue-100 text-blue-700 border border-blue-200"
+                  }`}
+                >
+                  {selectedInitiative.category}
+                </span>
+                <span
+                  className={`px-3 py-1 text-xs rounded-full ${
+                    selectedInitiative.status === "Active"
+                      ? isDarkMode
+                        ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                        : "bg-green-100 text-green-700 border border-green-200"
+                      : isDarkMode
+                      ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                      : "bg-amber-100 text-amber-700 border border-amber-200"
+                  }`}
+                >
+                  {selectedInitiative.status}
+                </span>
+              </div>
+
+              <div className="mb-4">
+                <h4 className={`text-sm font-semibold mb-1 ${isDarkMode ? "text-white/70" : "text-slate-500"}`}>
+                  Description
+                </h4>
+                <p className={`${isDarkMode ? "text-white/90" : "text-slate-700"}`}>{selectedInitiative.description}</p>
+              </div>
+
+              <div className="mb-4">
+                <h4 className={`text-sm font-semibold mb-1 ${isDarkMode ? "text-white/70" : "text-slate-500"}`}>
+                  Location
+                </h4>
+                <div className="flex items-center gap-2">
+                  <FaMapMarkerAlt className={isDarkMode ? "text-blue-400" : "text-blue-500"} />
+                  <p>{selectedInitiative.location}</p>
+                </div>
+              </div>
+
+              {selectedInitiative.nextEvent && (
+                <div className="mb-4">
+                  <h4 className={`text-sm font-semibold mb-1 ${isDarkMode ? "text-white/70" : "text-slate-500"}`}>
+                    Next Event
+                  </h4>
+                  <div className="flex items-center gap-2">
+                    <FaCalendarAlt className={isDarkMode ? "text-purple-400" : "text-purple-500"} />
+                    <p>{new Date(selectedInitiative.nextEvent).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              )}
+
+              {selectedInitiative.tags && selectedInitiative.tags.length > 0 && (
+                <div className="mb-4">
+                  <h4 className={`text-sm font-semibold mb-1 ${isDarkMode ? "text-white/70" : "text-slate-500"}`}>
+                    Tags
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedInitiative.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className={`px-2 py-0.5 text-xs rounded-full ${
+                          isDarkMode ? "bg-white/10 text-white/80" : "bg-slate-100 text-slate-700"
+                        }`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedInitiative.organizer && (
+                <div className="mb-4">
+                  <h4 className={`text-sm font-semibold mb-1 ${isDarkMode ? "text-white/70" : "text-slate-500"}`}>
+                    Organizer
+                  </h4>
+                  <p>{selectedInitiative.organizer}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 border-t border-white/10">
+              <motion.button
+                onClick={() => handleJoinInitiative(selectedInitiative)}
+                className={`w-full py-3 ${
+                  isDarkMode
+                    ? "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
+                    : "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
+                } text-white rounded-lg flex items-center justify-center gap-2 font-medium`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <FaHandshake className="text-lg" />
+                Join Initiative
+              </motion.button>
+
+              {selectedInitiative.website && (
+                <a
+                  href={selectedInitiative.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`mt-2 w-full py-2 ${
+                    isDarkMode
+                      ? "bg-white/10 hover:bg-white/20 text-white/90"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                  } rounded-lg flex items-center justify-center gap-2 text-sm transition-colors`}
+                >
+                  Visit Website
+                  <FaExternalLinkAlt className="text-xs" />
+                </a>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Overlays for initiative details and user profiles remain unchanged */}
       {/* ... */}
       {/* Modals remain unchanged */}
