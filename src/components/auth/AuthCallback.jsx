@@ -41,9 +41,11 @@ const AuthCallback = () => {
             // Trigger auth state update
             window.dispatchEvent(new Event("storage"));
 
+            // Handle redirection - removed duplicate code block
             const redirectPath = localStorage.getItem("redirectAfterAuth");
 
             if (redirectPath === "/passion") {
+              // This is a new user that came from welcome modal
               localStorage.removeItem("redirectAfterAuth");
               navigate("/passion", { replace: true });
             } else if (redirectPath) {
@@ -51,20 +53,6 @@ const AuthCallback = () => {
               navigate(redirectPath, { replace: true });
             } else {
               navigate("/", { replace: true });
-            }
-
-            // After successfully setting up the user token, check for redirect
-            const redirectPath = localStorage.getItem("redirectAfterAuth");
-
-            if (redirectPath === "/passion") {
-              // This is a new user that came from welcome modal
-              localStorage.removeItem("redirectAfterAuth");
-              navigate("/passion");
-            } else if (redirectPath) {
-              localStorage.removeItem("redirectAfterAuth");
-              navigate(redirectPath);
-            } else {
-              navigate("/");
             }
           } else {
             setError(data.message || "Authentication failed");
