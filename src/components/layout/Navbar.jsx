@@ -195,7 +195,7 @@ const Navbar = () => {
   ];
 
   return (
-    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-[var(--bg-primary)] backdrop-blur-xl border-b border-white/10 shadow-md shadow-black/10">
+    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-[var(--bg-primary)] border-b border-white/10 shadow-md shadow-black/10">
       {/* Container remains the same */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
