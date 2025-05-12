@@ -38,6 +38,31 @@ import {
 import { causes } from "../data/causes";
 import { Link } from "react-router-dom";
 
+// Add this custom hook near the top of the file, before the component
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
 // Error boundary for handling React errors
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -651,7 +676,7 @@ const InteractiveMap = () => {
         </MapContainer>
       </div>
       {/* Top Control Bar - Full width spanning the top */}
-      <div className="absolute top-18 left-0 right-0 z-30 bg-[var(--bg-secondary)]/90 backdrop-blur-md border-b border-white/10">
+      <div className="absolute top-16 left-0 right-0 z-30 bg-[var(--bg-secondary)]/90 backdrop-blur-md border-b border-white/10">
         <div className="flex flex-wrap items-center p-2 md:p-3 gap-2">
           {/* Toggle sidebar button */}
           <button
@@ -732,7 +757,7 @@ const InteractiveMap = () => {
         </div>
       </div>
       {/* Collapsible Sidebar - Now positioned below the search bar */}
-      <div className="absolute top-[calc(20px+3.5rem)] left-0 bottom-0 z-20 pt-4">
+      <div className="absolute top-[calc(20px+5.5rem)] left-0 bottom-0 z-20 pt-4">
         <AnimatePresence>
           {isSidebarOpen && (
             <motion.div
