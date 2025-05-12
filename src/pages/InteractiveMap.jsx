@@ -189,6 +189,9 @@ const categories = [
 ];
 
 const InteractiveMap = () => {
+  // Add theme detection
+  const isDarkMode = useThemeDetection();
+
   // State for search and filtering
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -633,15 +636,27 @@ const InteractiveMap = () => {
   // Modified layout structure - Top Control Bar and Sidebar positioning
 
   return (
-    <div className="h-screen w-full bg-slate-900 text-[var(--text-primary)] pt-16 relative overflow-hidden">
-      {/* Notifications stay the same */}
+    <div
+      className={`h-screen w-full ${
+        isDarkMode ? "bg-slate-900" : "bg-slate-50"
+      } text-[var(--text-primary)] pt-16 relative overflow-hidden`}
+    >
+      {/* Notifications */}
       {error && (
-        <div className="fixed top-20 right-4 bg-red-500 text-[var(--text-primary)] px-4 py-2 rounded shadow-lg z-50">
+        <div
+          className={`fixed top-20 right-4 ${
+            isDarkMode ? "bg-red-500" : "bg-red-100 border border-red-500 text-red-800"
+          } px-4 py-2 rounded shadow-lg z-50`}
+        >
           {error}
         </div>
       )}
       {success && (
-        <div className="fixed top-20 right-4 bg-green-500 text-[var(--text-primary)] px-4 py-2 rounded shadow-lg z-50">
+        <div
+          className={`fixed top-20 right-4 ${
+            isDarkMode ? "bg-green-500" : "bg-green-100 border border-green-500 text-green-800"
+          } px-4 py-2 rounded shadow-lg z-50`}
+        >
           {success}
         </div>
       )}
@@ -676,12 +691,20 @@ const InteractiveMap = () => {
         </MapContainer>
       </div>
       {/* Top Control Bar - Full width spanning the top */}
-      <div className="absolute top-16 left-0 right-0 z-30 bg-[var(--bg-secondary)]/90 backdrop-blur-md border-b border-white/10">
+      <div
+        className={`absolute top-16 left-0 right-0 z-30 ${
+          isDarkMode
+            ? "bg-slate-900/90 backdrop-blur-md border-b border-white/10"
+            : "bg-white/90 backdrop-blur-md border-b border-slate-200"
+        }`}
+      >
         <div className="flex flex-wrap items-center p-2 md:p-3 gap-2">
           {/* Toggle sidebar button */}
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 bg-slate-700/80 hover:bg-slate-600/80 rounded-lg"
+            className={`p-2 ${
+              isDarkMode ? "bg-slate-700/80 hover:bg-slate-600/80" : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+            } rounded-lg`}
           >
             {isSidebarOpen ? <FaTimes /> : <FaBars />}
           </button>
@@ -693,19 +716,35 @@ const InteractiveMap = () => {
               placeholder={showPeopleTab ? "Search people..." : "Search initiatives..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500"
+              className={`w-full px-4 py-2 ${
+                isDarkMode
+                  ? "bg-white/10 border-white/10 text-white placeholder-white/40"
+                  : "bg-white border-slate-200 text-slate-800 placeholder-slate-400"
+              } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
             />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-primary)]/40" />
+            <FaSearch
+              className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                isDarkMode ? "text-white/40" : "text-slate-400"
+              }`}
+            />
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
             {/* Toggle Initiatives/People */}
-            <div className="flex rounded-lg overflow-hidden border border-white/10 bg-slate-700/50">
+            <div
+              className={`flex rounded-lg overflow-hidden ${
+                isDarkMode ? "border border-white/10 bg-slate-700/50" : "border border-slate-200 bg-white"
+              }`}
+            >
               <button
                 onClick={() => setShowPeopleTab(false)}
                 className={`px-3 py-1.5 flex items-center gap-2 text-sm ${
-                  !showPeopleTab ? "bg-gradient-to-r from-blue-500 to-purple-500" : "bg-transparent hover:bg-white/10"
+                  !showPeopleTab
+                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                    : isDarkMode
+                    ? "bg-transparent hover:bg-white/10"
+                    : "bg-transparent hover:bg-slate-100 text-slate-700"
                 }`}
               >
                 <FaMapMarkerAlt className="w-3 h-3" />
@@ -714,7 +753,11 @@ const InteractiveMap = () => {
               <button
                 onClick={() => setShowPeopleTab(true)}
                 className={`px-3 py-1.5 flex items-center gap-2 text-sm ${
-                  showPeopleTab ? "bg-gradient-to-r from-blue-500 to-purple-500" : "bg-transparent hover:bg-white/10"
+                  showPeopleTab
+                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                    : isDarkMode
+                    ? "bg-transparent hover:bg-white/10"
+                    : "bg-transparent hover:bg-slate-100 text-slate-700"
                 }`}
               >
                 <FaUsers className="w-3 h-3" />
@@ -726,7 +769,9 @@ const InteractiveMap = () => {
             {userCoordinates && (
               <motion.button
                 onClick={centerOnUserLocation}
-                className="px-3 py-1.5 flex items-center gap-2 bg-green-600/80 hover:bg-green-700/80 transition-colors rounded-lg text-sm"
+                className={`px-3 py-1.5 flex items-center gap-2 ${
+                  isDarkMode ? "bg-green-600/80 hover:bg-green-700/80" : "bg-green-500 hover:bg-green-600 text-white"
+                } transition-colors rounded-lg text-sm`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -739,7 +784,11 @@ const InteractiveMap = () => {
             {userData && (
               <motion.button
                 onClick={() => setShowAddInitiativeModal(true)}
-                className="px-3 py-1.5 flex items-center gap-2 bg-gradient-to-r from-green-500/80 to-teal-500/80 rounded-lg text-sm"
+                className={`px-3 py-1.5 flex items-center gap-2 ${
+                  isDarkMode
+                    ? "bg-gradient-to-r from-green-500/80 to-teal-500/80"
+                    : "bg-gradient-to-r from-green-500 to-teal-500 text-white"
+                } rounded-lg text-sm`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -756,12 +805,16 @@ const InteractiveMap = () => {
           </div>
         </div>
       </div>
-      {/* Collapsible Sidebar - Now positioned below the search bar */}
+      {/* Collapsible Sidebar */}
       <div className="absolute top-[calc(20px+5.5rem)] left-0 bottom-0 z-20 pt-4">
         <AnimatePresence>
           {isSidebarOpen && (
             <motion.div
-              className="h-full w-80 lg:w-96 bg-slate-800/90 backdrop-blur-md border-r border-white/10 overflow-hidden"
+              className={`h-full w-80 lg:w-96 overflow-hidden ${
+                isDarkMode
+                  ? "bg-slate-800/90 backdrop-blur-md border-r border-white/10"
+                  : "bg-white/90 backdrop-blur-md border-r border-slate-200 text-slate-800"
+              }`}
               initial={{ x: -320 }}
               animate={{ x: 0 }}
               exit={{ x: -320 }}
@@ -771,7 +824,7 @@ const InteractiveMap = () => {
                 {!showPeopleTab ? (
                   /* Initiatives Panel */
                   <>
-                    <div className="p-4 border-b border-white/10">
+                    <div className={`p-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
                       <div className="flex items-center justify-between mb-2">
                         <h2 className="text-lg font-semibold">Local Initiatives</h2>
                       </div>
@@ -779,11 +832,15 @@ const InteractiveMap = () => {
                       {/* Categories filter */}
                       <div className="relative mb-2">
                         <button
-                          className="w-full flex items-center justify-between gap-2 px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg"
+                          className={`w-full flex items-center justify-between gap-2 px-3 py-2 ${
+                            isDarkMode
+                              ? "bg-white/5 hover:bg-white/10"
+                              : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                          } rounded-lg`}
                           onClick={() => setShowInitiatives(!showInitiatives)}
                         >
                           <div className="flex items-center gap-2">
-                            <FaFilter className="w-3 h-3" />
+                            <FaFilter className={`w-3 h-3 ${isDarkMode ? "" : "text-slate-500"}`} />
                             <span>{selectedCategory}</span>
                           </div>
                           <FaChevronDown
@@ -808,8 +865,10 @@ const InteractiveMap = () => {
                                   onClick={() => setSelectedCategory(category)}
                                   className={`px-3 py-1.5 rounded-lg whitespace-nowrap text-sm ${
                                     selectedCategory === category
-                                      ? "bg-gradient-to-r from-blue-500 to-purple-500"
-                                      : "bg-white/5 hover:bg-white/10"
+                                      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                                      : isDarkMode
+                                      ? "bg-white/5 hover:bg-white/10 text-[var(--text-primary)]"
+                                      : "bg-white border border-slate-200 hover:bg-slate-100 text-slate-700"
                                   }`}
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
@@ -824,12 +883,17 @@ const InteractiveMap = () => {
                     </div>
 
                     {/* Initiatives List */}
-                    <div className="flex-1 overflow-y-auto scrollbar-none">
-                      <div className="p-4 grid gap-3 scrollbar-none">
+                    <div
+                      className="flex-1 overflow-y-auto scrollbar-hide"
+                      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                    >
+                      <div className="p-4 grid gap-3">
                         {loading ? (
-                          <div className="flex flex-col items-center justify-center py-12 space-y-3 scrollbar-none">
-                            <FaSpinner className="animate-spin text-3xl text-blue-400" />
-                            <p className="text-[var(--text-primary)]/60">Loading initiatives...</p>
+                          <div className="flex flex-col items-center justify-center py-12 space-y-3">
+                            <FaSpinner
+                              className={`animate-spin text-3xl ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}
+                            />
+                            <p className={isDarkMode ? "text-white/60" : "text-slate-500"}>Loading initiatives...</p>
                           </div>
                         ) : filteredInitiatives.length > 0 ? (
                           filteredInitiatives.map((initiative) => {
@@ -844,24 +908,36 @@ const InteractiveMap = () => {
                                 key={initiative._id}
                                 className={`p-3 rounded-xl border transition-all cursor-pointer ${
                                   selectedInitiative?._id === initiative._id
-                                    ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/50"
+                                    ? isDarkMode
+                                      ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/50"
+                                      : "bg-gradient-to-r from-blue-100 to-purple-100 border-blue-300"
                                     : isRelatedToSupportedCause
-                                    ? "bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20"
-                                    : "bg-white/5 border-white/10 hover:bg-white/10"
+                                    ? isDarkMode
+                                      ? "bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20"
+                                      : "bg-purple-50 border-purple-200 hover:bg-purple-100"
+                                    : isDarkMode
+                                    ? "bg-white/5 border-white/10 hover:bg-white/10"
+                                    : "bg-white border-slate-200 hover:bg-slate-50"
                                 }`}
                                 onClick={() => handleSelectInitiative(initiative)}
                                 whileHover={{ y: -2 }}
                               >
                                 <div className="flex items-start gap-3">
-                                  <div className="p-2 rounded-lg bg-white/5">
-                                    <FaMapMarkerAlt className="w-5 h-5 text-blue-400" />
+                                  <div className={`p-2 rounded-lg ${isDarkMode ? "bg-white/5" : "bg-slate-100"}`}>
+                                    <FaMapMarkerAlt
+                                      className={`w-5 h-5 ${isDarkMode ? "text-blue-400" : "text-blue-500"}`}
+                                    />
                                   </div>
                                   <div className="flex-1">
                                     <h3 className="font-semibold mb-1 text-sm">{initiative.title}</h3>
-                                    <p className="text-xs text-[var(--text-primary)]/60 mb-2">{initiative.location}</p>
-                                    <div className="text-xs text-[var(--text-primary)]/40">
+                                    <p className={`text-xs ${isDarkMode ? "text-white/60" : "text-slate-500"} mb-2`}>
+                                      {initiative.location}
+                                    </p>
+                                    <div className={`text-xs ${isDarkMode ? "text-white/40" : "text-slate-400"}`}>
                                       {initiative.status === "Active" ? (
-                                        <span className="text-green-400">Active now</span>
+                                        <span className={isDarkMode ? "text-green-400" : "text-green-500"}>
+                                          Active now
+                                        </span>
                                       ) : (
                                         <span>
                                           {initiative.nextEvent && !isNaN(new Date(initiative.nextEvent))
@@ -876,25 +952,35 @@ const InteractiveMap = () => {
                             );
                           })
                         ) : (
-                          <div className="bg-white/5 rounded-lg p-6 text-center">
-                            <FaMapMarkerAlt className="mx-auto text-3xl text-[var(--text-primary)]/30 mb-3" />
-                            <p className="text-[var(--text-primary)]/60">No initiatives found matching your search.</p>
+                          <div
+                            className={`${
+                              isDarkMode ? "bg-white/5" : "bg-slate-50 border border-slate-200"
+                            } rounded-lg p-6 text-center`}
+                          >
+                            <FaMapMarkerAlt
+                              className={`mx-auto text-3xl ${isDarkMode ? "text-white/30" : "text-slate-300"} mb-3`}
+                            />
+                            <p className={isDarkMode ? "text-white/60" : "text-slate-500"}>
+                              No initiatives found matching your search.
+                            </p>
                           </div>
                         )}
                       </div>
                     </div>
                   </>
                 ) : (
-                  /* People Panel - IMPLEMENTED */
+                  /* People Panel */
                   <>
-                    <div className="p-4 border-b border-white/10">
+                    <div className={`p-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
                       <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold">Find People By Cause</h2>
                       </div>
-                      <label className="block text-sm text-[var(--text-primary)]/60 mb-2">Select a cause:</label>
+                      <label className={`block text-sm ${isDarkMode ? "text-white/60" : "text-slate-500"} mb-2`}>
+                        Select a cause:
+                      </label>
                     </div>
 
-                    {/* Causes list - Scrollable */}
+                    {/* Causes list */}
                     <div className="flex-grow overflow-y-auto p-2">
                       <div className="flex flex-wrap gap-2 p-2">
                         {causes.map((cause) => (
@@ -903,13 +989,17 @@ const InteractiveMap = () => {
                             onClick={() => setSelectedCauseFilter(cause.id)}
                             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
                               selectedCauseFilter === cause.id
-                                ? `bg-${cause.color}-500/30 text-${cause.color}-300 border border-${cause.color}-500/50`
-                                : "bg-white/5 hover:bg-white/10 border border-transparent"
+                                ? isDarkMode
+                                  ? `bg-${cause.color}-500/30 text-${cause.color}-300 border border-${cause.color}-500/50`
+                                  : `bg-${cause.color}-100 text-${cause.color}-700 border border-${cause.color}-300`
+                                : isDarkMode
+                                ? "bg-white/5 hover:bg-white/10 border border-transparent"
+                                : "bg-white hover:bg-slate-100 border border-slate-200 text-slate-700"
                             }`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
-                            <cause.icon className={`w-4 h-4 text-${cause.color}-400`} />
+                            <cause.icon className={`w-4 h-4 text-${cause.color}-${isDarkMode ? "400" : "500"}`} />
                             <span>{cause.title}</span>
                           </motion.button>
                         ))}
@@ -1005,21 +1095,26 @@ const InteractiveMap = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="bg-slate-800 border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              className={`${
+                isDarkMode ? "bg-slate-800 border-white/10" : "bg-white border-slate-200"
+              } border rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Create New Initiative</h2>
                 <button
                   onClick={() => setShowAddInitiativeModal(false)}
-                  className="text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] text-xl"
+                  className={isDarkMode ? "text-white/60 hover:text-white" : "text-slate-400 hover:text-slate-900"}
                 >
                   &times;
                 </button>
               </div>
 
               <form onSubmit={handleAddInitiative} className="space-y-6">
+                {/* Form fields with updated styling */}
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
                     Title <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -1027,13 +1122,17 @@ const InteractiveMap = () => {
                     name="title"
                     value={newInitiative.title}
                     onChange={handleInitiativeFormChange}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                    className={`w-full px-4 py-2 ${
+                      isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
                     Category <span className="text-red-400">*</span>
                   </label>
                   <div className="relative">
@@ -1044,23 +1143,33 @@ const InteractiveMap = () => {
                       onFocus={() => setShowCategorySuggestions(true)}
                       onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 200)}
                       placeholder="Select or type a category"
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                      className={`w-full px-4 py-2 ${
+                        isDarkMode
+                          ? "bg-white/5 border-white/10 text-white"
+                          : "bg-white border-slate-200 text-slate-900"
+                      } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                       required
                     />
                     {showCategorySuggestions && categoryInput && (
-                      <div className="absolute z-20 mt-1 w-full bg-slate-700 border border-white/10 rounded-lg shadow-lg max-h-60 overflow-auto">
+                      <div
+                        className={`absolute z-20 mt-1 w-full ${
+                          isDarkMode ? "bg-slate-700 border-white/10" : "bg-white border-slate-200"
+                        } border rounded-lg shadow-lg max-h-60 overflow-auto`}
+                      >
                         {filteredCategories.length > 0 ? (
                           filteredCategories.map((category) => (
                             <div
                               key={category}
-                              className="px-4 py-2 cursor-pointer hover:bg-slate-600 text-[var(--text-primary)]"
+                              className={`px-4 py-2 cursor-pointer ${
+                                isDarkMode ? "hover:bg-slate-600 text-white" : "hover:bg-slate-100 text-slate-900"
+                              }`}
                               onClick={() => handleCategorySelect(category)}
                             >
                               {category}
                             </div>
                           ))
                         ) : (
-                          <div className="px-4 py-2 text-[var(--text-primary)]/60 italic">
+                          <div className={`px-4 py-2 ${isDarkMode ? "text-white/60" : "text-slate-500"} italic`}>
                             Custom category: "{categoryInput}"
                           </div>
                         )}
@@ -1070,7 +1179,9 @@ const InteractiveMap = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
                     Description <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -1078,13 +1189,17 @@ const InteractiveMap = () => {
                     value={newInitiative.description}
                     onChange={handleInitiativeFormChange}
                     rows={4}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                    className={`w-full px-4 py-2 ${
+                      isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
                   ></textarea>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
                     Location <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -1093,13 +1208,17 @@ const InteractiveMap = () => {
                     value={newInitiative.location}
                     onChange={handleInitiativeFormChange}
                     placeholder="e.g. New York, NY"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                    className={`w-full px-4 py-2 ${
+                      isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
                     Tags (comma separated)
                   </label>
                   <input
@@ -1108,24 +1227,36 @@ const InteractiveMap = () => {
                     value={newInitiative.tagsInput}
                     onChange={handleInitiativeFormChange}
                     placeholder="e.g. climate, education, community"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                    className={`w-full px-4 py-2 ${
+                      isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">Website URL</label>
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
+                    Website URL
+                  </label>
                   <input
                     type="url"
                     name="website"
                     value={newInitiative.website}
                     onChange={handleInitiativeFormChange}
                     placeholder="https://example.com"
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                    className={`w-full px-4 py-2 ${
+                      isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">Status</label>
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
+                    Status
+                  </label>
                   <div className="flex gap-4">
                     <label className="flex items-center">
                       <input
@@ -1136,7 +1267,7 @@ const InteractiveMap = () => {
                         onChange={handleInitiativeFormChange}
                         className="mr-2"
                       />
-                      <span className="text-[var(--text-primary)]/80">Active</span>
+                      <span className={isDarkMode ? "text-white/80" : "text-slate-700"}>Active</span>
                     </label>
                     <label className="flex items-center">
                       <input
@@ -1147,13 +1278,15 @@ const InteractiveMap = () => {
                         onChange={handleInitiativeFormChange}
                         className="mr-2"
                       />
-                      <span className="text-[var(--text-primary)]/80">Upcoming</span>
+                      <span className={isDarkMode ? "text-white/80" : "text-slate-700"}>Upcoming</span>
                     </label>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-primary)]/70 mb-1">
+                  <label
+                    className={`block text-sm font-medium ${isDarkMode ? "text-white/70" : "text-slate-700"} mb-1`}
+                  >
                     Next Event Date <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -1161,7 +1294,9 @@ const InteractiveMap = () => {
                     name="nextEvent"
                     value={newInitiative.nextEvent}
                     onChange={handleInitiativeFormChange}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                    className={`w-full px-4 py-2 ${
+                      isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
                   />
                 </div>
@@ -1176,13 +1311,21 @@ const InteractiveMap = () => {
                   <button
                     type="button"
                     onClick={() => setShowAddInitiativeModal(false)}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg"
+                    className={`px-4 py-2 ${
+                      isDarkMode
+                        ? "bg-white/5 hover:bg-white/10 text-white"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                    } rounded-lg`}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium flex items-center"
+                    className={`px-4 py-2 ${
+                      isDarkMode
+                        ? "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                        : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                    } rounded-lg font-medium flex items-center`}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
