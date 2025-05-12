@@ -518,7 +518,7 @@ const InteractiveMap = () => {
 
     if (result.success) {
       setSuccess(result.message);
-      setTimeout(() => setSuccess(null), 1500);
+      setTimeout(() => setSuccess(null), 500);
 
       if (result.redirectUrl) {
         window.open(result.redirectUrl, "_blank");
