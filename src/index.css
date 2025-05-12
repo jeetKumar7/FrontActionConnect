@@ -23,7 +23,7 @@
 body.light {
   /* Background Colors */
   --bg-primary: rgba(202, 208, 217, 0.95); /* Darker slate for dark mode */
-  --bg-secondary: rgb(207, 212, 221); /* Equivalent to bg-slate-800 */
+  --bg-secondary: #f9fafb;
 
   /* Text Colors */
   --text-primary: #060707; /* Slate-300 */

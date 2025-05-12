@@ -69,12 +69,6 @@ const PassionSection = () => {
 
   return (
     <section className="relative min-h-screen bg-[var(--bg-secondary)] py-16">
-      {/* Subtle Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute -left-1/4 top-1/4 w-1/2 aspect-square rounded-full bg-cyan-600/10 blur-[120px]"></div>
-        <div className="absolute -right-1/4 bottom-1/4 w-1/2 aspect-square rounded-full bg-teal-600/10 blur-[120px]"></div>
-      </div>
-
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
