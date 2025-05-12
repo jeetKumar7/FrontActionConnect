@@ -1182,15 +1182,6 @@ const InteractiveMap = () => {
                   </div>
                 </div>
               )}
-
-              {selectedInitiative.organizer && (
-                <div className="mb-4">
-                  <h4 className={`text-sm font-semibold mb-1 ${isDarkMode ? "text-white/70" : "text-slate-500"}`}>
-                    Organizer
-                  </h4>
-                  <p>{selectedInitiative.organizer}</p>
-                </div>
-              )}
             </div>
 
             <div className="p-4 border-t border-white/10">
@@ -1207,22 +1198,6 @@ const InteractiveMap = () => {
                 <FaHandshake className="text-lg" />
                 Join Initiative
               </motion.button>
-
-              {selectedInitiative.website && (
-                <a
-                  href={selectedInitiative.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`mt-2 w-full py-2 ${
-                    isDarkMode
-                      ? "bg-white/10 hover:bg-white/20 text-white/90"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                  } rounded-lg flex items-center justify-center gap-2 text-sm transition-colors`}
-                >
-                  Visit Website
-                  <FaExternalLinkAlt className="text-xs" />
-                </a>
-              )}
             </div>
           </motion.div>
         )}
