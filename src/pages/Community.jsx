@@ -1,22 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { FaRss, FaHashtag, FaRegCalendarCheck, FaEnvelope } from "react-icons/fa";
 import CommunityFeed from "../components/community/CommunityFeed";
 import ChatChannels from "../components/community/ChatChannels";
-
 import UpcomingEvents from "../components/community/UpcomingEvents";
+
+// Add theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
 
 const Community = () => {
   const location = useLocation();
+  const isDarkMode = useThemeDetection();
 
   const isActive = (path) => {
     return location.pathname.includes(path);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)]">
+    <div
+      className={`min-h-screen ${
+        isDarkMode ? "bg-gradient-to-b from-slate-900 to-slate-800" : "bg-gradient-to-b from-white to-slate-100"
+      } text-[var(--text-primary)]`}
+    >
       {/* Page Header */}
-      <div className="pt-20 pb-6 border-b border-white/10">
+      <div className={`pt-20 pb-6 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-3xl font-bold mb-6">Community Hub</h1>
 
@@ -26,8 +55,10 @@ const Community = () => {
               to="/community/feed"
               className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
                 isActive("feed")
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-[var(--text-primary)] shadow-lg"
-                  : "text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] hover:bg-white/5"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                  : isDarkMode
+                  ? "text-white/60 hover:text-white hover:bg-white/5"
+                  : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
               }`}
             >
               <FaRss className="w-4 h-4" />
@@ -37,8 +68,10 @@ const Community = () => {
               to="/community/channels"
               className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
                 isActive("channels")
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-[var(--text-primary)] shadow-lg"
-                  : "text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] hover:bg-white/5"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                  : isDarkMode
+                  ? "text-white/60 hover:text-white hover:bg-white/5"
+                  : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
               }`}
             >
               <FaHashtag className="w-4 h-4" />
@@ -49,8 +82,10 @@ const Community = () => {
               to="/community/events"
               className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
                 isActive("events")
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-[var(--text-primary)] shadow-lg"
-                  : "text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] hover:bg-white/5"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                  : isDarkMode
+                  ? "text-white/60 hover:text-white hover:bg-white/5"
+                  : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
               }`}
             >
               <FaRegCalendarCheck className="w-4 h-4" />
@@ -66,7 +101,6 @@ const Community = () => {
           <Route path="/" element={<Navigate to="/community/feed" replace />} />
           <Route path="feed" element={<CommunityFeed />} />
           <Route path="channels" element={<ChatChannels />} />
-
           <Route path="events" element={<UpcomingEvents />} />
         </Routes>
       </div>

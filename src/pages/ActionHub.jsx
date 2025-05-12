@@ -39,7 +39,34 @@ import {
   getSupportedCauses,
 } from "../services";
 
+// Add theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
 const ActionHub = () => {
+  const isDarkMode = useThemeDetection();
+
   // State variables for data
   const [organizations, setOrganizations] = useState([]);
   const [resources, setResources] = useState([]);
@@ -533,7 +560,11 @@ const ActionHub = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">
+    <div
+      className={`min-h-screen ${
+        isDarkMode ? "bg-gradient-to-b from-slate-900 to-slate-800" : "bg-gradient-to-b from-white to-slate-100"
+      } text-[var(--text-primary)] pt-20`}
+    >
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-16 overflow-hidden">
         {/* Background Video */}
@@ -551,14 +582,14 @@ const ActionHub = () => {
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <motion.h1
-              className="text-4xl md:text-5xl font-bold mb-6"
+              className="text-4xl md:text-5xl font-bold mb-6 text-white"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               Turn Your Passion Into Action
             </motion.h1>
             <motion.p
-              className="text-xl text-[var(--text-primary)]/80 mb-8"
+              className="text-xl text-white/80 mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -578,9 +609,9 @@ const ActionHub = () => {
                 placeholder="Search for organizations, resources, or opportunities..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 text-[var(--text-primary)] placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
+                className="w-full px-6 py-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
               />
-              <FaSearch className="absolute right-6 top-1/2 transform -translate-y-1/2 text-[var(--text-primary)]/60" />
+              <FaSearch className="absolute right-6 top-1/2 transform -translate-y-1/2 text-white/60" />
             </motion.div>
           </div>
         </div>
@@ -590,7 +621,11 @@ const ActionHub = () => {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Error display */}
         {error && (
-          <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-400 px-6 py-4 rounded-xl flex items-center gap-2">
+          <div
+            className={`mb-6 ${
+              isDarkMode ? "bg-red-500/10 border-red-500/50 text-red-400" : "bg-red-100 border-red-200 text-red-600"
+            } border px-6 py-4 rounded-xl flex items-center gap-2`}
+          >
             <FaExclamationTriangle />
             <span>{error}</span>
           </div>
@@ -600,15 +635,20 @@ const ActionHub = () => {
         <div className="flex flex-wrap justify-between items-center mb-8">
           {/* Category Filters */}
           <div className="flex-grow mr-4 mb-4 md:mb-0">
-            <div className="flex items-center gap-4 overflow-x-auto pb-4 scrollbar-none">
+            <div
+              className="flex items-center gap-4 overflow-x-auto pb-4 scrollbar-hide"
+              style={{ scrollbarWidth: "none" }}
+            >
               {categories.slice(0, 6).map((category) => (
                 <motion.button
                   key={category}
                   onClick={() => handleCategoryChange(category)}
                   className={`px-4 py-2 rounded-lg whitespace-nowrap ${
                     selectedCategory === category.toLowerCase()
-                      ? "bg-gradient-to-r from-blue-500 to-purple-500"
-                      : "bg-white/5 hover:bg-white/10"
+                      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                      : isDarkMode
+                      ? "bg-white/5 hover:bg-white/10"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
                   } transition-all`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -617,54 +657,17 @@ const ActionHub = () => {
                 </motion.button>
               ))}
 
-              {/* More categories dropdown */}
-              {categories.length > 6 && (
-                <div className="relative">
-                  {/* Invisible overlay to capture clicks outside */}
-                  {moreMenuOpen && <div className="fixed inset-0 z-40" onClick={() => setMoreMenuOpen(false)}></div>}
-
-                  {/* Dropdown menu with absolute position instead of fixed */}
-                  {moreMenuOpen && (
-                    <div
-                      className="absolute z-50 bg-slate-800 shadow-xl rounded-lg p-2 border border-slate-700"
-                      style={{
-                        width: "200px",
-                        maxHeight: "300px",
-                        overflowY: "auto",
-                        right: 0,
-                        top: "100%",
-                        marginTop: "8px",
-                        boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
-                      }}
-                    >
-                      {categories.slice(6).map((category) => (
-                        <button
-                          key={category}
-                          onClick={() => {
-                            handleCategoryChange(category);
-                            setMoreMenuOpen(false);
-                          }}
-                          className={`block w-full text-left px-3 py-2 rounded my-1 ${
-                            selectedCategory === category.toLowerCase()
-                              ? "bg-blue-500 text-[var(--text-primary)]"
-                              : "hover:bg-white/5"
-                          }`}
-                        >
-                          {category}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+              {/* More dropdown button styling will be updated later */}
             </div>
           </div>
 
-          {/* My Items Toggle & Add Button */}
+          {/* Add Button */}
           <div className="flex items-center gap-3">
             <motion.button
               onClick={openModal}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg"
+              className={`flex items-center gap-2 px-4 py-2 ${
+                isDarkMode ? "bg-green-600 hover:bg-green-700" : "bg-green-500 hover:bg-green-600 text-white"
+              } rounded-lg`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -686,7 +689,11 @@ const ActionHub = () => {
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={`flex items-center gap-2 px-6 py-3 rounded-lg ${
-                activeTab === tab.id ? "bg-gradient-to-r from-blue-500 to-purple-500" : "bg-white/5 hover:bg-white/10"
+                activeTab === tab.id
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                  : isDarkMode
+                  ? "bg-white/5 hover:bg-white/10"
+                  : "bg-slate-100 hover:bg-slate-200 text-slate-700"
               } transition-all`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -710,8 +717,12 @@ const ActionHub = () => {
           ((activeTab === "organizations" && organizations.length === 0) ||
             (activeTab === "resources" && resources.length === 0) ||
             (activeTab === "opportunities" && opportunities.length === 0)) && (
-            <div className="text-center py-16 bg-white/5 rounded-xl border border-white/10">
-              <div className="text-6xl mb-4 text-[var(--text-primary)]/20 flex justify-center">
+            <div
+              className={`text-center py-16 ${
+                isDarkMode ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+              } rounded-xl border`}
+            >
+              <div className={`text-6xl mb-4 ${isDarkMode ? "text-white/20" : "text-slate-300"} flex justify-center`}>
                 {activeTab === "organizations" ? (
                   <FaUsers />
                 ) : activeTab === "resources" ? (
@@ -721,14 +732,16 @@ const ActionHub = () => {
                 )}
               </div>
               <h3 className="text-xl font-semibold mb-2">No {activeTab} found</h3>
-              <p className="text-[var(--text-primary)]/60 max-w-md mx-auto">
+              <p className={`${isDarkMode ? "text-white/60" : "text-slate-500"} max-w-md mx-auto`}>
                 {searchQuery ? `No results for "${searchQuery}"` : `There are currently no ${activeTab} available.`}
                 {selectedCategory !== "all" && ` Try changing the category filter.`}
                 {showOnlyMyItems && ` You haven't created any ${activeTab} yet.`}
               </p>
               <button
                 onClick={openModal}
-                className="mt-6 px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg inline-flex items-center gap-2"
+                className={`mt-6 px-6 py-3 ${
+                  isDarkMode ? "bg-green-600 hover:bg-green-700" : "bg-green-500 hover:bg-green-600"
+                } rounded-lg inline-flex items-center gap-2 text-white`}
               >
                 <FaPlus />
                 <span>
@@ -751,7 +764,11 @@ const ActionHub = () => {
               organizations.map((org) => (
                 <motion.div
                   key={org._id}
-                  className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 relative"
+                  className={`${
+                    isDarkMode
+                      ? "bg-white/5 backdrop-blur-sm border-white/10"
+                      : "bg-white backdrop-blur-sm border-slate-200"
+                  } rounded-xl overflow-hidden border relative`}
                   whileHover={{ y: -5 }}
                 >
                   {/* Edit/Delete Controls */}
@@ -759,7 +776,7 @@ const ActionHub = () => {
                     <div className="absolute top-2 right-2 z-10 flex gap-2">
                       <button
                         onClick={() => confirmDelete("organizations", org._id)}
-                        className="p-2 bg-red-600/70 hover:bg-red-600 rounded-full"
+                        className="p-2 bg-red-600/70 hover:bg-red-600 rounded-full text-white"
                         title="Delete Organization"
                       >
                         <FaTrash size={14} />
@@ -786,7 +803,12 @@ const ActionHub = () => {
                         <div className="flex flex-wrap gap-1 mt-1">
                           {org.categories &&
                             org.categories.map((category, idx) => (
-                              <span key={idx} className="px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded text-xs">
+                              <span
+                                key={idx}
+                                className={`px-2 py-0.5 ${
+                                  isDarkMode ? "bg-blue-500/20 text-blue-300" : "bg-blue-100 text-blue-700"
+                                } rounded text-xs`}
+                              >
                                 {category}
                               </span>
                             ))}
@@ -799,11 +821,20 @@ const ActionHub = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-[var(--text-primary)]/80 mb-4 line-clamp-2">{org.description}</p>
+                    <p className={`${isDarkMode ? "text-white/80" : "text-slate-600"} mb-4 line-clamp-2`}>
+                      {org.description}
+                    </p>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {org.opportunities &&
                         org.opportunities.map((opp, idx) => (
-                          <span key={idx} className="px-3 py-1 rounded-full text-sm bg-white/5 border border-white/10">
+                          <span
+                            key={idx}
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              isDarkMode
+                                ? "bg-white/5 border border-white/10"
+                                : "bg-slate-100 border border-slate-200 text-slate-700"
+                            }`}
+                          >
                             {opp}
                           </span>
                         ))}
@@ -812,7 +843,7 @@ const ActionHub = () => {
                       href={org.website || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center gap-2 hover:from-blue-600 hover:to-purple-600 transition-all"
+                      className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center gap-2 hover:from-blue-600 hover:to-purple-600 transition-all text-white"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -827,7 +858,11 @@ const ActionHub = () => {
               resources.map((resource) => (
                 <motion.div
                   key={resource._id}
-                  className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 relative"
+                  className={`${
+                    isDarkMode
+                      ? "bg-white/5 backdrop-blur-sm border-white/10"
+                      : "bg-white backdrop-blur-sm border-slate-200"
+                  } rounded-xl p-6 border relative`}
                   whileHover={{ y: -5 }}
                 >
                   {/* Edit/Delete Controls */}
@@ -835,7 +870,7 @@ const ActionHub = () => {
                     <div className="absolute top-2 right-2 z-10 flex gap-2">
                       <button
                         onClick={() => confirmDelete("resources", resource._id)}
-                        className="p-2 bg-red-600/70 hover:bg-red-600 rounded-full"
+                        className="p-2 bg-red-600/70 hover:bg-red-600 rounded-full text-white"
                         title="Delete Resource"
                       >
                         <FaTrash size={14} />
@@ -844,7 +879,11 @@ const ActionHub = () => {
                   )}
 
                   <h3 className="text-xl font-semibold mb-2">{resource.title}</h3>
-                  <div className="flex items-center gap-4 text-[var(--text-primary)]/60 text-sm mb-2">
+                  <div
+                    className={`flex items-center gap-4 ${
+                      isDarkMode ? "text-white/60" : "text-slate-500"
+                    } text-sm mb-2`}
+                  >
                     <span>{resource.type}</span>
                     {resource.provider && (
                       <>
@@ -857,20 +896,29 @@ const ActionHub = () => {
                   <div className="flex flex-wrap gap-1 mb-3">
                     {resource.categories &&
                       resource.categories.map((category, idx) => (
-                        <span key={idx} className="px-2 py-0.5 bg-green-500/20 text-green-300 rounded text-xs">
+                        <span
+                          key={idx}
+                          className={`px-2 py-0.5 ${
+                            isDarkMode ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"
+                          } rounded text-xs`}
+                        >
                           {category}
                         </span>
                       ))}
                   </div>
 
-                  <p className="text-[var(--text-primary)]/80 mb-4 line-clamp-3">{resource.description}</p>
+                  <p className={`${isDarkMode ? "text-white/80" : "text-slate-600"} mb-4 line-clamp-3`}>
+                    {resource.description}
+                  </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-green-400">{resource.price || "Free"}</span>
+                    <span className={isDarkMode ? "text-green-400" : "text-green-600"}>{resource.price || "Free"}</span>
                     <motion.a
                       href={resource.url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all"
+                      className={`px-4 py-2 ${
+                        isDarkMode ? "bg-white/10 hover:bg-white/20" : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                      } rounded-lg transition-all`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -885,7 +933,11 @@ const ActionHub = () => {
               opportunities.map((opportunity) => (
                 <motion.div
                   key={opportunity._id}
-                  className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 relative"
+                  className={`${
+                    isDarkMode
+                      ? "bg-white/5 backdrop-blur-sm border-white/10"
+                      : "bg-white backdrop-blur-sm border-slate-200"
+                  } rounded-xl p-6 border relative`}
                   whileHover={{ y: -5 }}
                 >
                   {/* Edit/Delete Controls */}
@@ -893,7 +945,7 @@ const ActionHub = () => {
                     <div className="absolute top-2 right-2 z-10 flex gap-2">
                       <button
                         onClick={() => confirmDelete("opportunities", opportunity._id)}
-                        className="p-2 bg-red-600/70 hover:bg-red-600 rounded-full"
+                        className="p-2 bg-red-600/70 hover:bg-red-600 rounded-full text-white"
                         title="Delete Opportunity"
                       >
                         <FaTrash size={14} />
@@ -902,18 +954,27 @@ const ActionHub = () => {
                   )}
 
                   <h3 className="text-xl font-semibold mb-2">{opportunity.title}</h3>
-                  <p className="text-[var(--text-primary)]/60 mb-2">{opportunity.organization}</p>
+                  <p className={`${isDarkMode ? "text-white/60" : "text-slate-500"} mb-2`}>
+                    {opportunity.organization}
+                  </p>
 
                   <div className="flex flex-wrap gap-1 mb-3">
                     {opportunity.categories &&
                       opportunity.categories.map((category, idx) => (
-                        <span key={idx} className="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded text-xs">
+                        <span
+                          key={idx}
+                          className={`px-2 py-0.5 ${
+                            isDarkMode ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"
+                          } rounded text-xs`}
+                        >
                           {category}
                         </span>
                       ))}
                   </div>
 
-                  <p className="text-[var(--text-primary)]/80 mb-4 line-clamp-2">{opportunity.description}</p>
+                  <p className={`${isDarkMode ? "text-white/80" : "text-slate-600"} mb-4 line-clamp-2`}>
+                    {opportunity.description}
+                  </p>
 
                   <div className="space-y-2 mb-4">
                     {opportunity.amount && (
@@ -923,13 +984,13 @@ const ActionHub = () => {
                       </div>
                     )}
                     {opportunity.deadline && (
-                      <div className="flex items-center gap-2 text-[var(--text-primary)]/60">
+                      <div className={`flex items-center gap-2 ${isDarkMode ? "text-white/60" : "text-slate-500"}`}>
                         <FaRegCalendarCheck />
                         <span>Deadline: {new Date(opportunity.deadline).toLocaleDateString()}</span>
                       </div>
                     )}
                     {opportunity.location && (
-                      <div className="flex items-center gap-2 text-[var(--text-primary)]/60">
+                      <div className={`flex items-center gap-2 ${isDarkMode ? "text-white/60" : "text-slate-500"}`}>
                         <FaGlobe />
                         <span>{opportunity.location}</span>
                       </div>
@@ -939,7 +1000,7 @@ const ActionHub = () => {
                     href={opportunity.url || opportunity.applicationUrl || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center gap-2 hover:from-blue-600 hover:to-purple-600 transition-all"
+                    className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center gap-2 hover:from-blue-600 hover:to-purple-600 transition-all text-white"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -959,8 +1020,12 @@ const ActionHub = () => {
                 disabled={pagination.currentPage === 1}
                 className={`px-3 py-1 rounded ${
                   pagination.currentPage === 1
-                    ? "bg-white/5 text-[var(--text-primary)]/40 cursor-not-allowed"
-                    : "bg-white/10 text-[var(--text-primary)] hover:bg-white/20"
+                    ? isDarkMode
+                      ? "bg-white/5 text-white/40 cursor-not-allowed"
+                      : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                    : isDarkMode
+                    ? "bg-white/10 text-white hover:bg-white/20"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
                 &laquo; Previous
@@ -973,8 +1038,10 @@ const ActionHub = () => {
                     onClick={() => handlePageChange(page + 1)}
                     className={`w-8 h-8 rounded-full ${
                       pagination.currentPage === page + 1
-                        ? "bg-blue-500 text-[var(--text-primary)]"
-                        : "bg-white/10 text-[var(--text-primary)] hover:bg-white/20"
+                        ? "bg-blue-500 text-white"
+                        : isDarkMode
+                        ? "bg-white/10 text-white hover:bg-white/20"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
                   >
                     {page + 1}
@@ -987,8 +1054,12 @@ const ActionHub = () => {
                 disabled={pagination.currentPage === pagination.totalPages}
                 className={`px-3 py-1 rounded ${
                   pagination.currentPage === pagination.totalPages
-                    ? "bg-white/5 text-[var(--text-primary)]/40 cursor-not-allowed"
-                    : "bg-white/10 text-[var(--text-primary)] hover:bg-white/20"
+                    ? isDarkMode
+                      ? "bg-white/5 text-white/40 cursor-not-allowed"
+                      : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                    : isDarkMode
+                    ? "bg-white/10 text-white hover:bg-white/20"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
                 Next &raquo;
@@ -1003,12 +1074,18 @@ const ActionHub = () => {
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
             <motion.div
-              className="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              className={`${
+                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+              } border rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
             >
-              <div className="flex justify-between items-center border-b border-slate-700 p-4 sticky top-0 bg-slate-800 z-10">
+              <div
+                className={`flex justify-between items-center border-b ${
+                  isDarkMode ? "border-slate-700" : "border-slate-200"
+                } p-4 sticky top-0 ${isDarkMode ? "bg-slate-800" : "bg-white"} z-10`}
+              >
                 <h3 className="text-xl font-semibold">
                   {activeTab === "organizations"
                     ? "Add Organization"
@@ -1016,7 +1093,10 @@ const ActionHub = () => {
                     ? "Add Resource"
                     : "Add Opportunity"}
                 </h3>
-                <button className="text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]" onClick={closeModal}>
+                <button
+                  className={`${isDarkMode ? "text-white/60 hover:text-white" : "text-slate-500 hover:text-slate-800"}`}
+                  onClick={closeModal}
+                >
                   <FaTimes />
                 </button>
               </div>
@@ -1025,7 +1105,13 @@ const ActionHub = () => {
               <div className="p-6">
                 {/* Success Message */}
                 {submitSuccess && (
-                  <div className="mb-6 bg-green-500/10 border border-green-500/50 text-green-400 p-4 rounded-lg flex items-center gap-2">
+                  <div
+                    className={`mb-6 ${
+                      isDarkMode
+                        ? "bg-green-500/10 border-green-500/50 text-green-400"
+                        : "bg-green-100 border-green-300 text-green-700"
+                    } p-4 rounded-lg flex items-center gap-2 border`}
+                  >
                     <FaCheck />
                     <span>Successfully added! Redirecting...</span>
                   </div>
@@ -1033,7 +1119,13 @@ const ActionHub = () => {
 
                 {/* Error Message */}
                 {formError && (
-                  <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-lg flex items-center gap-2">
+                  <div
+                    className={`mb-6 ${
+                      isDarkMode
+                        ? "bg-red-500/10 border-red-500/50 text-red-400"
+                        : "bg-red-100 border-red-300 text-red-700"
+                    } p-4 rounded-lg flex items-center gap-2 border`}
+                  >
                     <FaExclamationTriangle />
                     <span>{formError}</span>
                   </div>
@@ -1050,7 +1142,11 @@ const ActionHub = () => {
                           name="name"
                           value={formData.name || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           required
                         />
                       </div>
@@ -1061,7 +1157,11 @@ const ActionHub = () => {
                           name="description"
                           value={formData.description || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[100px]"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[100px]`}
                           required
                         ></textarea>
                       </div>
@@ -1076,7 +1176,11 @@ const ActionHub = () => {
                             value={formData.website || ""}
                             onChange={handleInputChange}
                             placeholder="https://example.org"
-                            className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                            className={`w-full px-4 py-2 ${
+                              isDarkMode
+                                ? "bg-slate-700/50 border-slate-600 text-white"
+                                : "bg-white border-slate-300 text-slate-900"
+                            } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           />
                         </div>
                       </div>
@@ -1090,7 +1194,11 @@ const ActionHub = () => {
                             value={formData.location || ""}
                             onChange={handleInputChange}
                             placeholder="City, Country or Global"
-                            className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                            className={`w-full px-4 py-2 ${
+                              isDarkMode
+                                ? "bg-slate-700/50 border-slate-600 text-white"
+                                : "bg-white border-slate-300 text-slate-900"
+                            } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           />
                         </div>
 
@@ -1122,11 +1230,17 @@ const ActionHub = () => {
                         <label className="block text-[var(--text-primary)]/80 mb-2">Image (Optional)</label>
                         {!imagePreview ? (
                           <div
-                            className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500/50"
+                            className={`border-2 border-dashed ${
+                              isDarkMode
+                                ? "border-slate-600 hover:border-blue-500/50"
+                                : "border-slate-300 hover:border-blue-500/50"
+                            } rounded-lg p-8 text-center cursor-pointer`}
                             onClick={() => document.getElementById("org-image").click()}
                           >
-                            <FaUpload className="mx-auto text-2xl mb-2 text-slate-400" />
-                            <p className="text-slate-400">Click to upload an image</p>
+                            <FaUpload
+                              className={`mx-auto text-2xl mb-2 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+                            />
+                            <p className={isDarkMode ? "text-slate-400" : "text-slate-500"}>Click to upload an image</p>
                             <input
                               type="file"
                               id="org-image"
@@ -1182,7 +1296,11 @@ const ActionHub = () => {
                           name="title"
                           value={formData.title || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           required
                         />
                       </div>
@@ -1193,7 +1311,11 @@ const ActionHub = () => {
                           name="type"
                           value={formData.type || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           required
                         >
                           <option value="Article">Article</option>
@@ -1216,7 +1338,11 @@ const ActionHub = () => {
                           name="description"
                           value={formData.description || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[100px]"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[100px]`}
                         ></textarea>
                       </div>
 
@@ -1227,7 +1353,11 @@ const ActionHub = () => {
                           name="provider"
                           value={formData.provider || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                         />
                       </div>
 
@@ -1241,7 +1371,11 @@ const ActionHub = () => {
                             value={formData.url || ""}
                             onChange={handleInputChange}
                             placeholder="https://example.org/resource"
-                            className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                            className={`w-full px-4 py-2 ${
+                              isDarkMode
+                                ? "bg-slate-700/50 border-slate-600 text-white"
+                                : "bg-white border-slate-300 text-slate-900"
+                            } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                             required
                           />
                         </div>
@@ -1253,7 +1387,11 @@ const ActionHub = () => {
                           name="price"
                           value={formData.price || "Free"}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                         >
                           <option value="Free">Free</option>
                           <option value="Paid">Paid</option>
@@ -1275,7 +1413,11 @@ const ActionHub = () => {
                           name="title"
                           value={formData.title || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           required
                         />
                       </div>
@@ -1287,7 +1429,11 @@ const ActionHub = () => {
                           name="organization"
                           value={formData.organization || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           required
                         />
                       </div>
@@ -1298,7 +1444,11 @@ const ActionHub = () => {
                           name="description"
                           value={formData.description || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[100px]"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-h-[100px]`}
                         ></textarea>
                       </div>
 
@@ -1312,7 +1462,11 @@ const ActionHub = () => {
                             value={formData.applicationUrl || ""}
                             onChange={handleInputChange}
                             placeholder="https://example.org/apply"
-                            className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                            className={`w-full px-4 py-2 ${
+                              isDarkMode
+                                ? "bg-slate-700/50 border-slate-600 text-white"
+                                : "bg-white border-slate-300 text-slate-900"
+                            } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                             required
                           />
                         </div>
@@ -1327,7 +1481,11 @@ const ActionHub = () => {
                             value={formData.location || ""}
                             onChange={handleInputChange}
                             placeholder="City, Country or Remote"
-                            className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                            className={`w-full px-4 py-2 ${
+                              isDarkMode
+                                ? "bg-slate-700/50 border-slate-600 text-white"
+                                : "bg-white border-slate-300 text-slate-900"
+                            } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           />
                         </div>
 
@@ -1339,7 +1497,11 @@ const ActionHub = () => {
                             value={formData.amount || ""}
                             onChange={handleInputChange}
                             placeholder="e.g. $5,000 or Volunteer"
-                            className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                            className={`w-full px-4 py-2 ${
+                              isDarkMode
+                                ? "bg-slate-700/50 border-slate-600 text-white"
+                                : "bg-white border-slate-300 text-slate-900"
+                            } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                           />
                         </div>
                       </div>
@@ -1351,7 +1513,11 @@ const ActionHub = () => {
                           name="deadline"
                           value={formData.deadline || ""}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                          className={`w-full px-4 py-2 ${
+                            isDarkMode
+                              ? "bg-slate-700/50 border-slate-600 text-white"
+                              : "bg-white border-slate-300 text-slate-900"
+                          } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50`}
                         />
                       </div>
                     </>
@@ -1362,7 +1528,11 @@ const ActionHub = () => {
                     <label className="block text-[var(--text-primary)]/80 mb-2">
                       Categories* <span className="text-slate-400 text-sm">(Select at least one)</span>
                     </label>
-                    <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 bg-slate-700/30 rounded-lg">
+                    <div
+                      className={`flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 ${
+                        isDarkMode ? "bg-slate-700/30" : "bg-slate-100"
+                      } rounded-lg`}
+                    >
                       {categories
                         .filter((cat) => cat !== "All")
                         .map((category) => (
@@ -1372,8 +1542,10 @@ const ActionHub = () => {
                             onClick={() => handleCategorySelect(category)}
                             className={`px-3 py-1 rounded-full text-sm ${
                               selectedCategories.includes(category)
-                                ? "bg-blue-500 text-[var(--text-primary)]"
-                                : "bg-slate-700 text-[var(--text-primary)]/70 hover:bg-slate-600"
+                                ? "bg-blue-500 text-white"
+                                : isDarkMode
+                                ? "bg-slate-700 text-white/70 hover:bg-slate-600"
+                                : "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50"
                             }`}
                           >
                             {category}
@@ -1426,22 +1598,32 @@ const ActionHub = () => {
         {deleteConfirmation && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
             <motion.div
-              className="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-md"
+              className={`${
+                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+              } border rounded-xl w-full max-w-md`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
             >
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-4">Confirm Deletion</h3>
-                <p className="mb-6">
+                <p className={`mb-6 ${isDarkMode ? "text-white/80" : "text-slate-600"}`}>
                   Are you sure you want to delete this {deleteConfirmation.type.slice(0, -1)}? This action cannot be
                   undone.
                 </p>
                 <div className="flex justify-end gap-3">
-                  <button onClick={cancelDelete} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg">
+                  <button
+                    onClick={cancelDelete}
+                    className={`px-4 py-2 ${
+                      isDarkMode ? "bg-slate-700 hover:bg-slate-600" : "bg-slate-100 hover:bg-slate-200 text-slate-800"
+                    } rounded-lg`}
+                  >
                     Cancel
                   </button>
-                  <button onClick={executeDelete} className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg">
+                  <button
+                    onClick={executeDelete}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white"
+                  >
                     Delete
                   </button>
                 </div>

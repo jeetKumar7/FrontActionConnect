@@ -27,6 +27,31 @@ import {
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+// Add theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
 const ChatChannels = () => {
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [message, setMessage] = useState("");
@@ -56,6 +81,8 @@ const ChatChannels = () => {
 
   // New state for current user
   const [currentUser, setCurrentUser] = useState(null);
+
+  const isDarkMode = useThemeDetection();
 
   // Initialize socket connection
   useEffect(() => {
@@ -460,25 +487,39 @@ const ChatChannels = () => {
   return (
     <div className="min-h-[calc(100vh-5rem)] pt-8 pb-8 px-4">
       {error && (
-        <div className="max-w-7xl mx-auto mb-4 bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2 rounded-lg text-sm">
+        <div
+          className={`max-w-7xl mx-auto mb-4 ${
+            isDarkMode ? "bg-red-500/10 border-red-500/50 text-red-400" : "bg-red-100 border-red-200 text-red-600"
+          } px-4 py-2 rounded-lg text-sm border`}
+        >
           {error}
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto bg-slate-800/50 rounded-2xl border border-white/10 overflow-hidden backdrop-blur-sm">
+      <div
+        className={`max-w-7xl mx-auto ${
+          isDarkMode ? "bg-slate-800/50 border-white/10" : "bg-white/90 border-slate-200"
+        } rounded-2xl border overflow-hidden backdrop-blur-sm`}
+      >
         <div className="grid grid-cols-[280px_1fr] h-[calc(100vh-8rem)] overflow-hidden">
           {/* Channels Sidebar */}
-          <div className="border-r border-white/10 overflow-y-auto scrollbar-none h-full">
+          <div
+            className={`${
+              isDarkMode ? "border-white/10" : "border-slate-200"
+            } border-r overflow-y-auto scrollbar-none h-full ${isDarkMode ? "bg-slate-900/50" : "bg-slate-50/80"}`}
+          >
             <div className="p-4">
               <div className="flex items-center justify-between mb-6 px-2">
                 <h2 className="text-xl font-bold">Channels</h2>
                 <motion.button
                   onClick={() => setShowCreateChannel(!showCreateChannel)}
-                  className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                  className={`p-2 ${
+                    isDarkMode ? "bg-white/5 hover:bg-white/10" : "bg-slate-100 hover:bg-slate-200"
+                  } rounded-lg transition-colors`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  <FaPlus className="w-4 h-4" />
+                  <FaPlus className={`w-4 h-4 ${isDarkMode ? "" : "text-slate-600"}`} />
                 </motion.button>
               </div>
 
@@ -492,7 +533,11 @@ const ChatChannels = () => {
                     className="mb-6 overflow-hidden"
                     onSubmit={handleCreateChannel}
                   >
-                    <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <div
+                      className={`${
+                        isDarkMode ? "bg-white/5 border-white/10" : "bg-white border-slate-200"
+                      } rounded-lg p-4 border`}
+                    >
                       <h3 className="text-sm font-semibold mb-3">Create New Channel</h3>
                       <div className="space-y-3 mb-4">
                         <input
@@ -500,13 +545,21 @@ const ChatChannels = () => {
                           placeholder="Channel name"
                           value={newChannelData.name}
                           onChange={(e) => setNewChannelData({ ...newChannelData, name: e.target.value })}
-                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500"
+                          className={`w-full px-3 py-2 ${
+                            isDarkMode
+                              ? "bg-white/5 border-white/10 placeholder-white/40"
+                              : "bg-white border-slate-300 placeholder-slate-400"
+                          } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500`}
                         />
                         <textarea
                           placeholder="Description (optional)"
                           value={newChannelData.description}
                           onChange={(e) => setNewChannelData({ ...newChannelData, description: e.target.value })}
-                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 resize-none"
+                          className={`w-full px-3 py-2 ${
+                            isDarkMode
+                              ? "bg-white/5 border-white/10 placeholder-white/40"
+                              : "bg-white border-slate-300 placeholder-slate-400"
+                          } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500 resize-none`}
                           rows="2"
                         />
                       </div>
@@ -520,7 +573,7 @@ const ChatChannels = () => {
                         </button>
                         <button
                           type="submit"
-                          className="px-3 py-1.5 bg-blue-500 text-[var(--text-primary)] rounded-lg text-sm"
+                          className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm"
                           disabled={loading}
                         >
                           {loading ? <FaSpinner className="animate-spin" /> : "Create"}
@@ -566,8 +619,12 @@ const ChatChannels = () => {
                                       onClick={() => setSelectedChannel(channel.id)}
                                       className={`flex items-center gap-2 w-full px-4 py-2 rounded-lg transition-all ${
                                         selectedChannel === channel.id
-                                          ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-[var(--text-primary)]"
-                                          : "text-[var(--text-primary)]/60 hover:bg-white/5 hover:text-[var(--text-primary)]"
+                                          ? isDarkMode
+                                            ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-[var(--text-primary)]"
+                                            : "bg-gradient-to-r from-blue-100 to-purple-100 text-slate-800"
+                                          : `text-[var(--text-primary)]/60 hover:${
+                                              isDarkMode ? "bg-white/5" : "bg-slate-100"
+                                            } hover:text-[var(--text-primary)]`
                                       }`}
                                       whileHover={{ x: 4 }}
                                     >
@@ -589,12 +646,20 @@ const ChatChannels = () => {
           </div>
 
           {/* Chat Area */}
-          <div className="flex flex-col bg-[var(--bg-secondary)]/30 h-full overflow-hidden">
+          <div
+            className={`flex flex-col ${
+              isDarkMode ? "bg-[var(--bg-secondary)]/30" : "bg-white"
+            } h-full overflow-hidden`}
+          >
             {/* Chat Header */}
             {selectedChannel ? (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+              <div
+                className={`flex items-center justify-between px-6 py-4 border-b ${
+                  isDarkMode ? "border-white/10" : "border-slate-200"
+                }`}
+              >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-white/5">
+                  <div className={`p-2 rounded-lg ${isDarkMode ? "bg-white/5" : "bg-slate-100"}`}>
                     <FaHashtag className="w-5 h-5" />
                   </div>
                   <div>
@@ -609,7 +674,11 @@ const ChatChannels = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center px-6 py-4 border-b border-white/10 text-[var(--text-primary)]/40">
+              <div
+                className={`flex items-center justify-center px-6 py-4 border-b ${
+                  isDarkMode ? "border-white/10" : "border-slate-200"
+                } text-[var(--text-primary)]/40`}
+              >
                 Select a channel or create a new one to start chatting
               </div>
             )}
@@ -636,7 +705,7 @@ const ChatChannels = () => {
                   messages.map((msg) => (
                     <div key={msg._id} className="flex gap-4 items-start">
                       <div className="flex-shrink-0">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-lg font-bold">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-lg font-bold text-white">
                           {msg.sender?.name?.charAt(0) || "U"}
                         </div>
                       </div>
@@ -667,7 +736,7 @@ const ChatChannels = () => {
                         </div>
 
                         {editingMessageId === msg._id ? (
-                          <div className="bg-white/10 rounded-lg p-2">
+                          <div className={`${isDarkMode ? "bg-white/10" : "bg-slate-100"} rounded-lg p-2`}>
                             <textarea
                               value={editMessage}
                               onChange={(e) => setEditMessage(e.target.value)}
@@ -683,14 +752,24 @@ const ChatChannels = () => {
                               </button>
                               <button
                                 onClick={() => handleEditMessage(msg._id)}
-                                className="px-2 py-1 text-xs bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded"
+                                className={`px-2 py-1 text-xs ${
+                                  isDarkMode
+                                    ? "bg-blue-500/20 hover:bg-blue-500/30 text-blue-400"
+                                    : "bg-blue-100 hover:bg-blue-200 text-blue-700"
+                                } rounded`}
                               >
                                 Save
                               </button>
                             </div>
                           </div>
                         ) : (
-                          <p className="text-[var(--text-primary)]/80 bg-white/5 rounded-lg px-4 py-2">{msg.content}</p>
+                          <p
+                            className={`text-[var(--text-primary)]/80 ${
+                              isDarkMode ? "bg-white/5" : "bg-slate-100"
+                            } rounded-lg px-4 py-2`}
+                          >
+                            {msg.content}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -709,7 +788,10 @@ const ChatChannels = () => {
 
             {/* Message Input */}
             {selectedChannel && (
-              <form onSubmit={handleSendMessage} className="px-6 py-4 border-t border-white/10">
+              <form
+                onSubmit={handleSendMessage}
+                className={`px-6 py-4 border-t ${isDarkMode ? "border-white/10" : "border-slate-200"}`}
+              >
                 {/* Show typing indicators */}
                 {Object.keys(usersTyping).length > 0 && (
                   <div className="text-xs text-blue-400 mb-1 animate-pulse">Someone is typing...</div>
@@ -723,7 +805,9 @@ const ChatChannels = () => {
                     placeholder={`Message #${
                       channels.flatMap((cat) => cat.channels).find((c) => c.id === selectedChannel)?.name || "channel"
                     }`}
-                    className="flex-1 bg-white/5 rounded-lg px-4 py-3 border border-white/10 focus:outline-none focus:border-blue-500 transition-colors"
+                    className={`flex-1 ${
+                      isDarkMode ? "bg-white/5 border-white/10" : "bg-white border-slate-300"
+                    } rounded-lg px-4 py-3 border focus:outline-none focus:border-blue-500 transition-colors`}
                     disabled={loading}
                   />
                   <motion.button
@@ -731,7 +815,7 @@ const ChatChannels = () => {
                     disabled={loading}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all ${
+                    className={`px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all text-white ${
                       loading ? "opacity-70" : ""
                     }`}
                   >

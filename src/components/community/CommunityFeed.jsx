@@ -3,7 +3,33 @@ import { motion } from "framer-motion";
 import { FaRegHeart, FaHeart, FaRegComment, FaShare, FaImage, FaVideo, FaLink, FaLeaf } from "react-icons/fa6";
 import { createPost, likePost, addComment, getPostByShareId, getPosts, uploadImage } from "../../services";
 
+// Add theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
 const CommunityFeed = () => {
+  const isDarkMode = useThemeDetection();
   const [newPost, setNewPost] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [imageUrl, setImageUrl] = useState("");
@@ -243,49 +269,76 @@ const CommunityFeed = () => {
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
       {error && (
-        <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2 rounded-lg text-sm mb-4">
+        <div
+          className={`${
+            isDarkMode ? "bg-red-500/10 border-red-500/50 text-red-400" : "bg-red-100 border-red-300 text-red-600"
+          } px-4 py-2 rounded-lg text-sm mb-4 border`}
+        >
           {error}
         </div>
       )}
 
       {successMessage && (
-        <div className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-2 rounded-lg text-sm mb-4">
+        <div
+          className={`${
+            isDarkMode
+              ? "bg-green-500/10 border-green-500/50 text-green-400"
+              : "bg-green-100 border-green-300 text-green-600"
+          } px-4 py-2 rounded-lg text-sm mb-4 border`}
+        >
           {successMessage}
         </div>
       )}
 
       {/* Create Post */}
-      <div className="bg-slate-800/50 rounded-2xl p-6 mb-8 border border-white/10 backdrop-blur-sm">
+      <div
+        className={`${
+          isDarkMode ? "bg-slate-800/50 border-white/10" : "bg-white border-slate-200"
+        } rounded-2xl p-6 mb-8 border backdrop-blur-sm`}
+      >
         <form onSubmit={handlePost}>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-              <FaLeaf className="w-6 h-6 text-[var(--text-primary)]" />
+              <FaLeaf className="w-6 h-6 text-white" />
             </div>
             <select
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[var(--text-primary)] focus:outline-none focus:border-blue-500 appearance-none"
+              className={`${
+                isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-slate-50 border-slate-300 text-slate-800"
+              } border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 appearance-none`}
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={{
-                // Override browser default styling
-                color: "white",
-                backgroundImage:
-                  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E\")",
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='${
+                  isDarkMode ? "%23ffffff" : "%23475569"
+                }'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "right 0.5rem center",
                 backgroundSize: "1.5em 1.5em",
                 paddingRight: "2.5rem",
               }}
             >
-              <option value="all" style={{ backgroundColor: "#1e293b", color: "white" }}>
+              <option
+                value="all"
+                style={{ backgroundColor: isDarkMode ? "#1e293b" : "#f8fafc", color: isDarkMode ? "white" : "#1e293b" }}
+              >
                 Select Category
               </option>
-              <option value="climate" style={{ backgroundColor: "#1e293b", color: "white" }}>
+              <option
+                value="climate"
+                style={{ backgroundColor: isDarkMode ? "#1e293b" : "#f8fafc", color: isDarkMode ? "white" : "#1e293b" }}
+              >
                 Climate Action
               </option>
-              <option value="ocean" style={{ backgroundColor: "#1e293b", color: "white" }}>
+              <option
+                value="ocean"
+                style={{ backgroundColor: isDarkMode ? "#1e293b" : "#f8fafc", color: isDarkMode ? "white" : "#1e293b" }}
+              >
                 Ocean Conservation
               </option>
-              <option value="wildlife" style={{ backgroundColor: "#1e293b", color: "white" }}>
+              <option
+                value="wildlife"
+                style={{ backgroundColor: isDarkMode ? "#1e293b" : "#f8fafc", color: isDarkMode ? "white" : "#1e293b" }}
+              >
                 Wildlife Protection
               </option>
             </select>
@@ -294,7 +347,11 @@ const CommunityFeed = () => {
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             placeholder="Share your environmental initiatives and ideas..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors mb-4"
+            className={`w-full ${
+              isDarkMode
+                ? "bg-white/5 border-white/10 placeholder-white/40"
+                : "bg-slate-50 border-slate-300 placeholder-slate-400"
+            } border rounded-xl p-4 text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition-colors mb-4`}
             rows="3"
           />
 
@@ -313,7 +370,7 @@ const CommunityFeed = () => {
               <button
                 type="button"
                 onClick={() => setImageUrl("")}
-                className="absolute top-2 right-2 bg-red-500 rounded-full p-1 text-[var(--text-primary)]"
+                className="absolute top-2 right-2 bg-red-500 rounded-full p-1 text-white"
                 disabled={imageLoading}
               >
                 ✕
@@ -321,13 +378,21 @@ const CommunityFeed = () => {
             </div>
           )}
 
-          <div className="flex items-center justify-between border-t border-white/10 pt-4">
+          <div
+            className={`flex items-center justify-between border-t ${
+              isDarkMode ? "border-white/10" : "border-slate-200"
+            } pt-4`}
+          >
             <div className="flex gap-4">
               <label
                 className={`p-2 rounded-lg ${
                   imageLoading
-                    ? "bg-white/5 text-[var(--text-primary)]/30 cursor-wait"
-                    : "hover:bg-white/5 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] cursor-pointer"
+                    ? isDarkMode
+                      ? "bg-white/5 text-white/30 cursor-wait"
+                      : "bg-slate-100 text-slate-400 cursor-wait"
+                    : isDarkMode
+                    ? "hover:bg-white/5 text-white/60 hover:text-white cursor-pointer"
+                    : "hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer"
                 } transition-colors`}
               >
                 <input
@@ -345,23 +410,11 @@ const CommunityFeed = () => {
                   <FaImage className="w-5 h-5" />
                 )}
               </label>
-              {/* <button
-                type="button"
-                className="p-2 rounded-lg hover:bg-white/5 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] transition-colors"
-              >
-                <FaVideo className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                className="p-2 rounded-lg hover:bg-white/5 text-[var(--text-primary)]/60 hover:text-[var(--text-primary)] transition-colors"
-              >
-                <FaLink className="w-5 h-5" />
-              </button> */}
             </div>
             <motion.button
               type="submit"
               disabled={loading}
-              className={`px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 ${
+              className={`px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg font-medium text-white hover:from-blue-600 hover:to-purple-600 ${
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
               whileHover={loading ? {} : { scale: 1.05 }}
@@ -378,13 +431,19 @@ const CommunityFeed = () => {
         {fetchingPosts ? (
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
-            <p className="text-[var(--text-primary)]/60">Loading posts...</p>
+            <p className={`${isDarkMode ? "text-white/60" : "text-slate-500"}`}>Loading posts...</p>
           </div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-12 bg-slate-800/30 rounded-2xl border border-white/5">
-            <FaLeaf className="mx-auto text-4xl text-[var(--text-primary)]/20 mb-4" />
+          <div
+            className={`text-center py-12 ${
+              isDarkMode ? "bg-slate-800/30 border-white/5" : "bg-slate-50 border-slate-200"
+            } rounded-2xl border`}
+          >
+            <FaLeaf className={`mx-auto text-4xl ${isDarkMode ? "text-white/20" : "text-slate-300"} mb-4`} />
             <h3 className="text-xl font-semibold mb-2">No posts yet</h3>
-            <p className="text-[var(--text-primary)]/60">Be the first to share something with the community!</p>
+            <p className={`${isDarkMode ? "text-white/60" : "text-slate-500"}`}>
+              Be the first to share something with the community!
+            </p>
           </div>
         ) : (
           posts.map((post) => (
@@ -392,37 +451,51 @@ const CommunityFeed = () => {
               key={post._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-slate-800/50 rounded-2xl p-6 border border-white/10 backdrop-blur-sm"
+              className={`${
+                isDarkMode ? "bg-slate-800/50 border-white/10" : "bg-white border-slate-200"
+              } rounded-2xl p-6 border backdrop-blur-sm`}
             >
               {/* Post content */}
               <div className="flex items-center gap-4 mb-4">
                 <img
                   src={post.author.avatar || `https://ui-avatars.com/api/?name=${post.author.name}`}
                   alt={post.author.name}
-                  className="w-12 h-12 rounded-full border-2 border-white/10"
+                  className={`w-12 h-12 rounded-full border-2 ${isDarkMode ? "border-white/10" : "border-slate-200"}`}
                 />
                 <div>
                   <h3 className="font-semibold">{post.author.name}</h3>
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-[var(--text-primary)]/40">{post.author.role || "Member"}</span>
-                    <span className="text-[var(--text-primary)]/40">•</span>
-                    <span className="text-[var(--text-primary)]/40">
+                    <span className={`${isDarkMode ? "text-white/40" : "text-slate-500"}`}>
+                      {post.author.role || "Member"}
+                    </span>
+                    <span className={`${isDarkMode ? "text-white/40" : "text-slate-500"}`}>•</span>
+                    <span className={`${isDarkMode ? "text-white/40" : "text-slate-500"}`}>
                       {new Date(post.createdAt).toLocaleDateString()} at {new Date(post.createdAt).toLocaleTimeString()}
                     </span>
                   </div>
                 </div>
-                <span className="ml-auto text-sm px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                <span
+                  className={`ml-auto text-sm px-3 py-1 rounded-full ${
+                    isDarkMode ? "bg-white/5 border-white/10" : "bg-slate-100 border-slate-200"
+                  } border`}
+                >
                   {post.category || "General"}
                 </span>
               </div>
 
-              <p className="text-[var(--text-primary)]/80 mb-4 leading-relaxed">{post.content}</p>
+              <p className={`${isDarkMode ? "text-white/80" : "text-slate-700"} mb-4 leading-relaxed`}>
+                {post.content}
+              </p>
               {post.imageUrl && (
                 <img src={post.imageUrl} alt="Post content" className="w-full h-64 object-cover rounded-xl mb-4" />
               )}
 
               {/* Interactions */}
-              <div className="flex gap-6 text-[var(--text-primary)]/60 border-t border-white/10 pt-4">
+              <div
+                className={`flex gap-6 ${isDarkMode ? "text-white/60" : "text-slate-600"} border-t ${
+                  isDarkMode ? "border-white/10" : "border-slate-200"
+                } pt-4`}
+              >
                 <motion.button
                   onClick={() => handleLike(post._id)}
                   className="flex items-center gap-2 hover:text-blue-400 transition-colors"
@@ -456,18 +529,20 @@ const CommunityFeed = () => {
 
               {/* Comments Section */}
               {post.comments && post.comments.length > 0 && (
-                <div className="mt-4 space-y-3 border-t border-white/10 pt-4">
-                  <h4 className="text-sm font-medium text-[var(--text-primary)]/60">Comments</h4>
+                <div className={`mt-4 space-y-3 border-t ${isDarkMode ? "border-white/10" : "border-slate-200"} pt-4`}>
+                  <h4 className={`text-sm font-medium ${isDarkMode ? "text-white/60" : "text-slate-500"}`}>Comments</h4>
                   {post.comments.slice(0, 3).map((comment, idx) => (
                     <div key={idx} className="flex gap-3">
                       <img
                         src={comment.user.avatar || `https://ui-avatars.com/api/?name=${comment.user.name}`}
                         alt={comment.user.name}
-                        className="w-8 h-8 rounded-full border border-white/10"
+                        className={`w-8 h-8 rounded-full border ${isDarkMode ? "border-white/10" : "border-slate-200"}`}
                       />
-                      <div className="bg-white/5 px-3 py-2 rounded-lg flex-1">
+                      <div className={`${isDarkMode ? "bg-white/5" : "bg-slate-100"} px-3 py-2 rounded-lg flex-1`}>
                         <div className="text-sm font-medium">{comment.user.name}</div>
-                        <p className="text-sm text-[var(--text-primary)]/70">{comment.content}</p>
+                        <p className={`text-sm ${isDarkMode ? "text-white/70" : "text-slate-600"}`}>
+                          {comment.content}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -481,25 +556,29 @@ const CommunityFeed = () => {
 
               {/* Comment Form */}
               {activeCommentId === post._id && (
-                <div className="mt-4 border-t border-white/10 pt-4">
+                <div className={`mt-4 border-t ${isDarkMode ? "border-white/10" : "border-slate-200"} pt-4`}>
                   <div className="flex gap-3">
                     <img
                       src={`https://ui-avatars.com/api/?name=User`}
                       alt="You"
-                      className="w-8 h-8 rounded-full border border-white/10"
+                      className={`w-8 h-8 rounded-full border ${isDarkMode ? "border-white/10" : "border-slate-200"}`}
                     />
                     <div className="flex-1">
                       <textarea
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                         placeholder="Write a comment..."
-                        className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                        className={`w-full ${
+                          isDarkMode
+                            ? "bg-white/5 border-white/10 placeholder-white/40"
+                            : "bg-slate-50 border-slate-300 placeholder-slate-400"
+                        } border rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition-colors text-sm`}
                         rows="2"
                       />
                       <div className="flex justify-end mt-2">
                         <motion.button
                           onClick={() => submitComment(post._id)}
-                          className="px-4 py-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-600"
+                          className="px-4 py-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-sm font-medium text-white hover:from-blue-600 hover:to-purple-600"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
