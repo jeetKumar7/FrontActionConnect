@@ -65,7 +65,7 @@ const AuthCallback = () => {
   useEffect(() => {
     // Existing auth callback code...
 
-    // After successful authentication with token storage:
+    // After successful authentication:
     const redirect = localStorage.getItem("redirectAfterAuth");
     if (redirect) {
       localStorage.removeItem("redirectAfterAuth");

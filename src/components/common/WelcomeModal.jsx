@@ -1,6 +1,6 @@
 import React from "react";
-import { FaLeaf, FaArrowRight, FaUserPlus, FaSignInAlt } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { FaLeaf, FaUserPlus, FaSignInAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const WelcomeModal = ({ isOpen, onSignUp, onSignIn, onClose }) => {

@@ -4,8 +4,8 @@ const WelcomeContext = createContext();
 
 export const WelcomeProvider = ({ children }) => {
   const [showWelcome, setShowWelcome] = useState(false);
-  const [onboardingStep, setOnboardingStep] = useState("welcome"); // welcome, signUp, signIn, passionQuiz, completed
-  const [redirectAfterAuth, setRedirectAfterAuth] = useState(null);
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
 
   // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem("token");
@@ -17,6 +17,29 @@ export const WelcomeProvider = ({ children }) => {
     if (!isAuthenticated && !hasSeenWelcome) {
       setShowWelcome(true);
     }
+
+    // Listen for custom events to open auth modals
+    const handleOpenSignIn = (event) => {
+      if (event.detail?.redirectTo) {
+        localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
+      }
+      setShowSignIn(true);
+    };
+
+    const handleOpenSignUp = (event) => {
+      if (event.detail?.redirectTo) {
+        localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
+      }
+      setShowSignUp(true);
+    };
+
+    window.addEventListener("openSignIn", handleOpenSignIn);
+    window.addEventListener("openSignUp", handleOpenSignUp);
+
+    return () => {
+      window.removeEventListener("openSignIn", handleOpenSignIn);
+      window.removeEventListener("openSignUp", handleOpenSignUp);
+    };
   }, [isAuthenticated]);
 
   const handleCloseWelcome = () => {
@@ -25,21 +48,15 @@ export const WelcomeProvider = ({ children }) => {
   };
 
   const handleSignUpClick = () => {
-    setRedirectAfterAuth("/passion");
     localStorage.setItem("redirectAfterAuth", "/passion");
     setShowWelcome(false);
-    setOnboardingStep("signUp");
-    // We'll handle this in AuthModals.jsx to open sign up modal
-    window.dispatchEvent(new CustomEvent("openSignUp", { detail: { redirectTo: "/passion" } }));
+    setShowSignUp(true);
   };
 
   const handleSignInClick = () => {
-    setRedirectAfterAuth("/passion");
     localStorage.setItem("redirectAfterAuth", "/passion");
     setShowWelcome(false);
-    setOnboardingStep("signIn");
-    // We'll handle this in AuthModals.jsx to open sign in modal
-    window.dispatchEvent(new CustomEvent("openSignIn", { detail: { redirectTo: "/passion" } }));
+    setShowSignIn(true);
   };
 
   return (
@@ -50,10 +67,10 @@ export const WelcomeProvider = ({ children }) => {
         handleCloseWelcome,
         handleSignUpClick,
         handleSignInClick,
-        onboardingStep,
-        setOnboardingStep,
-        redirectAfterAuth,
-        setRedirectAfterAuth,
+        showSignIn,
+        setShowSignIn,
+        showSignUp,
+        setShowSignUp,
       }}
     >
       {children}

@@ -17,9 +17,19 @@ import AuthCallback from "../auth/AuthCallback";
 import WelcomeModal from "../common/WelcomeModal";
 import { useWelcome } from "../../context/WelcomeContext";
 import { AnimatePresence } from "framer-motion";
+import { SignInModal, SignUpModal } from "../auth/AuthModals";
 
 const AppContent = () => {
-  const { showWelcome, handleCloseWelcome, handleSignUpClick, handleSignInClick } = useWelcome();
+  const {
+    showWelcome,
+    handleCloseWelcome,
+    handleSignUpClick,
+    handleSignInClick,
+    showSignIn,
+    setShowSignIn,
+    showSignUp,
+    setShowSignUp,
+  } = useWelcome();
 
   return (
     <div>
@@ -50,6 +60,17 @@ const AppContent = () => {
           />
         )}
       </AnimatePresence>
+
+      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
+
+      <SignUpModal
+        isOpen={showSignUp}
+        onClose={() => setShowSignUp(false)}
+        onSwitchToSignIn={() => {
+          setShowSignUp(false);
+          setTimeout(() => setShowSignIn(true), 100);
+        }}
+      />
     </div>
   );
 };

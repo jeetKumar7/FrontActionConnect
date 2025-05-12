@@ -18,14 +18,14 @@ export const SignInModal = ({ isOpen, onClose }) => {
       if (event.detail?.redirectTo) {
         localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
       }
-      onOpen();
+      // No need to do anything here as the parent component controls isOpen
     };
 
     window.addEventListener("openSignIn", handleOpenSignIn);
     return () => {
       window.removeEventListener("openSignIn", handleOpenSignIn);
     };
-  }, [onOpen]);
+  }, []); // Remove the dependency on onOpen
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -210,14 +210,14 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       if (event.detail?.redirectTo) {
         localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
       }
-      onOpen();
+      // Remove onOpen() call
     };
 
     window.addEventListener("openSignUp", handleOpenSignUp);
     return () => {
       window.removeEventListener("openSignUp", handleOpenSignUp);
     };
-  }, [onOpen]);
+  }, []); // Remove the dependency on onOpen
 
   const handleSubmit = async (e) => {
     e.preventDefault();
