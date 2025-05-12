@@ -195,7 +195,13 @@ const Navbar = () => {
   ];
 
   return (
-    <motion.nav className="fixed w-full top-0 z-50 transition-all duration-500 py-2.5 bg-[var(--bg-primary)] border-b border-white/10 shadow-md shadow-black/10">
+    <motion.nav
+      className={`fixed w-full top-0 z-50 transition-all duration-500 py-1.5 ${
+        isDarkMode
+          ? "bg-[var(--bg-primary)] border-b border-white/10 shadow-md shadow-black/10"
+          : "bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm"
+      }`}
+    >
       {/* Container remains the same */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
@@ -208,7 +214,13 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="relative h-9 w-9 md:h-10 md:w-10 rounded-lg bg-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-900/20 overflow-hidden">
+              <div
+                className={`relative h-9 w-9 md:h-10 md:w-10 rounded-lg ${
+                  isDarkMode ? "bg-cyan-600" : "bg-gradient-to-br from-cyan-500 to-blue-600"
+                } flex items-center justify-center shadow-lg ${
+                  isDarkMode ? "shadow-cyan-900/20" : "shadow-blue-200/60"
+                } overflow-hidden`}
+              >
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,transparent_70%)]"></div>
                 <svg
                   viewBox="0 0 24 24"
@@ -251,9 +263,8 @@ const Navbar = () => {
                 </svg>
               </div>
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-[var(--text-primary)] tracking-tight">ActionConnect</span>
-                <span className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider -mt-1">
-                  Impact Platform
+                <span className="text-xl md:text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+                  ActionConnect
                 </span>
               </div>
             </motion.div>
@@ -273,7 +284,7 @@ const Navbar = () => {
                         handleProtectedNavigation(e, link.path);
                       }
                     }}
-                    className="flex items-center text-left w-full text-slate-300 hover:text-[var(--text-primary)] text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
+                    className="flex items-center text-left w-full text-[var(--text-primary)] hover:text-[var(--text-primary)] text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
                   >
                     <span>{link.name}</span>
                   </Link>
@@ -284,30 +295,44 @@ const Navbar = () => {
 
           {/* Auth buttons simplified */}
           <div className="hidden lg:flex items-center gap-3 ml-4">
+            {/* Theme toggle button with border */}
             <motion.button
               onClick={toggleTheme}
-              className="p-2 rounded-md text-slate-300 hover:text-[var(--text-primary)] bg-white/5 hover:bg-white/10 transition-colors"
+              className={`p-2 rounded-md border ${
+                isDarkMode
+                  ? "text-slate-300 hover:text-[var(--text-primary)] bg-white/5 hover:bg-white/10 border-white/10"
+                  : "text-slate-500 hover:text-slate-800 bg-slate-100/80 hover:bg-slate-200/80 border-slate-200"
+              } transition-colors`}
               whileHover={{ scale: 1.05 }}
               aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
               {isDarkMode ? (
                 <FaSun size={16} className="text-yellow-400" />
               ) : (
-                <FaMoon size={16} className="text-blue-400" />
+                <FaMoon size={16} className="text-blue-500" />
               )}
             </motion.button>
             {!isAuthenticated ? (
               <div className="flex items-center gap-2">
+                {/* Sign in button with border */}
                 <motion.button
                   onClick={handleOpenSignIn}
-                  className="text-slate-300 hover:text-[var(--text-primary)] text-sm font-medium px-3 py-1.5 hover:bg-white/5 rounded-md transition-colors"
+                  className={`text-sm font-medium px-3 py-1.5 rounded-md border transition-colors ${
+                    isDarkMode
+                      ? "text-slate-300 hover:text-[var(--text-primary)] hover:bg-white/5 border-white/10"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-slate-200"
+                  }`}
                   whileHover={{ scale: 1.02 }}
                 >
                   Sign in
                 </motion.button>
                 <motion.button
                   onClick={handleOpenSignUp}
-                  className="bg-cyan-600 hover:bg-cyan-700 text-[var(--text-primary)] px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
+                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    isDarkMode
+                      ? "bg-cyan-600 hover:bg-cyan-700 text-[var(--text-primary)]"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  }`}
                   whileHover={{ scale: 1.02 }}
                 >
                   Get Started
@@ -318,11 +343,15 @@ const Navbar = () => {
                 {/* Profile */}
                 <div className="relative" ref={profileMenuRef}>
                   <motion.button
-                    className="h-8 w-8 rounded-md bg-slate-800 border border-white/10 flex items-center justify-center"
+                    className={`h-8 w-8 rounded-md flex items-center justify-center ${
+                      isDarkMode
+                        ? "bg-slate-800 border border-white/10"
+                        : "bg-slate-100 border border-slate-200 shadow-sm"
+                    }`}
                     whileHover={{ scale: 1.05 }}
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                   >
-                    <FaUserCircle size={16} className="text-slate-400" />
+                    <FaUserCircle size={16} className={isDarkMode ? "text-slate-400" : "text-blue-500"} />
                   </motion.button>
 
                   {/* Dropdown Menu simplified */}

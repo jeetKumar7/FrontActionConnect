@@ -22,11 +22,11 @@
 
 body.light {
   /* Background Colors */
-  --bg-primary: rgba(202, 208, 217, 0.95); /* Darker slate for dark mode */
-  --bg-secondary: #f9fafb;
+  --bg-primary: #ffffff; /* Darker slate for dark mode */
+  --bg-secondary: #f1f5f9;
 
   /* Text Colors */
-  --text-primary: #060707; /* Slate-300 */
+  --text-primary: #373737; /* Slate-300 */
   --text-secondary: #232427; /* Slate-400 */
 
   /* Border Colors */
