@@ -1235,7 +1235,66 @@ const FindPassion = () => {
                     transition={{ delay: index * 0.1 + 0.4 }}
                     whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)" }}
                   >
-                    {/* ...cause card contents - update with isDarkMode conditional classes */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className={`p-2 rounded-lg mr-3 ${cause.colorClass || "bg-indigo-500/20"}`}>
+                          {React.createElement(cause.icon || FaLeaf, {
+                            className: `w-5 h-5 ${cause.textColorClass || "text-indigo-400"}`,
+                          })}
+                        </div>
+                        <h3 className="text-lg font-semibold">{cause.title}</h3>
+                      </div>
+                      <div
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          isDarkMode ? "bg-indigo-500/20 text-indigo-300" : "bg-indigo-100 text-indigo-600"
+                        }`}
+                      >
+                        {cause.matchScore}% Match
+                      </div>
+                    </div>
+
+                    <p className={`mb-4 ${isDarkMode ? "text-white/70" : "text-slate-600"}`}>{cause.description}</p>
+
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {cause.tags?.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            isDarkMode ? "bg-white/5 text-white/70" : "bg-slate-100 text-slate-600"
+                          }`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-auto pt-4">
+                      <button
+                        onClick={() => handleSupportCause(cause.id, cause.title)}
+                        disabled={causeActionLoading[cause.id]}
+                        className={`w-full py-2 rounded-lg flex items-center justify-center gap-2 ${
+                          supportedCauses?.includes(cause.id.toString())
+                            ? isDarkMode
+                              ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                              : "bg-green-100 text-green-700 border border-green-200"
+                            : isDarkMode
+                            ? "bg-white/10 hover:bg-white/20 text-white"
+                            : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                        }`}
+                      >
+                        {causeActionLoading[cause.id] ? (
+                          <FaSpinner className="animate-spin" />
+                        ) : supportedCauses?.includes(cause.id.toString()) ? (
+                          <>
+                            <FaCheck /> Supporting
+                          </>
+                        ) : (
+                          <>
+                            <FaPlus /> Support This Cause
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </motion.div>
                 ))}
               </motion.div>
