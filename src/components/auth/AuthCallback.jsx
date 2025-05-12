@@ -41,9 +41,17 @@ const AuthCallback = () => {
             // Trigger auth state update
             window.dispatchEvent(new Event("storage"));
 
-            // Redirect to home page
-            navigate("/", { replace: true });
-            window.location.reload(); // Force refresh to update UI
+            const redirectPath = localStorage.getItem("redirectAfterAuth");
+
+            if (redirectPath === "/passion") {
+              localStorage.removeItem("redirectAfterAuth");
+              navigate("/passion", { replace: true });
+            } else if (redirectPath) {
+              localStorage.removeItem("redirectAfterAuth");
+              navigate(redirectPath, { replace: true });
+            } else {
+              navigate("/", { replace: true });
+            }
 
             // After successfully setting up the user token, check for redirect
             const redirectPath = localStorage.getItem("redirectAfterAuth");
@@ -75,19 +83,6 @@ const AuthCallback = () => {
 
     handleAuthCallback();
   }, [location, navigate]);
-
-  useEffect(() => {
-    // Existing auth callback code...
-
-    // After successful authentication:
-    const redirect = localStorage.getItem("redirectAfterAuth");
-    if (redirect) {
-      localStorage.removeItem("redirectAfterAuth");
-      navigate(redirect);
-    } else {
-      navigate("/");
-    }
-  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">

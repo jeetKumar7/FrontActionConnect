@@ -34,6 +34,7 @@ import {
 } from "react-icons/fa";
 import { getUserProfile, getSupportedCauses, addSupportedCause, removeSupportedCause } from "../services";
 import { causes } from "../data/causes";
+import { useNavigate } from "react-router-dom";
 
 // Add theme detection hook
 const useThemeDetection = () => {
@@ -833,6 +834,7 @@ const FindPassion = () => {
       </div>
     </div>
   );
+  const navigate = useNavigate();
 
   // Add a useEffect that triggers after results are calculated
   useEffect(() => {
@@ -849,7 +851,7 @@ const FindPassion = () => {
 
       return () => clearTimeout(redirectTimer);
     }
-  }, [showResults, matchedCauses]);
+  }, [showResults, matchedCauses, navigate]);
 
   return (
     <div
