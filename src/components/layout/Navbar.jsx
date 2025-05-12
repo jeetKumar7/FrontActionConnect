@@ -13,6 +13,8 @@ import {
   FaUsers,
   FaCog,
   FaSignOutAlt,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { SignInModal, SignUpModal } from "../auth/AuthModals";
@@ -25,9 +27,41 @@ const Navbar = () => {
   const [showSignUp, setShowSignUp] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Default to light mode
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+
+    if (newTheme) {
+      document.body.classList.remove("light");
+    } else {
+      document.body.classList.add("light");
+    }
+
+    // Save preference to localStorage
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
+
+  // Initialize theme on component mount
+  useEffect(() => {
+    // Check localStorage for saved preference
+    const savedTheme = localStorage.getItem("theme");
+
+    // Default to light mode if no preference is found
+    const prefersDark = savedTheme === "dark";
+    setIsDarkMode(prefersDark);
+
+    // Apply theme to body
+    if (prefersDark) {
+      document.body.classList.remove("light");
+    } else {
+      document.body.classList.add("light");
+    }
+  }, []);
 
   const handleOpenSignIn = () => {
     setShowSignUp(false);
@@ -250,6 +284,18 @@ const Navbar = () => {
 
           {/* Auth buttons simplified */}
           <div className="hidden lg:flex items-center gap-3 ml-4">
+            <motion.button
+              onClick={toggleTheme}
+              className="p-2 rounded-md text-slate-300 hover:text-[var(--text-primary)] bg-white/5 hover:bg-white/10 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDarkMode ? (
+                <FaSun size={16} className="text-yellow-400" />
+              ) : (
+                <FaMoon size={16} className="text-blue-400" />
+              )}
+            </motion.button>
             {!isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <motion.button
@@ -372,6 +418,16 @@ const Navbar = () => {
 
                 {/* Mobile divider */}
                 <div className="border-t border-white/10 my-2 pt-2">
+                  {/* Theme toggle for mobile */}
+                  <button
+                    onClick={toggleTheme}
+                    className="flex items-center justify-between w-full text-slate-300 hover:text-[var(--text-primary)] text-sm font-medium py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-blue-400" />}
+                      <span>{isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
+                    </div>
+                  </button>
                   {!isAuthenticated ? (
                     <div className="flex flex-col gap-2">
                       <button
