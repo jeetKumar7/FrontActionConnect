@@ -44,6 +44,20 @@ const AuthCallback = () => {
             // Redirect to home page
             navigate("/", { replace: true });
             window.location.reload(); // Force refresh to update UI
+
+            // After successfully setting up the user token, check for redirect
+            const redirectPath = localStorage.getItem("redirectAfterAuth");
+
+            if (redirectPath === "/passion") {
+              // This is a new user that came from welcome modal
+              localStorage.removeItem("redirectAfterAuth");
+              navigate("/passion");
+            } else if (redirectPath) {
+              localStorage.removeItem("redirectAfterAuth");
+              navigate(redirectPath);
+            } else {
+              navigate("/");
+            }
           } else {
             setError(data.message || "Authentication failed");
             setTimeout(() => navigate("/"), 3000);

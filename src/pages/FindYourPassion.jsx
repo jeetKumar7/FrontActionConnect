@@ -834,6 +834,23 @@ const FindPassion = () => {
     </div>
   );
 
+  // Add a useEffect that triggers after results are calculated
+  useEffect(() => {
+    if (showResults && matchedCauses.length > 0) {
+      // Set a timeout for redirect so user can see their results first
+      const redirectTimer = setTimeout(() => {
+        // Store that user has completed onboarding
+        localStorage.setItem("hasCompletedPassionQuiz", "true");
+        // Store that user should see location prompt
+        localStorage.setItem("showLocationPrompt", "true");
+        // Navigate to profile page
+        navigate("/profile");
+      }, 10000); // 10 seconds delay to let user view results
+
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [showResults, matchedCauses]);
+
   return (
     <div
       ref={sectionRef}

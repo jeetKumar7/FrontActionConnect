@@ -26,6 +26,7 @@ import {
 } from "../../services";
 import { useNavigate } from "react-router-dom";
 import { causes, getCauseById } from "../../data/causes";
+import LocationPrompt from "./LocationPrompt";
 
 // Add theme detection hook
 const useThemeDetection = () => {
@@ -73,6 +74,7 @@ const UserProfile = () => {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
 
   const navigate = useNavigate();
 
@@ -112,6 +114,16 @@ const UserProfile = () => {
     fetchUserProfile();
     fetchSupportedCauses();
   }, []);
+
+  useEffect(() => {
+    // Check if we should show the location prompt (redirected from passion quiz)
+    const shouldShowPrompt =
+      localStorage.getItem("showLocationPrompt") === "true" && (!userData?.location || userData.location === "");
+
+    if (shouldShowPrompt) {
+      setShowLocationPrompt(true);
+    }
+  }, [userData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -252,6 +264,17 @@ const UserProfile = () => {
     });
   };
 
+  const handleCloseLocationPrompt = () => {
+    localStorage.removeItem("showLocationPrompt");
+    setShowLocationPrompt(false);
+  };
+
+  const handleNavigateToEdit = () => {
+    localStorage.removeItem("showLocationPrompt");
+    setShowLocationPrompt(false);
+    setIsEditing(true);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -311,6 +334,16 @@ const UserProfile = () => {
             >
               {actionFeedback.message}
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showLocationPrompt && (
+            <LocationPrompt
+              isDarkMode={isDarkMode}
+              onClose={handleCloseLocationPrompt}
+              onNavigateToEdit={handleNavigateToEdit}
+            />
           )}
         </AnimatePresence>
 
