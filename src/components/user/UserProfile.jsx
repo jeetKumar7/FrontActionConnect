@@ -14,7 +14,7 @@ import {
   FaCheck,
   FaPlus,
   FaMapMarkerAlt,
-  FaKey, // Add this
+  FaKey,
 } from "react-icons/fa";
 import {
   getUserProfile,
@@ -22,12 +22,38 @@ import {
   deleteUserAccount,
   getSupportedCauses,
   removeSupportedCause,
-  changePassword, // Add this
+  changePassword,
 } from "../../services";
 import { useNavigate } from "react-router-dom";
 import { causes, getCauseById } from "../../data/causes";
 
+// Add theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
 const UserProfile = () => {
+  const isDarkMode = useThemeDetection();
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({ name: "", email: "", location: "" });
@@ -237,11 +263,15 @@ const UserProfile = () => {
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-4 rounded-lg">
+        <div
+          className={`${
+            isDarkMode ? "bg-red-500/10 border-red-500/50 text-red-500" : "bg-red-100 border-red-300 text-red-600"
+          } p-4 rounded-lg border`}
+        >
           <p>{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-2 px-4 py-2 bg-red-500 text-[var(--text-primary)] rounded-lg"
+            className={`mt-2 px-4 py-2 ${isDarkMode ? "bg-red-500" : "bg-red-600"} text-white rounded-lg`}
           >
             Retry
           </button>
@@ -251,7 +281,11 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20 pb-12">
+    <div
+      className={`min-h-screen ${
+        isDarkMode ? "bg-gradient-to-b from-slate-900 to-slate-800" : "bg-gradient-to-b from-white to-slate-100"
+      } text-[var(--text-primary)] pt-20 pb-12`}
+    >
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
@@ -269,7 +303,7 @@ const UserProfile = () => {
                   : actionFeedback.type === "error"
                   ? "bg-red-500/80"
                   : "bg-blue-500/80"
-              } backdrop-blur-sm text-[var(--text-primary)]`}
+              } backdrop-blur-sm text-white`}
               initial={{ opacity: 0, y: -20, x: 20 }}
               animate={{ opacity: 1, y: 0, x: 0 }}
               exit={{ opacity: 0, y: -20, x: 20 }}
@@ -281,14 +315,20 @@ const UserProfile = () => {
         </AnimatePresence>
 
         {/* Main Content Area */}
-        <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-8">
+        <div
+          className={`${
+            isDarkMode
+              ? "bg-white/5 backdrop-blur-sm border border-white/10"
+              : "bg-white backdrop-blur-sm border border-slate-200"
+          } rounded-xl p-8`}
+        >
           {/* Profile Actions */}
           <div className="flex justify-end mb-6 gap-4">
             {!isEditing ? (
               <>
                 <motion.button
                   onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center gap-2"
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center gap-2 text-white"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -297,7 +337,11 @@ const UserProfile = () => {
                 </motion.button>
                 <motion.button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50 rounded-lg flex items-center gap-2"
+                  className={`px-4 py-2 ${
+                    isDarkMode
+                      ? "bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50"
+                      : "bg-red-100 text-red-600 hover:bg-red-200 border border-red-300"
+                  } rounded-lg flex items-center gap-2`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -308,7 +352,9 @@ const UserProfile = () => {
             ) : (
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2"
+                className={`px-4 py-2 ${
+                  isDarkMode ? "bg-white/10 hover:bg-white/20" : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                } rounded-lg flex items-center gap-2`}
               >
                 <FaTimes />
                 Cancel
@@ -321,7 +367,13 @@ const UserProfile = () => {
             <div className="space-y-8">
               {/* User Information */}
               <div>
-                <h3 className="text-xl font-semibold mb-4 pb-2 border-b border-white/10">Account Information</h3>
+                <h3
+                  className={`text-xl font-semibold mb-4 pb-2 border-b ${
+                    isDarkMode ? "border-white/10" : "border-slate-200"
+                  }`}
+                >
+                  Account Information
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <p className="text-[var(--text-primary)]/60 text-sm mb-1">Name</p>
@@ -350,7 +402,13 @@ const UserProfile = () => {
 
               {/* Supported Causes */}
               <div className="mt-8">
-                <h3 className="text-xl font-semibold mb-4 pb-2 border-b border-white/10">Causes You Support</h3>
+                <h3
+                  className={`text-xl font-semibold mb-4 pb-2 border-b ${
+                    isDarkMode ? "border-white/10" : "border-slate-200"
+                  }`}
+                >
+                  Causes You Support
+                </h3>
                 {supportedCauses.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     {supportedCauses.map((causeId) => {
@@ -360,7 +418,9 @@ const UserProfile = () => {
                       return (
                         <div
                           key={causeId}
-                          className="flex items-center gap-2 p-3 bg-white/5 rounded-lg border border-white/10"
+                          className={`flex items-center gap-2 p-3 ${
+                            isDarkMode ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+                          } rounded-lg border`}
                         >
                           <div className={`p-2 rounded-lg bg-${cause.color}-500/20`}>
                             <cause.icon className={`w-4 h-4 text-${cause.color}-400`} />
@@ -368,7 +428,9 @@ const UserProfile = () => {
                           <span>{cause.title}</span>
                           <button
                             onClick={() => handleRemoveCause(cause.id, cause.title)}
-                            className="ml-auto text-red-400 hover:text-red-300"
+                            className={`ml-auto ${
+                              isDarkMode ? "text-red-400 hover:text-red-300" : "text-red-500 hover:text-red-600"
+                            }`}
                             disabled={causeActionLoading[cause.id]}
                           >
                             {causeActionLoading[cause.id] ? <FaSpinner className="animate-spin" /> : <FaTimes />}
@@ -390,9 +452,15 @@ const UserProfile = () => {
 
               {/* Account Security (mock section) */}
               <div>
-                <h3 className="text-xl font-semibold mb-4 pb-2 border-b border-white/10">Account Security</h3>
+                <h3
+                  className={`text-xl font-semibold mb-4 pb-2 border-b ${
+                    isDarkMode ? "border-white/10" : "border-slate-200"
+                  }`}
+                >
+                  Account Security
+                </h3>
                 <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-white/5">
+                  <div className={`p-3 rounded-lg ${isDarkMode ? "bg-white/5" : "bg-blue-50"}`}>
                     <FaShieldAlt className="w-6 h-6 text-blue-400" />
                   </div>
                   <div className="flex-1">
@@ -404,20 +472,40 @@ const UserProfile = () => {
                     {!showPasswordForm ? (
                       <button
                         onClick={() => setShowPasswordForm(true)}
-                        className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded text-sm flex items-center gap-1"
+                        className={`px-3 py-1 ${
+                          isDarkMode
+                            ? "bg-white/10 hover:bg-white/20"
+                            : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                        } rounded text-sm flex items-center gap-1`}
                       >
                         <FaKey className="text-yellow-400" /> Change Password
                       </button>
                     ) : (
-                      <div className="bg-slate-800/70 p-4 rounded-lg mt-2 border border-white/10">
+                      <div
+                        className={`${
+                          isDarkMode ? "bg-slate-800/70 border-white/10" : "bg-slate-50 border-slate-200"
+                        } p-4 rounded-lg mt-2 border`}
+                      >
                         {passwordError && (
-                          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/40 rounded-lg text-red-400 text-sm">
+                          <div
+                            className={`mb-4 p-3 ${
+                              isDarkMode
+                                ? "bg-red-500/20 border-red-500/40 text-red-400"
+                                : "bg-red-100 border-red-200 text-red-500"
+                            } border rounded-lg text-sm`}
+                          >
                             {passwordError}
                           </div>
                         )}
 
                         {passwordSuccess && (
-                          <div className="mb-4 p-3 bg-green-500/20 border border-green-500/40 rounded-lg text-green-400 text-sm flex items-center gap-2">
+                          <div
+                            className={`mb-4 p-3 ${
+                              isDarkMode
+                                ? "bg-green-500/20 border-green-500/40 text-green-400"
+                                : "bg-green-100 border-green-200 text-green-600"
+                            } border rounded-lg text-sm flex items-center gap-2`}
+                          >
                             <FaCheck /> {passwordSuccess}
                           </div>
                         )}
@@ -430,7 +518,9 @@ const UserProfile = () => {
                               name="currentPassword"
                               value={passwordData.currentPassword}
                               onChange={handlePasswordInputChange}
-                              className="w-full px-3 py-2 bg-[var(--bg-secondary)]/50 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                              className={`w-full px-3 py-2 ${
+                                isDarkMode ? "bg-[var(--bg-secondary)]/50 border-white/10" : "bg-white border-slate-300"
+                              } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500`}
                               required
                             />
                           </div>
@@ -442,7 +532,9 @@ const UserProfile = () => {
                               name="newPassword"
                               value={passwordData.newPassword}
                               onChange={handlePasswordInputChange}
-                              className="w-full px-3 py-2 bg-[var(--bg-secondary)]/50 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                              className={`w-full px-3 py-2 ${
+                                isDarkMode ? "bg-[var(--bg-secondary)]/50 border-white/10" : "bg-white border-slate-300"
+                              } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500`}
                               required
                               minLength={6}
                             />
@@ -457,7 +549,9 @@ const UserProfile = () => {
                               name="confirmPassword"
                               value={passwordData.confirmPassword}
                               onChange={handlePasswordInputChange}
-                              className="w-full px-3 py-2 bg-[var(--bg-secondary)]/50 border border-white/10 rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500"
+                              className={`w-full px-3 py-2 ${
+                                isDarkMode ? "bg-[var(--bg-secondary)]/50 border-white/10" : "bg-white border-slate-300"
+                              } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500`}
                               required
                             />
                           </div>
@@ -475,7 +569,9 @@ const UserProfile = () => {
                                   confirmPassword: "",
                                 });
                               }}
-                              className="px-3 py-1 bg-slate-700 rounded text-sm"
+                              className={`px-3 py-1 ${
+                                isDarkMode ? "bg-slate-700" : "bg-slate-200 text-slate-700"
+                              } rounded text-sm`}
                             >
                               Cancel
                             </button>
@@ -483,7 +579,7 @@ const UserProfile = () => {
                             <button
                               type="submit"
                               disabled={passwordLoading}
-                              className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded text-sm flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded text-sm flex items-center gap-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {passwordLoading ? (
                                 <>
@@ -514,7 +610,11 @@ const UserProfile = () => {
                     name="name"
                     value={editFormData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
+                    className={`w-full px-4 py-3 ${
+                      isDarkMode
+                        ? "bg-white/5 border-white/10 placeholder-white/40"
+                        : "bg-white border-slate-300 placeholder-slate-400"
+                    } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition-colors`}
                   />
                 </div>
                 <div>
@@ -527,7 +627,11 @@ const UserProfile = () => {
                     name="email"
                     value={editFormData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
+                    className={`w-full px-4 py-3 ${
+                      isDarkMode
+                        ? "bg-white/5 border-white/10 placeholder-white/40"
+                        : "bg-white border-slate-300 placeholder-slate-400"
+                    } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition-colors`}
                   />
                 </div>
                 <div>
@@ -541,7 +645,11 @@ const UserProfile = () => {
                     value={editFormData.location}
                     onChange={handleInputChange}
                     placeholder="City, State, Country"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-white/40 focus:outline-none focus:border-blue-500 transition-colors"
+                    className={`w-full px-4 py-3 ${
+                      isDarkMode
+                        ? "bg-white/5 border-white/10 placeholder-white/40"
+                        : "bg-white border-slate-300 placeholder-slate-400"
+                    } border rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition-colors`}
                   />
                 </div>
               </div>
@@ -550,7 +658,7 @@ const UserProfile = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center gap-2 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? <FaSpinner className="animate-spin" /> : <FaSave />}
                   Save Changes
@@ -571,12 +679,16 @@ const UserProfile = () => {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-slate-800 rounded-xl p-6 w-full max-w-md border border-red-500/30"
+              className={`${
+                isDarkMode ? "bg-slate-800 border-red-500/30" : "bg-white border-red-200"
+              } rounded-xl p-6 w-full max-w-md border`}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
             >
-              <h3 className="text-xl font-bold mb-4 text-red-400">Delete Your Account?</h3>
+              <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? "text-red-400" : "text-red-600"}`}>
+                Delete Your Account?
+              </h3>
               <p className="mb-6 text-[var(--text-primary)]/80">
                 This action is irreversible. All your data, including posts, comments, and profile information will be
                 permanently deleted.
@@ -584,7 +696,9 @@ const UserProfile = () => {
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg"
+                  className={`px-4 py-2 ${
+                    isDarkMode ? "bg-white/10 hover:bg-white/20" : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                  } rounded-lg`}
                 >
                   <FaTimes />
                   Cancel
@@ -592,7 +706,7 @@ const UserProfile = () => {
                 <button
                   onClick={handleDeleteAccount}
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-[var(--text-primary)] rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
                   Confirm Delete
