@@ -83,7 +83,8 @@ const WelcomeModal = ({ isOpen, onSignUp, onSignIn, onClose }) => {
                 <p className="text-white/70 text-sm">
                   <span className="text-white font-medium">Your privacy matters to us.</span> ActionConnect is committed
                   to protecting your personal information. We only collect essential data to provide you with a
-                  personalized experience and never share or sell your information to third parties. By creating an
+                  personalized experience and never share or sell your information to third parties.
+                  {/* By creating an
                   account, you agree to our{" "}
                   <a href="/terms" className="text-blue-400 hover:underline">
                     Terms of Service
@@ -92,7 +93,7 @@ const WelcomeModal = ({ isOpen, onSignUp, onSignIn, onClose }) => {
                   <a href="/privacy-policy" className="text-blue-400 hover:underline">
                     Privacy Policy
                   </a>
-                  .
+                  . */}
                 </p>
               </div>
             </div>
