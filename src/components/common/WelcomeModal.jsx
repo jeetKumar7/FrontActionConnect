@@ -68,36 +68,36 @@ const WelcomeModal = ({ isOpen, onSignUp, onSignIn, onClose }) => {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Add this privacy statement before the buttons */}
-              <div className="bg-white/5 border border-white/10 p-4 rounded-xl mb-2">
-                <div className="flex items-start gap-3">
-                  <div className="text-blue-400 mt-0.5 flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <p className="text-white/70 text-sm">
-                    <span className="text-white font-medium">Your privacy matters to us.</span> ActionConnect is
-                    committed to protecting your personal information. We only collect essential data to provide you
-                    with a personalized experience and never share or sell your information to third parties. By
-                    creating an account, you agree to our{" "}
-                    <a href="/terms" className="text-blue-400 hover:underline">
-                      Terms of Service
-                    </a>{" "}
-                    and{" "}
-                    <a href="/privacy-policy" className="text-blue-400 hover:underline">
-                      Privacy Policy
-                    </a>
-                    .
-                  </p>
+            {/* Add this privacy statement before the buttons */}
+            <div className="bg-white/5 border border-white/10 p-4 rounded-xl mb-2">
+              <div className="flex items-start gap-3">
+                <div className="text-blue-400 mt-0.5 flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 </div>
+                <p className="text-white/70 text-sm">
+                  <span className="text-white font-medium">Your privacy matters to us.</span> ActionConnect is committed
+                  to protecting your personal information. We only collect essential data to provide you with a
+                  personalized experience and never share or sell your information to third parties. By creating an
+                  account, you agree to our{" "}
+                  <a href="/terms" className="text-blue-400 hover:underline">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="/privacy-policy" className="text-blue-400 hover:underline">
+                    Privacy Policy
+                  </a>
+                  .
+                </p>
               </div>
+            </div>
 
+            <div className="flex flex-col md:flex-row gap-4">
               <motion.button
                 onClick={onSignUp}
                 className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg font-medium text-white flex items-center justify-center gap-2"
