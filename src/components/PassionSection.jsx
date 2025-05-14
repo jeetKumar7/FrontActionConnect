@@ -126,17 +126,35 @@ const PassionSection = () => {
                   ? "bg-slate-800/70 backdrop-blur-sm border border-white/10"
                   : "bg-white border border-slate-200"
               }`}
-              whileHover={{
-                scale: 1.02,
-                backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.9)" : "rgba(255, 255, 255, 1)",
-                boxShadow: isDarkMode ? "" : "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-              }}
+              // Remove static whileHover animation
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
               onClick={() => handleNavigation(item.path)}
+              // Use animate instead of whileHover to ensure theme responsiveness
+              animate={{
+                scale: 1,
+                boxShadow: "none",
+              }}
+              whileHover={{
+                scale: 1.02,
+                transition: { duration: 0.2 },
+              }}
             >
+              {/* Add a dynamic background overlay for hover effects */}
+              <motion.div
+                className="absolute inset-0 rounded-2xl z-0"
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                style={{
+                  backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.9)" : "rgba(255, 255, 255, 1)",
+                  boxShadow: isDarkMode ? "0 10px 25px -5px rgba(0, 0, 0, 0.3)" : "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                }}
+              />
+
+              {/* Rest of the card content */}
               <div className="relative z-10">
                 <div className={`text-4xl mb-4 ${isDarkMode ? item.darkColor : item.lightColor}`}>
                   <item.icon />

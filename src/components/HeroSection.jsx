@@ -89,9 +89,9 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="h-screen overflow-hidden bg-gradient-to-b from-cyan-950 via-slate-900 to-fuchsia-900/70 pt-16 flex flex-col">
-      {/* Background effects */}
-      <div className="absolute inset-0 top-16 z-0">
+    <section className="relative min-h-screen bg-gradient-to-b from-cyan-950 via-slate-900 to-fuchsia-900/70 pt-16">
+      {/* Background effects - add maxHeight and make scope more specific */}
+      <div className="absolute inset-0 top-16 bottom-0 z-0" style={{ maxHeight: "100vh" }}>
         <div className="absolute inset-0 z-0 overflow-hidden">
           {!isMobile && (
             <video
@@ -110,6 +110,8 @@ export default function HeroSection() {
           )}
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
+
+        {/* No changes needed for these effects */}
         <div className="absolute inset-0 opacity-[0.01] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]">
           <div className="absolute inset-0 bg-noise"></div>
         </div>
@@ -118,18 +120,18 @@ export default function HeroSection() {
         <div className="absolute right-1/3 top-1/3 w-1/3 aspect-square rounded-full bg-emerald-500/10 blur-[120px]"></div>
       </div>
 
-      {/* Main content grid */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col h-full">
-        <div className="flex flex-col lg:flex-row h-full pt-4 pb-6">
-          {/* Left side - Hero content */}
-          <div className="w-full lg:w-1/2 lg:pr-8 flex flex-col justify-center">
+      {/* Add explicit height constraints to main content */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24 flex flex-col min-h-[calc(100vh-4rem)]">
+        <div className="flex flex-col lg:flex-row flex-grow">
+          {/* Left side - Hero content - updated for more space */}
+          <div className="w-full lg:w-1/2 lg:pr-12 flex flex-col justify-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="max-w-lg"
+              className="max-w-xl" // Increased from max-w-lg
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
                 Connect,{" "}
                 <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
                   Inspire
@@ -137,22 +139,22 @@ export default function HeroSection() {
                 , and Catalyze Change
               </h1>
 
-              <p className="mt-4 text-base md:text-lg text-slate-300/90 leading-relaxed max-w-lg">
+              <p className="mt-6 text-lg md:text-xl text-slate-300/90 leading-relaxed">
                 We bring together passionate individuals and diverse social causes, sparking meaningful conversations
                 that transform shared vision into measurable societal impact.
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-3 items-center">
+              <div className="mt-10 flex flex-wrap gap-4 items-center">
                 <motion.button
                   onClick={handleGetStarted}
-                  className="group relative bg-gradient-to-r from-cyan-600 to-teal-600 text-white px-6 py-3 rounded-md font-medium shadow-lg shadow-cyan-700/20 hover:from-cyan-500 hover:to-teal-500 transition-all"
+                  className="group relative bg-gradient-to-r from-cyan-600 to-teal-600 text-white px-8 py-4 rounded-md font-medium shadow-lg shadow-cyan-700/20 hover:from-cyan-500 hover:to-teal-500 transition-all"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <span className="relative z-10 flex items-center">
+                  <span className="relative z-10 flex items-center text-lg">
                     {isAuthenticated ? "Find Your Passion" : "Get Started"}
                     <motion.span
-                      className="ml-1.5 inline-block"
+                      className="ml-2 inline-block"
                       animate={{ x: [0, 4, 0] }}
                       transition={{
                         duration: 1.5,
@@ -168,7 +170,7 @@ export default function HeroSection() {
 
                 <Link to="/learn-more">
                   <motion.button
-                    className="text-white border border-teal-700/30 hover:border-teal-600/60 px-6 py-3 rounded-md font-medium transition-all"
+                    className="text-white border border-teal-700/30 hover:border-teal-600/60 px-8 py-4 rounded-md font-medium transition-all text-lg"
                     whileHover={{ backgroundColor: "rgba(20, 184, 166, 0.1)" }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -177,8 +179,8 @@ export default function HeroSection() {
                 </Link>
               </div>
 
-              {/* Stats section */}
-              <div className="mt-8 grid grid-cols-3 gap-4">
+              {/* Stats section - enlarged */}
+              <div className="mt-16 grid grid-cols-3 gap-6">
                 {[
                   {
                     icon: FaHandsHelping,
@@ -204,17 +206,17 @@ export default function HeroSection() {
                 ].map((stat, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-center space-x-3"
+                    className="flex items-center space-x-4"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
                   >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bgColor}`}>
-                      <stat.icon className={`${stat.iconColor} text-lg`} />
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.bgColor}`}>
+                      <stat.icon className={`${stat.iconColor} text-xl`} />
                     </div>
                     <div>
-                      <span className="block font-bold text-xl text-white">{stat.value}</span>
-                      <span className="block text-xs text-slate-300">{stat.label}</span>
+                      <span className="block font-bold text-2xl text-white">{stat.value}</span>
+                      <span className="block text-sm text-slate-300">{stat.label}</span>
                     </div>
                   </motion.div>
                 ))}
@@ -223,7 +225,7 @@ export default function HeroSection() {
           </div>
 
           {/* Right side - Video carousel */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-center mt-6 lg:mt-0 lg:pt-0">
+          <div className="w-full lg:w-1/2 flex flex-col justify-center mt-6 lg:mt-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
