@@ -168,11 +168,6 @@ const Navbar = () => {
 
   const navLinks = [
     {
-      name: "Content Library",
-      path: "/library",
-      icon: <FaBook className="text-blue-400" />,
-    },
-    {
       name: "Interactive Map",
       path: "/map",
       icon: <FaMapMarkedAlt className="text-purple-400" />,
