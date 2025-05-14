@@ -126,16 +126,23 @@ const PassionSection = () => {
                   ? "bg-slate-800/70 backdrop-blur-sm border border-white/10"
                   : "bg-white border border-slate-200"
               }`}
-              whileHover={{
-                scale: 1.02,
-                backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.9)" : "rgba(255, 255, 255, 1)",
-                boxShadow: isDarkMode ? "" : "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-              }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
               onClick={() => handleNavigation(item.path)}
+              // Use animate instead of whileHover for the base styling
+              animate={{
+                backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.7)" : "rgba(255, 255, 255, 1)",
+                scale: 1,
+                boxShadow: isDarkMode ? "none" : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+              }}
+              // Use this modified whileHover with isDarkMode as a dependency
+              whileHover={{
+                scale: 1.02,
+                backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.9)" : "rgba(255, 255, 255, 1)",
+                boxShadow: isDarkMode ? "0 8px 20px -5px rgba(0, 0, 0, 0.25)" : "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+              }}
             >
               <div className="relative z-10">
                 <div className={`text-4xl mb-4 ${isDarkMode ? item.darkColor : item.lightColor}`}>
