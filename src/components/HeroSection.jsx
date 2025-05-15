@@ -95,7 +95,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 z-0 overflow-hidden">
           {!isMobile && (
             <video
-              className="absolute w-full h-full object-cover opacity-100"
+              className="absolute w-full h-full object-cover opacity-80"
               autoPlay
               muted
               loop
@@ -230,7 +230,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5"
+              className="bg-white/8 backdrop-blur-sm rounded-xl border border-white/10 p-5"
             >
               <div className="flex items-center justify-between mb-4">
                 <div>
