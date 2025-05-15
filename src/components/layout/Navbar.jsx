@@ -197,10 +197,10 @@ const Navbar = () => {
           : "bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm"
       }`}
     >
-      {/* Container remains the same */}
+      {/* Container with modified layout */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          {/* Logo simplified */}
+          {/* Logo - remains the same */}
           <Link to="/" className="flex-shrink-0">
             <motion.div
               className="flex items-center gap-2.5"
@@ -265,9 +265,10 @@ const Navbar = () => {
             </motion.div>
           </Link>
 
-          {/* Navigation links simplified */}
-          <div className="hidden lg:flex items-center">
-            <div className="flex items-center">
+          {/* Right side container - combines nav links and auth */}
+          <div className="hidden lg:flex items-center gap-6">
+            {/* Navigation links - now part of the right side */}
+            <nav className="flex items-center">
               {navLinks.map((link) => (
                 <motion.div key={link.name} whileHover={{ x: 5 }} className="w-full">
                   <Link
@@ -285,123 +286,127 @@ const Navbar = () => {
                   </Link>
                 </motion.div>
               ))}
+            </nav>
+
+            {/* Divider between nav and auth */}
+            <div className={`h-6 w-px ${isDarkMode ? "bg-white/10" : "bg-slate-200"}`}></div>
+
+            {/* Auth buttons - remain as is */}
+            <div className="flex items-center gap-3">
+              {/* Theme toggle button with border */}
+              <motion.button
+                onClick={toggleTheme}
+                className={`p-2 rounded-md border ${
+                  isDarkMode
+                    ? "text-slate-300 hover:text-[var(--text-primary)] bg-white/5 hover:bg-white/10 border-white/10"
+                    : "text-slate-500 hover:text-slate-800 bg-slate-100/80 hover:bg-slate-200/80 border-slate-200"
+                } transition-colors`}
+                whileHover={{ scale: 1.05 }}
+                aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                {isDarkMode ? (
+                  <FaSun size={16} className="text-yellow-400" />
+                ) : (
+                  <FaMoon size={16} className="text-blue-500" />
+                )}
+              </motion.button>
+
+              {!isAuthenticated ? (
+                <div className="flex items-center gap-2">
+                  {/* Sign in button with border */}
+                  <motion.button
+                    onClick={handleOpenSignIn}
+                    className={`text-sm font-medium px-3 py-1.5 rounded-md border transition-colors ${
+                      isDarkMode
+                        ? "text-slate-300 hover:text-[var(--text-primary)] hover:bg-white/5 border-white/10"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-slate-200"
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    Sign in
+                  </motion.button>
+                  <motion.button
+                    onClick={handleOpenSignUp}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      isDarkMode
+                        ? "bg-cyan-600 hover:bg-cyan-700 text-[var(--text-primary)]"
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    Get Started
+                  </motion.button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  {/* Profile */}
+                  <div className="relative" ref={profileMenuRef}>
+                    <motion.button
+                      className={`h-8 w-8 rounded-md flex items-center justify-center ${
+                        isDarkMode
+                          ? "bg-slate-800 border border-white/10"
+                          : "bg-slate-100 border border-slate-200 shadow-sm"
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() => setShowProfileMenu(!showProfileMenu)}
+                    >
+                      <FaUserCircle size={16} className={isDarkMode ? "text-slate-400" : "text-blue-500"} />
+                    </motion.button>
+
+                    {/* Dropdown Menu simplified */}
+                    <AnimatePresence>
+                      {showProfileMenu && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 5 }}
+                          className="absolute right-0 mt-2 w-52 bg-slate-800 border border-white/10 rounded-md py-1.5 shadow-2xl z-50"
+                        >
+                          <div className="px-3 py-2 border-b border-white/10">
+                            <div className="font-medium text-[var(--text-primary)]">
+                              {localStorage.getItem("userName") || "User"}
+                            </div>
+                            <div className="text-xs text-slate-400 truncate">
+                              {localStorage.getItem("userEmail") || "user@example.com"}
+                            </div>
+                          </div>
+
+                          {/* Profile Links */}
+                          <div className="py-1">
+                            <Link
+                              to="/profile"
+                              className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
+                              onClick={() => setShowProfileMenu(false)}
+                            >
+                              <FaUserCircle className="text-cyan-400 text-xs" /> Your Profile
+                            </Link>
+                            <Link
+                              to="/settings"
+                              className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
+                              onClick={() => setShowProfileMenu(false)}
+                            >
+                              <FaCog className="text-cyan-400 text-xs" /> Settings
+                            </Link>
+                          </div>
+
+                          <div className="border-t border-white/10 mt-1 pt-1">
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
+                            >
+                              <FaSignOutAlt className="text-red-400 text-xs" /> Sign Out
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Auth buttons simplified */}
-          <div className="hidden lg:flex items-center gap-3 ml-4">
-            {/* Theme toggle button with border */}
-            <motion.button
-              onClick={toggleTheme}
-              className={`p-2 rounded-md border ${
-                isDarkMode
-                  ? "text-slate-300 hover:text-[var(--text-primary)] bg-white/5 hover:bg-white/10 border-white/10"
-                  : "text-slate-500 hover:text-slate-800 bg-slate-100/80 hover:bg-slate-200/80 border-slate-200"
-              } transition-colors`}
-              whileHover={{ scale: 1.05 }}
-              aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {isDarkMode ? (
-                <FaSun size={16} className="text-yellow-400" />
-              ) : (
-                <FaMoon size={16} className="text-blue-500" />
-              )}
-            </motion.button>
-            {!isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                {/* Sign in button with border */}
-                <motion.button
-                  onClick={handleOpenSignIn}
-                  className={`text-sm font-medium px-3 py-1.5 rounded-md border transition-colors ${
-                    isDarkMode
-                      ? "text-slate-300 hover:text-[var(--text-primary)] hover:bg-white/5 border-white/10"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-slate-200"
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  Sign in
-                </motion.button>
-                <motion.button
-                  onClick={handleOpenSignUp}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                    isDarkMode
-                      ? "bg-cyan-600 hover:bg-cyan-700 text-[var(--text-primary)]"
-                      : "bg-blue-600 hover:bg-blue-700 text-white"
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  Get Started
-                </motion.button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                {/* Profile */}
-                <div className="relative" ref={profileMenuRef}>
-                  <motion.button
-                    className={`h-8 w-8 rounded-md flex items-center justify-center ${
-                      isDarkMode
-                        ? "bg-slate-800 border border-white/10"
-                        : "bg-slate-100 border border-slate-200 shadow-sm"
-                    }`}
-                    whileHover={{ scale: 1.05 }}
-                    onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  >
-                    <FaUserCircle size={16} className={isDarkMode ? "text-slate-400" : "text-blue-500"} />
-                  </motion.button>
-
-                  {/* Dropdown Menu simplified */}
-                  <AnimatePresence>
-                    {showProfileMenu && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 5 }}
-                        className="absolute right-0 mt-2 w-52 bg-slate-800 border border-white/10 rounded-md py-1.5 shadow-2xl z-50"
-                      >
-                        <div className="px-3 py-2 border-b border-white/10">
-                          <div className="font-medium text-[var(--text-primary)]">
-                            {localStorage.getItem("userName") || "User"}
-                          </div>
-                          <div className="text-xs text-slate-400 truncate">
-                            {localStorage.getItem("userEmail") || "user@example.com"}
-                          </div>
-                        </div>
-
-                        {/* Profile Links */}
-                        <div className="py-1">
-                          <Link
-                            to="/profile"
-                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
-                            onClick={() => setShowProfileMenu(false)}
-                          >
-                            <FaUserCircle className="text-cyan-400 text-xs" /> Your Profile
-                          </Link>
-                          <Link
-                            to="/settings"
-                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
-                            onClick={() => setShowProfileMenu(false)}
-                          >
-                            <FaCog className="text-cyan-400 text-xs" /> Settings
-                          </Link>
-                        </div>
-
-                        <div className="border-t border-white/10 mt-1 pt-1">
-                          <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
-                          >
-                            <FaSignOutAlt className="text-red-400 text-xs" /> Sign Out
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu button simplified */}
+          {/* Mobile menu button - remains the same */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-2 rounded-md text-[var(--text-primary)] hover:bg-white/5 transition-colors"
