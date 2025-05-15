@@ -68,7 +68,7 @@ const WelcomeModal = ({ isOpen, onSignUp, onSignIn, onClose }) => {
               </div>
             </div>
 
-            {/* Add this privacy statement before the buttons */}
+            {/* Add this privacy statement before the buttonsss */}
             <div className="bg-white/5 border border-white/10 p-4 rounded-xl mb-2">
               <div className="flex items-start gap-3">
                 <div className="text-blue-400 mt-0.5 flex-shrink-0">
