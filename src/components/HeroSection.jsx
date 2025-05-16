@@ -142,8 +142,8 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Bottom Part - Video Carousel - Now positioned with absolute positioning */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 bg-black/40 backdrop-blur-md border-t border-white/10">
+        {/* Bottom Part - Video Carousel */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-r from-slate-900/80 via-cyan-950/80 to-slate-900/80 backdrop-blur-md border-t border-white/10">
           <div className="container mx-auto px-4 py-5">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-lg font-bold text-white">Impact Stories</h2>
