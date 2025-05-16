@@ -860,7 +860,7 @@ const FindPassion = () => {
         isDarkMode
           ? "bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/80"
           : "bg-gradient-to-b from-white via-slate-50 to-indigo-50/80"
-      } text-[var(--text-primary)] pt-20`}
+      } text-[var(--text-primary)] pt-20 -mt-8`}
     >
       {/* Background Elements */}
       <div className="absolute inset-0 top-20 z-0 pointer-events-none">

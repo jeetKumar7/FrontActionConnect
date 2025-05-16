@@ -563,7 +563,7 @@ const ActionHub = () => {
     <div
       className={`min-h-screen ${
         isDarkMode ? "bg-gradient-to-b from-slate-900 to-slate-800" : "bg-gradient-to-b from-white to-slate-100"
-      } text-[var(--text-primary)] pt-20`}
+      } text-[var(--text-primary)] pt-20 -mt-8`}
     >
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-16 overflow-hidden">
