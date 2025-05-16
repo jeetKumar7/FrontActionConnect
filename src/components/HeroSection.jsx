@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
   FaHandsHelping,
   FaUsers,
@@ -12,29 +11,58 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { SignUpModal } from "./auth/AuthModals";
 
-// YouTube videos data - easy to update
-const videos = [
+// YouTube videos with titles - each entry has URL and title
+const youtubeVideos = [
   {
-    id: "-BvcToPZCLI",
-    title: "Most important thing you can do to fight climate change.",
-    duration: "7:47",
+    url: "https://www.youtube.com/watch?v=-BvcToPZCLI",
+    title: "The most important thing you can do to fight climate change",
   },
   {
-    id: "G4H1N_yXBiA",
-    title: "Causes and Effects of Climate Change",
-    duration: "3:04",
+    url: "https://www.youtube.com/watch?v=QMnEP2DYfmI",
+    title: "Kindness and good deeds will come back to you",
   },
   {
-    id: "3WODX8fyRHA",
-    title: "What is sustainaible development?",
-    duration: "2:08",
+    url: "https://www.youtube.com/watch?v=QQYgCxu988s",
+    title: "Sustainable Development Goals",
   },
   {
-    id: "2DUlYQTrsOs",
-    title: "Lets end poverty",
-    duration: "14:45",
+    url: "https://www.youtube.com/watch?v=D9N7QaIOkG8",
+    title: "One Earth - Environmental Short Film",
   },
+  {
+    url: "https://www.youtube.com/watch?v=RiE5Bv_wDNA",
+    title: "An introduction to Health Impact Assessment",
+  },
+  {
+    url: "https://www.youtube.com/watch?v=ay7Mp_HDxnM",
+    title: "Tackling air pollution and climate change for global health",
+  },
+  {
+    url: "https://www.youtube.com/watch?v=O1EAeNdTFHU",
+    title: "The Ocean Cleanup System 001 Explained",
+  },
+  // Add new videos by adding both URL and title
 ];
+
+// Helper function to extract YouTube video ID from URL
+const extractVideoId = (url) => {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[7].length === 11 ? match[7] : null;
+};
+
+// Process video URLs to get required data
+const videos = youtubeVideos
+  .map((video) => {
+    const id = extractVideoId(video.url);
+    return {
+      id,
+      url: video.url,
+      title: video.title,
+      // Optionally add duration if needed
+    };
+  })
+  .filter((video) => video.id !== null); // Filter out any invalid URLs
 
 export default function HeroSection() {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -57,8 +85,12 @@ export default function HeroSection() {
     carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
-  const openVideo = (videoId) => {
-    window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
+  const openVideo = (url) => {
+    window.open(url, "_blank");
+  };
+
+  const navigateToLibrary = () => {
+    navigate("/library");
   };
 
   return (
@@ -135,27 +167,41 @@ export default function HeroSection() {
                 <div
                   key={idx}
                   className="flex-shrink-0 w-[280px] h-[140px] bg-black/20 rounded-lg overflow-hidden snap-start cursor-pointer relative group"
-                  onClick={() => openVideo(video.id)}
+                  onClick={() => openVideo(video.url)}
                 >
                   {/* Video Thumbnail */}
                   <img
                     src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
-                    alt={video.title}
+                    alt="Impact video"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+                  {/* Title Overlay - Shows at bottom on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <h3 className="text-white text-sm font-semibold">{video.title}</h3>
-                    <p className="text-white/70 text-xs mt-1">{video.duration}</p>
                   </div>
-                  {/* Play Button */}
+
+                  {/* Play Button - Centered */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                      <FaPlay className="text-white" size={14} />
+                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                      <FaPlay className="text-white" size={18} />
                     </div>
                   </div>
                 </div>
               ))}
+
+              {/* Explore More Button */}
+              <div
+                className="flex-shrink-0 w-[280px] h-[140px] bg-gradient-to-r from-teal-900/60 to-cyan-900/60 rounded-lg overflow-hidden snap-start cursor-pointer relative group"
+                onClick={navigateToLibrary}
+              >
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                  <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-2">
+                    <FaArrowRight className="text-white" size={16} />
+                  </div>
+                  <span className="text-white font-medium text-center">Explore More</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
