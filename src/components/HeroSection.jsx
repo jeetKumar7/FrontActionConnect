@@ -69,6 +69,26 @@ export default function HeroSection() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const carouselRef = useRef(null);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  // Theme detection logic
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
@@ -143,20 +163,34 @@ export default function HeroSection() {
         </div>
 
         {/* Bottom Part - Video Carousel */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-r from-slate-900/80 via-cyan-950/80 to-slate-900/80 backdrop-blur-md border-t border-white/10">
+        <div
+          className={`absolute bottom-0 left-0 right-0 z-10 ${
+            isDarkMode
+              ? "bg-gradient-to-r from-slate-900/80 via-cyan-950/80 to-slate-900/80 border-white/10"
+              : "bg-gradient-to-r from-slate-100/70 via-cyan-50/90 to-slate-100/90 border-slate-200"
+          } backdrop-blur-md border-t`}
+        >
           <div className="container mx-auto px-4 py-5">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-bold text-white">Impact Stories</h2>
+              <h2 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-slate-800"}`}>Impact Stories</h2>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => scrollCarousel("left")}
-                  className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white"
+                  className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                    isDarkMode
+                      ? "bg-white/10 hover:bg-white/20 text-white"
+                      : "bg-slate-300/40 hover:bg-slate-300/60 text-slate-700"
+                  }`}
                 >
                   <FaChevronLeft size={14} />
                 </button>
                 <button
                   onClick={() => scrollCarousel("right")}
-                  className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white"
+                  className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                    isDarkMode
+                      ? "bg-white/10 hover:bg-white/20 text-white"
+                      : "bg-slate-300/40 hover:bg-slate-300/60 text-slate-700"
+                  }`}
                 >
                   <FaChevronRight size={14} />
                 </button>

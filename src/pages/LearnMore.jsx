@@ -37,10 +37,36 @@ const features = [
   },
 ];
 
+// Theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
 export default function LearnMore() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const navigate = useNavigate();
+  const isDarkMode = useThemeDetection();
 
   // Check for authentication on component mount
   useEffect(() => {
@@ -59,20 +85,34 @@ export default function LearnMore() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-[var(--text-primary)] pt-20">
+    <div
+      className={`min-h-screen ${
+        isDarkMode ? "bg-gradient-to-b from-slate-900 to-slate-800" : "bg-gradient-to-b from-slate-50 to-white"
+      } text-[var(--text-primary)] pt-20 -mt-7`}
+    >
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-16">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:14px_24px]" />
+      <div
+        className={`relative ${
+          isDarkMode ? "bg-gradient-to-r from-blue-600 to-purple-600" : "bg-gradient-to-r from-blue-400 to-purple-400"
+        } py-16`}
+      >
+        <div
+          className={`absolute inset-0 ${
+            isDarkMode
+              ? "bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)]"
+              : "bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)]"
+          } bg-[size:14px_24px]`}
+        />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.h1
-            className="text-4xl md:text-5xl font-bold text-center mb-6"
+            className="text-4xl md:text-5xl font-bold text-center mb-6 text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             About ActionConnect
           </motion.h1>
           <motion.p
-            className="text-xl text-center text-[var(--text-primary)]/80 max-w-3xl mx-auto"
+            className="text-xl text-center text-white/80 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -88,15 +128,17 @@ export default function LearnMore() {
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
+              className={`${
+                isDarkMode ? "bg-white/5 border-white/10" : "bg-white border-slate-200 shadow-sm"
+              } backdrop-blur-sm rounded-xl p-6 border`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -5 }}
             >
-              <feature.icon className="w-8 h-8 text-blue-400 mb-4" />
+              <feature.icon className={`w-8 h-8 ${isDarkMode ? "text-blue-400" : "text-blue-500"} mb-4`} />
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-[var(--text-primary)]/60">{feature.description}</p>
+              <p className={`${isDarkMode ? "text-white/60" : "text-slate-600"}`}>{feature.description}</p>
             </motion.div>
           ))}
         </div>
@@ -105,17 +147,19 @@ export default function LearnMore() {
       {/* Call to Action */}
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <motion.div
-          className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10"
+          className={`${
+            isDarkMode ? "bg-white/5 border-white/10" : "bg-white border-slate-200 shadow-md"
+          } backdrop-blur-sm rounded-xl p-8 border`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
           <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
-          <p className="text-[var(--text-primary)]/60 mb-8 max-w-2xl mx-auto">
+          <p className={`${isDarkMode ? "text-white/60" : "text-slate-600"} mb-8 max-w-2xl mx-auto`}>
             Join our community of changemakers and start contributing to environmental causes that matter.
           </p>
           <motion.button
-            className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-medium hover:from-blue-600 hover:to-purple-600"
+            className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-medium text-white hover:from-blue-600 hover:to-purple-600"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleJoinClick}

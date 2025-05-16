@@ -4,7 +4,33 @@ import { FaEnvelope, FaLock, FaUser, FaGoogle, FaGithub, FaCheckCircle } from "r
 import Modal from "../common/Modal";
 import { login, register } from "../../services";
 
+// Theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Initial theme check
+    const isLightMode = document.body.classList.contains("light");
+    setIsDarkMode(!isLightMode);
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkMode(!document.body.classList.contains("light"));
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
 export const SignInModal = ({ isOpen, onClose }) => {
+  const isDarkMode = useThemeDetection();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,14 +44,13 @@ export const SignInModal = ({ isOpen, onClose }) => {
       if (event.detail?.redirectTo) {
         localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
       }
-      // No need to do anything here as the parent component controls isOpen
     };
 
     window.addEventListener("openSignIn", handleOpenSignIn);
     return () => {
       window.removeEventListener("openSignIn", handleOpenSignIn);
     };
-  }, []); // Remove the dependency on onOpen
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,7 +111,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Welcome Back">
+    <Modal isOpen={isOpen} onClose={onClose} title="Welcome Back" isDarkMode={isDarkMode}>
       <form onSubmit={handleSubmit} className="space-y-6">
         <AnimatePresence>
           {error && (
@@ -115,26 +140,30 @@ export const SignInModal = ({ isOpen, onClose }) => {
         <div className="space-y-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <FaEnvelope className="text-slate-400" />
+              <FaEnvelope className={isDarkMode ? "text-slate-400" : "text-slate-500"} />
             </div>
             <input
               type="email"
               placeholder="Email address"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className={`w-full pl-10 pr-4 py-3 ${
+                isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"
+              } border rounded-lg placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors`}
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <FaLock className="text-slate-400" />
+              <FaLock className={isDarkMode ? "text-slate-400" : "text-slate-500"} />
             </div>
             <input
               type="password"
               placeholder="Password"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className={`w-full pl-10 pr-4 py-3 ${
+                isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"
+              } border rounded-lg placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors`}
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
@@ -142,11 +171,14 @@ export const SignInModal = ({ isOpen, onClose }) => {
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center text-slate-300">
+          <label className={`flex items-center ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
             <input type="checkbox" className="mr-2" />
             Remember me
           </label>
-          <button type="button" className="text-blue-400 hover:text-blue-300">
+          <button
+            type="button"
+            className={isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-500"}
+          >
             Forgot password?
           </button>
         </div>
@@ -154,7 +186,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
         <motion.button
           type="submit"
           disabled={loading}
-          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-[var(--text-primary)] py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
+          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           whileHover={loading ? {} : { scale: 1.02 }}
@@ -165,29 +197,31 @@ export const SignInModal = ({ isOpen, onClose }) => {
 
         <div className="relative text-center my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10"></div>
+            <div className={`w-full border-t ${isDarkMode ? "border-white/10" : "border-slate-200"}`}></div>
           </div>
-          <span className="relative bg-slate-800 px-4 text-sm text-slate-400">Or continue with</span>
+          <span
+            className={`relative ${isDarkMode ? "bg-slate-800" : "bg-white"} px-4 text-sm ${
+              isDarkMode ? "text-slate-400" : "text-slate-500"
+            }`}
+          >
+            Or continue with
+          </span>
         </div>
 
         <div className="flex justify-center">
           <motion.button
             type="button"
             onClick={() => (window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/google`)}
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5 w-full"
+            className={`flex items-center justify-center gap-2 py-2.5 border ${
+              isDarkMode
+                ? "border-white/10 text-white hover:bg-white/5"
+                : "border-slate-300 text-slate-700 hover:bg-slate-50"
+            } rounded-lg w-full`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             <FaGoogle /> Continue with Google
           </motion.button>
-          {/* <motion.button
-            type="button"
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <FaGithub /> GitHub
-          </motion.button> */}
         </div>
       </form>
     </Modal>
@@ -195,6 +229,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
 };
 
 export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
+  const isDarkMode = useThemeDetection();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -210,14 +245,13 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       if (event.detail?.redirectTo) {
         localStorage.setItem("redirectAfterAuth", event.detail.redirectTo);
       }
-      // Remove onOpen() call
     };
 
     window.addEventListener("openSignUp", handleOpenSignUp);
     return () => {
       window.removeEventListener("openSignUp", handleOpenSignUp);
     };
-  }, []); // Remove the dependency on onOpen
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -285,7 +319,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create Account">
+    <Modal isOpen={isOpen} onClose={onClose} title="Create Account" isDarkMode={isDarkMode}>
       <form onSubmit={handleSubmit} className="space-y-6">
         <AnimatePresence>
           {error && (
@@ -314,59 +348,67 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         <div className="space-y-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <FaUser className="text-slate-400" />
+              <FaUser className={isDarkMode ? "text-slate-400" : "text-slate-500"} />
             </div>
             <input
               type="text"
               placeholder="Full name"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className={`w-full pl-10 pr-4 py-3 ${
+                isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"
+              } border rounded-lg placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors`}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <FaEnvelope className="text-slate-400" />
+              <FaEnvelope className={isDarkMode ? "text-slate-400" : "text-slate-500"} />
             </div>
             <input
               type="email"
               placeholder="Email address"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className={`w-full pl-10 pr-4 py-3 ${
+                isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"
+              } border rounded-lg placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors`}
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <FaLock className="text-slate-400" />
+              <FaLock className={isDarkMode ? "text-slate-400" : "text-slate-500"} />
             </div>
             <input
               type="password"
               placeholder="Password"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className={`w-full pl-10 pr-4 py-3 ${
+                isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"
+              } border rounded-lg placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors`}
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
           </div>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <FaLock className="text-slate-400" />
+              <FaLock className={isDarkMode ? "text-slate-400" : "text-slate-500"} />
             </div>
             <input
               type="password"
               placeholder="Confirm password"
               required
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-[var(--text-primary)] placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              className={`w-full pl-10 pr-4 py-3 ${
+                isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"
+              } border rounded-lg placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors`}
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
             />
           </div>
         </div>
 
-        <div className="text-sm text-slate-300">
+        <div className={`text-sm ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
           <label className="flex items-center">
             <input type="checkbox" required className="mr-2" />I agree to the Terms of Service and Privacy Policy
           </label>
@@ -375,7 +417,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         <motion.button
           type="submit"
           disabled={loading}
-          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-[var(--text-primary)] py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
+          className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           whileHover={loading ? {} : { scale: 1.02 }}
@@ -386,48 +428,32 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
         <div className="relative text-center my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10"></div>
+            <div className={`w-full border-t ${isDarkMode ? "border-white/10" : "border-slate-200"}`}></div>
           </div>
-          <span className="relative bg-slate-800 px-4 text-sm text-slate-400">Or continue with</span>
+          <span
+            className={`relative ${isDarkMode ? "bg-slate-800" : "bg-white"} px-4 text-sm ${
+              isDarkMode ? "text-slate-400" : "text-slate-500"
+            }`}
+          >
+            Or continue with
+          </span>
         </div>
 
         <div className="flex justify-center">
           <motion.button
             type="button"
             onClick={() => (window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/google`)}
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5 w-full"
+            className={`flex items-center justify-center gap-2 py-2.5 border ${
+              isDarkMode
+                ? "border-white/10 text-white hover:bg-white/5"
+                : "border-slate-300 text-slate-700 hover:bg-slate-50"
+            } rounded-lg w-full`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             <FaGoogle /> Continue with Google
           </motion.button>
-          {/* <motion.button
-            type="button"
-            className="flex items-center justify-center gap-2 py-2.5 border border-white/10 rounded-lg text-[var(--text-primary)] hover:bg-white/5"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <FaGithub /> GitHub
-          </motion.button> */}
         </div>
-
-        {/* <p className="text-center text-slate-400 text-sm">
-          Already have an account?{" "}
-          <button
-            type="button"
-            onClick={() => {
-              onClose();
-              if (typeof onSwitchToSignIn === "function") {
-                setTimeout(() => {
-                  onSwitchToSignIn();
-                }, 100);
-              }
-            }}
-            className="text-blue-400 hover:text-blue-300"
-          >
-            Sign in
-          </button>
-        </p> */}
       </form>
     </Modal>
   );
