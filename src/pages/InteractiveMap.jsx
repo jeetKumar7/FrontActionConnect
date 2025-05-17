@@ -877,7 +877,7 @@ const InteractiveMap = () => {
         </div>
       </div>
       {/* Collapsible Sidebar */}
-      <div className="absolute top-[calc(20px+7.5rem)] sm:top-[calc(20px+5.5rem)] left-0 bottom-0 z-20 pt-4">
+      <div className="absolute top-[calc(20px+7.0rem)] sm:top-[calc(20px+5.5rem)] left-0 bottom-0 z-20 pt-4">
         <AnimatePresence>
           {isSidebarOpen && (
             <motion.div
