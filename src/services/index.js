@@ -137,11 +137,18 @@ export const getPostBySharedId = async (shareId) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // Token is optional here if you want to allow non-authenticated users to view shared posts
+        Authorization: token || "", // Properly include token if available
       },
     });
 
-    return await response.json();
+    if (!response.ok) {
+      console.error("API Error:", response.status);
+      return { error: `Server responded with status: ${response.status}` };
+    }
+
+    const data = await response.json();
+    console.log("Shared post data:", data); // Debug the response
+    return data;
   } catch (err) {
     console.error("Error fetching shared post:", err);
     return { error: "Failed to fetch shared post" };

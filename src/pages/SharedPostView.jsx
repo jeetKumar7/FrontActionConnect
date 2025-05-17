@@ -43,13 +43,12 @@ const SharedPostView = () => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        // Modify this function in your services file to fetch a post by shareId
         const response = await getPostBySharedId(shareId);
 
         if (response.error) {
           setError(response.error);
-        } else if (response.post) {
-          setPost(response.post);
+        } else if (response._id) {
+          setPost(response);
         } else {
           setError("Post not found");
         }
