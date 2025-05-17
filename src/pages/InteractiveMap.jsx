@@ -700,19 +700,70 @@ const InteractiveMap = () => {
             : "bg-white/90 backdrop-blur-md border-b border-slate-200"
         }`}
       >
-        <div className="flex flex-wrap items-center p-2 md:p-3 gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center p-2 gap-2">
           {/* Toggle sidebar button */}
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={`p-2 ${
-              isDarkMode ? "bg-slate-700/80 hover:bg-slate-600/80" : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-            } rounded-lg`}
-          >
-            {isSidebarOpen ? <FaTimes /> : <FaBars />}
-          </button>
+          <div className="flex w-full sm:w-auto justify-between items-center">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className={`p-2 ${
+                isDarkMode ? "bg-slate-700/80 hover:bg-slate-600/80" : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+              } rounded-lg`}
+              aria-label="Toggle sidebar"
+            >
+              {isSidebarOpen ? <FaTimes /> : <FaBars />}
+            </button>
+
+            {/* Mobile view toggle */}
+            <div
+              className={`flex rounded-lg overflow-hidden sm:hidden ${
+                isDarkMode ? "border border-white/10 bg-slate-700/50" : "border border-slate-200 bg-white"
+              }`}
+            >
+              <button
+                onClick={() => setShowPeopleTab(false)}
+                className={`px-2 py-1 flex items-center gap-1 text-xs ${
+                  !showPeopleTab
+                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                    : isDarkMode
+                    ? "bg-transparent hover:bg-white/10"
+                    : "bg-transparent hover:bg-slate-100 text-slate-700"
+                }`}
+              >
+                <FaMapMarkerAlt className="w-3 h-3" />
+                <span>Initiatives</span>
+              </button>
+              <button
+                onClick={() => setShowPeopleTab(true)}
+                className={`px-2 py-1 flex items-center gap-1 text-xs ${
+                  showPeopleTab
+                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                    : isDarkMode
+                    ? "bg-transparent hover:bg-white/10"
+                    : "bg-transparent hover:bg-slate-100 text-slate-700"
+                }`}
+              >
+                <FaUsers className="w-3 h-3" />
+                <span>People</span>
+              </button>
+            </div>
+
+            {/* My Location Button (mobile) */}
+            {userCoordinates && (
+              <motion.button
+                onClick={centerOnUserLocation}
+                className={`sm:hidden p-2 ${
+                  isDarkMode ? "bg-green-600/80 hover:bg-green-700/80" : "bg-green-500 hover:bg-green-600 text-white"
+                } transition-colors rounded-lg`}
+                whileTap={{ scale: 0.95 }}
+                aria-label="My location"
+              >
+                <FaHome className="w-4 h-4" />
+              </motion.button>
+            )}
+          </div>
 
           {/* Search - Full width */}
-          <div className="relative flex-1">
+          <div className="relative flex-1 w-full">
             <input
               type="text"
               placeholder={showPeopleTab ? "Search people..." : "Search initiatives..."}
@@ -731,8 +782,8 @@ const InteractiveMap = () => {
             />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          {/* Action Buttons - Moved for better mobile layout */}
+          <div className="hidden sm:flex items-center gap-2 mt-2 sm:mt-0">
             {/* Toggle Initiatives/People */}
             <div
               className={`flex rounded-lg overflow-hidden ${
@@ -798,37 +849,56 @@ const InteractiveMap = () => {
                 <span>Add Initiative</span>
               </motion.button>
             )}
-
-            {isLoadingUserLocation && (
-              <div className="px-3 py-1.5 text-[var(--text-primary)]/60 text-sm">
-                <span className="animate-pulse">Locating...</span>
-              </div>
-            )}
           </div>
+        </div>
+
+        {/* Bottom action strip for mobile */}
+        <div className="flex sm:hidden items-center justify-between p-2 border-t border-white/10">
+          {userData && (
+            <motion.button
+              onClick={() => setShowAddInitiativeModal(true)}
+              className={`flex-1 py-2 flex items-center justify-center gap-2 ${
+                isDarkMode
+                  ? "bg-gradient-to-r from-green-500/80 to-teal-500/80"
+                  : "bg-gradient-to-r from-green-500 to-teal-500 text-white"
+              } rounded-lg text-sm mx-1`}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaPlus className="w-3 h-3" />
+              <span>Add Initiative</span>
+            </motion.button>
+          )}
+
+          {isLoadingUserLocation && (
+            <div className="px-3 py-1.5 text-[var(--text-primary)]/60 text-sm">
+              <span className="animate-pulse">Locating...</span>
+            </div>
+          )}
         </div>
       </div>
       {/* Collapsible Sidebar */}
-      <div className="absolute top-[calc(20px+5.5rem)] left-0 bottom-0 z-20 pt-4">
+      <div className="absolute top-[calc(20px+7.5rem)] sm:top-[calc(20px+5.5rem)] left-0 bottom-0 z-20 pt-4">
         <AnimatePresence>
           {isSidebarOpen && (
             <motion.div
-              className={`h-full w-80 lg:w-96 overflow-hidden ${
+              className={`h-full ${
                 isDarkMode
                   ? "bg-slate-800/90 backdrop-blur-md border-r border-white/10"
                   : "bg-white/90 backdrop-blur-md border-r border-slate-200 text-slate-800"
-              }`}
+              } w-full sm:w-80 lg:w-96 overflow-hidden`}
               initial={{ x: -320 }}
               animate={{ x: 0 }}
               exit={{ x: -320 }}
               transition={{ type: "spring", bounce: 0.1, duration: 0.5 }}
             >
+              {/* Sidebar content remains the same but we'll adjust item sizes */}
               <div className="flex flex-col h-full">
                 {!showPeopleTab ? (
                   /* Initiatives Panel */
                   <>
-                    <div className={`p-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
+                    <div className={`p-3 sm:p-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <h2 className="text-lg font-semibold">Local Initiatives</h2>
+                        <h2 className="text-base sm:text-lg font-semibold">Local Initiatives</h2>
                       </div>
 
                       {/* Categories filter */}
@@ -838,7 +908,7 @@ const InteractiveMap = () => {
                             isDarkMode
                               ? "bg-white/5 hover:bg-white/10"
                               : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                          } rounded-lg`}
+                          } rounded-lg text-sm`}
                           onClick={() => setShowInitiatives(!showInitiatives)}
                         >
                           <div className="flex items-center gap-2">
@@ -851,7 +921,7 @@ const InteractiveMap = () => {
                         </button>
                       </div>
 
-                      {/* Categories dropdown */}
+                      {/* Categories dropdown - now scrolls horizontally on mobile */}
                       <AnimatePresence>
                         {showInitiatives && (
                           <motion.div
@@ -860,12 +930,12 @@ const InteractiveMap = () => {
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                           >
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-nowrap sm:flex-wrap gap-2 pb-2 overflow-x-auto">
                               {categories.map((category) => (
                                 <motion.button
                                   key={category}
                                   onClick={() => setSelectedCategory(category)}
-                                  className={`px-3 py-1.5 rounded-lg whitespace-nowrap text-sm ${
+                                  className={`px-3 py-1.5 rounded-lg whitespace-nowrap text-xs sm:text-sm flex-shrink-0 ${
                                     selectedCategory === category
                                       ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                                       : isDarkMode
@@ -884,12 +954,12 @@ const InteractiveMap = () => {
                       </AnimatePresence>
                     </div>
 
-                    {/* Initiatives List */}
+                    {/* Initiatives List - Adjusted for mobile */}
                     <div
                       className="flex-1 overflow-y-auto scrollbar-hide"
                       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                     >
-                      <div className="p-4 grid gap-3">
+                      <div className="p-3 sm:p-4 grid gap-2 sm:gap-3">
                         {loading ? (
                           <div className="flex flex-col items-center justify-center py-12 space-y-3">
                             <FaSpinner
@@ -971,20 +1041,22 @@ const InteractiveMap = () => {
                     </div>
                   </>
                 ) : (
-                  /* People Panel */
+                  /* People Panel - Adjusted for mobile */
                   <>
-                    <div className={`p-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-semibold">Find People By Cause</h2>
+                    <div className={`p-3 sm:p-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <h2 className="text-base sm:text-lg font-semibold">Find People By Cause</h2>
                       </div>
-                      <label className={`block text-sm ${isDarkMode ? "text-white/60" : "text-slate-500"} mb-2`}>
+                      <label
+                        className={`block text-xs sm:text-sm ${isDarkMode ? "text-white/60" : "text-slate-500"} mb-2`}
+                      >
                         Select a cause:
                       </label>
                     </div>
 
-                    {/* Causes list */}
+                    {/* Causes list - Scrollable on mobile */}
                     <div className="flex-grow overflow-y-auto p-2">
-                      <div className="flex flex-wrap gap-2 p-2">
+                      <div className="flex flex-nowrap sm:flex-wrap overflow-x-auto gap-2 p-2">
                         {causes.map((cause) => (
                           <motion.button
                             key={cause.id}
@@ -1084,11 +1156,11 @@ const InteractiveMap = () => {
           )}
         </AnimatePresence>
       </div>
-      {/* Initiative Details Panel */}
+      {/* Initiative Details Panel - Optimized for mobile */}
       <AnimatePresence>
         {selectedInitiative && (
           <motion.div
-            className={`fixed bottom-4 right-4 w-80 lg:w-96 z-30 ${
+            className={`fixed bottom-4 right-0 left-0 mx-auto w-[calc(100%-2rem)] max-w-md sm:right-4 sm:left-auto sm:mx-0 sm:w-80 lg:w-96 z-30 ${
               isDarkMode
                 ? "bg-slate-800/95 backdrop-blur-md border-white/10"
                 : "bg-white/95 backdrop-blur-md border-slate-200"
@@ -1098,17 +1170,21 @@ const InteractiveMap = () => {
             exit={{ opacity: 0, y: 20 }}
             transition={{ type: "spring", bounce: 0.1, duration: 0.5 }}
           >
-            <div className="flex items-start justify-between p-4 border-b border-white/10">
-              <h3 className="text-lg font-bold">{selectedInitiative.title}</h3>
+            <div className="flex items-start justify-between p-3 sm:p-4 border-b border-white/10">
+              <h3 className="text-base sm:text-lg font-bold pr-2">{selectedInitiative.title}</h3>
               <button
                 onClick={() => setSelectedInitiative(null)}
-                className={isDarkMode ? "text-white/60 hover:text-white" : "text-slate-400 hover:text-slate-900"}
+                className={`p-1 rounded-full ${
+                  isDarkMode
+                    ? "text-white/60 hover:text-white hover:bg-white/10"
+                    : "text-slate-400 hover:text-slate-900 hover:bg-slate-100"
+                }`}
               >
                 <FaTimes />
               </button>
             </div>
 
-            <div className="p-4 max-h-[60vh] overflow-y-auto">
+            <div className="p-3 sm:p-4 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
               <div className="flex items-center gap-2 mb-4">
                 <span
                   className={`px-3 py-1 text-xs rounded-full ${
@@ -1184,31 +1260,27 @@ const InteractiveMap = () => {
               )}
             </div>
 
-            <div className="p-4 border-t border-white/10">
+            <div className="p-3 sm:p-4 border-t border-white/10">
               <motion.button
                 onClick={() => handleJoinInitiative(selectedInitiative)}
-                className={`w-full py-3 ${
+                className={`w-full py-2 sm:py-3 ${
                   isDarkMode
                     ? "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
                     : "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
                 } text-white rounded-lg flex items-center justify-center gap-2 font-medium`}
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <FaHandshake className="text-lg" />
+                <FaHandshake />
                 Join Initiative
               </motion.button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Overlays for initiative details and user profiles remain unchanged */}
-      {/* ... */}
-      {/* Modals remain unchanged */}
-      {/* ... */}
-      {/* Add Initiative Modal */}
+      {/* Add Initiative Modal - More compact for mobile */}
       {showAddInitiativeModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-2 sm:p-4 z-50">
           <ErrorBoundary onClose={() => setShowAddInitiativeModal(false)}>
             <motion.div
               initial={{ opacity: 0 }}
@@ -1217,19 +1289,23 @@ const InteractiveMap = () => {
               transition={{ duration: 0.2 }}
               className={`${
                 isDarkMode ? "bg-slate-800 border-white/10" : "bg-white border-slate-200"
-              } border rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
+              } border rounded-xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Create New Initiative</h2>
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold">Create Initiative</h2>
                 <button
                   onClick={() => setShowAddInitiativeModal(false)}
-                  className={isDarkMode ? "text-white/60 hover:text-white" : "text-slate-400 hover:text-slate-900"}
+                  className={`p-1 rounded-full ${
+                    isDarkMode
+                      ? "text-white/60 hover:text-white hover:bg-white/10"
+                      : "text-slate-400 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
                 >
-                  &times;
+                  <FaTimes />
                 </button>
               </div>
 
-              <form onSubmit={handleAddInitiative} className="space-y-6">
+              <form onSubmit={handleAddInitiative} className="space-y-4 sm:space-y-6">
                 {/* Form fields with updated styling */}
                 <div>
                   <label
@@ -1242,7 +1318,7 @@ const InteractiveMap = () => {
                     name="title"
                     value={newInitiative.title}
                     onChange={handleInitiativeFormChange}
-                    className={`w-full px-4 py-2 ${
+                    className={`w-full px-3 sm:px-4 py-2 ${
                       isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
                     } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
@@ -1263,7 +1339,7 @@ const InteractiveMap = () => {
                       onFocus={() => setShowCategorySuggestions(true)}
                       onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 200)}
                       placeholder="Select or type a category"
-                      className={`w-full px-4 py-2 ${
+                      className={`w-full px-3 sm:px-4 py-2 ${
                         isDarkMode
                           ? "bg-white/5 border-white/10 text-white"
                           : "bg-white border-slate-200 text-slate-900"
@@ -1309,7 +1385,7 @@ const InteractiveMap = () => {
                     value={newInitiative.description}
                     onChange={handleInitiativeFormChange}
                     rows={4}
-                    className={`w-full px-4 py-2 ${
+                    className={`w-full px-3 sm:px-4 py-2 ${
                       isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
                     } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
@@ -1328,7 +1404,7 @@ const InteractiveMap = () => {
                     value={newInitiative.location}
                     onChange={handleInitiativeFormChange}
                     placeholder="e.g. New York, NY"
-                    className={`w-full px-4 py-2 ${
+                    className={`w-full px-3 sm:px-4 py-2 ${
                       isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
                     } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
@@ -1347,7 +1423,7 @@ const InteractiveMap = () => {
                     value={newInitiative.tagsInput}
                     onChange={handleInitiativeFormChange}
                     placeholder="e.g. climate, education, community"
-                    className={`w-full px-4 py-2 ${
+                    className={`w-full px-3 sm:px-4 py-2 ${
                       isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
                     } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                   />
@@ -1365,7 +1441,7 @@ const InteractiveMap = () => {
                     value={newInitiative.website}
                     onChange={handleInitiativeFormChange}
                     placeholder="https://example.com"
-                    className={`w-full px-4 py-2 ${
+                    className={`w-full px-3 sm:px-4 py-2 ${
                       isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
                     } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                   />
@@ -1414,7 +1490,7 @@ const InteractiveMap = () => {
                     name="nextEvent"
                     value={newInitiative.nextEvent}
                     onChange={handleInitiativeFormChange}
-                    className={`w-full px-4 py-2 ${
+                    className={`w-full px-3 sm:px-4 py-2 ${
                       isDarkMode ? "bg-white/5 border-white/10 text-white" : "bg-white border-slate-200 text-slate-900"
                     } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
                     required
@@ -1431,21 +1507,21 @@ const InteractiveMap = () => {
                   <button
                     type="button"
                     onClick={() => setShowAddInitiativeModal(false)}
-                    className={`px-4 py-2 ${
+                    className={`px-3 sm:px-4 py-2 ${
                       isDarkMode
                         ? "bg-white/5 hover:bg-white/10 text-white"
                         : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                    } rounded-lg`}
+                    } rounded-lg text-sm sm:text-base`}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className={`px-4 py-2 ${
+                    className={`px-3 sm:px-4 py-2 ${
                       isDarkMode
                         ? "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
                         : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
-                    } rounded-lg font-medium flex items-center`}
+                    } rounded-lg font-medium flex items-center text-sm sm:text-base`}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -1454,7 +1530,7 @@ const InteractiveMap = () => {
                         Creating...
                       </>
                     ) : (
-                      "Create Initiative"
+                      "Create"
                     )}
                   </button>
                 </div>
@@ -1500,6 +1576,24 @@ const InteractiveMap = () => {
             </div>
           </motion.div>
         </div>
+      )}
+
+      {/* Mobile Floating Action Button for collapsed sidebar */}
+      {!isSidebarOpen && (
+        <motion.button
+          onClick={() => setIsSidebarOpen(true)}
+          className={`fixed left-4 bottom-4 z-30 sm:hidden p-3 rounded-full shadow-lg ${
+            isDarkMode
+              ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+              : "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+          }`}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <FaFilter />
+        </motion.button>
       )}
     </div>
   );
