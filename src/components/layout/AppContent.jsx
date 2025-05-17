@@ -18,6 +18,7 @@ import WelcomeModal from "../common/WelcomeModal";
 import { useWelcome } from "../../context/WelcomeContext";
 import { AnimatePresence } from "framer-motion";
 import { SignInModal, SignUpModal } from "../auth/AuthModals";
+import Feedback from "../../pages/Feedback";
 
 const AppContent = () => {
   const {
@@ -38,6 +39,7 @@ const AppContent = () => {
         <Route path="/" element={<Home />} />
         <Route path="/library" element={<ContentLibrary />} />
         <Route path="/community/*" element={<Community />} />
+        <Route path="/feedback" element={<Feedback />} />
         <Route path="/hub" element={<ActionHub />} />
         <Route path="/chat" element={<ChatChannels />} />
         <Route path="/feed" element={<CommunityFeed />} />
