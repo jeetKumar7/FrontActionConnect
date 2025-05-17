@@ -306,7 +306,7 @@ const VideoModal = ({ video, onClose, isDarkMode }) => {
         </div>
 
         {/* Subtle Feedback Button */}
-        <div className="absolute bottom-4 right-4">
+        <div className="absolute bottom-4 right-4 ">
           <button
             onClick={() => setShowFeedbackForm(true)}
             className="bg-black/30 text-white text-sm px-3 py-1 rounded-full shadow-md hover:bg-black/50 transition-opacity opacity-70 hover:opacity-100"
