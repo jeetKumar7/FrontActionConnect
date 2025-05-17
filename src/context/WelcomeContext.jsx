@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const WelcomeContext = createContext();
 
@@ -6,15 +7,33 @@ export const WelcomeProvider = ({ children }) => {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
+  const location = useLocation();
 
   // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem("token");
 
   // Check if user has seen welcome screen
   useEffect(() => {
+    // Get the current path
+    const currentPath = location.pathname;
+
+    // List of paths where welcome modal should NOT be shown
+    const excludedPaths = [
+      "/shared", // Excludes all routes starting with /shared/
+      "/auth-success",
+      // Add any other paths where welcome modal shouldn't show
+    ];
+
+    // Check if current path starts with any of the excluded paths
+    const isExcludedPath = excludedPaths.some((path) => currentPath.startsWith(path));
+
     const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
-    // Show welcome if user is not authenticated and hasn't seen welcome
-    if (!isAuthenticated && !hasSeenWelcome) {
+
+    // Only show welcome if:
+    // 1. User is not authenticated
+    // 2. User hasn't seen welcome before
+    // 3. User is NOT on an excluded path
+    if (!isAuthenticated && !hasSeenWelcome && !isExcludedPath) {
       setShowWelcome(true);
     }
 
@@ -40,7 +59,7 @@ export const WelcomeProvider = ({ children }) => {
       window.removeEventListener("openSignIn", handleOpenSignIn);
       window.removeEventListener("openSignUp", handleOpenSignUp);
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, location.pathname]);
 
   const handleCloseWelcome = () => {
     localStorage.setItem("hasSeenWelcome", "true");
@@ -49,14 +68,14 @@ export const WelcomeProvider = ({ children }) => {
 
   const handleSignUpClick = () => {
     localStorage.setItem("redirectAfterAuth", "/passion");
-    localStorage.setItem("isNewUserOnboarding", "true"); // Add this line
+    localStorage.setItem("isNewUserOnboarding", "true");
     setShowWelcome(false);
     setShowSignUp(true);
   };
 
   const handleSignInClick = () => {
     localStorage.setItem("redirectAfterAuth", "/passion");
-    localStorage.setItem("isNewUserOnboarding", "true"); // Add this line
+    localStorage.setItem("isNewUserOnboarding", "true");
     setShowWelcome(false);
     setShowSignIn(true);
   };
