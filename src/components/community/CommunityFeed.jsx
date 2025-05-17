@@ -41,6 +41,7 @@ const CommunityFeed = () => {
   const [activeCommentId, setActiveCommentId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [imageLoading, setImageLoading] = useState(false);
+  const [shareDialogPostId, setShareDialogPostId] = useState(null); // Add this state
 
   // Fetch posts on component mount
   useEffect(() => {
@@ -196,19 +197,52 @@ const CommunityFeed = () => {
     }
   };
 
-  const handleShare = async (postId) => {
+  const handleShare = (postId) => {
+    setShareDialogPostId(postId);
+  };
+
+  const shareViaMethod = async (postId, method) => {
     try {
-      const post = await getPostByShareId(postId);
-      const shareUrl = `${window.location.origin}/post/${post.shareId}`;
-      await navigator.clipboard.writeText(shareUrl);
-      setSuccessMessage("Link copied to clipboard!");
+      // Set a loading state for this specific post
+      setPosts((prev) => prev.map((p) => (p._id === postId ? { ...p, isSharing: true } : p)));
+
+      // Get the post's share ID
+      const response = await getPostByShareId(postId);
+
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
+      const shareId = response.post?.shareId || response.shareId;
+      const shareUrl = `${window.location.origin}/post/${shareId}`;
+
+      if (method === "native" && navigator.share) {
+        // Try using the Web Share API if available (mobile-friendly)
+        await navigator.share({
+          title: "Check out this post on ActionConnect",
+          text: "I found this interesting post on ActionConnect",
+          url: shareUrl,
+        });
+        setSuccessMessage("Post shared successfully!");
+      } else if (method === "clipboard") {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+        setSuccessMessage("Link copied to clipboard!");
+      }
+
+      // Close the dialog
+      setShareDialogPostId(null);
 
       // Clear success message after 3 seconds
       setTimeout(() => {
         setSuccessMessage("");
       }, 3000);
     } catch (err) {
-      setError("Failed to share post. Please try again.");
+      console.error("Share error:", err);
+      setError(err.message || "Failed to share post. Please try again.");
+    } finally {
+      // Clear the loading state
+      setPosts((prev) => prev.map((p) => (p._id === postId ? { ...p, isSharing: false } : p)));
     }
   };
 
@@ -522,8 +556,18 @@ const CommunityFeed = () => {
                   className="flex items-center gap-2 hover:text-green-400 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  disabled={post.isSharing}
                 >
-                  <FaShare /> Share
+                  {post.isSharing ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-t-transparent border-green-400 rounded-full animate-spin"></div>
+                      <span>Sharing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaShare /> Share
+                    </>
+                  )}
                 </motion.button>
               </div>
 
@@ -593,6 +637,68 @@ const CommunityFeed = () => {
           ))
         )}
       </div>
+
+      {/* Share Dialog - Add this at the bottom of your return statement */}
+      {shareDialogPostId && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShareDialogPostId(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`${
+              isDarkMode ? "bg-slate-800 border-white/10" : "bg-white border-slate-200"
+            } rounded-xl border p-6 w-full max-w-md`}
+          >
+            <h3 className="text-xl font-semibold mb-6">Share this post</h3>
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <button
+                onClick={() => shareViaMethod(shareDialogPostId, "clipboard")}
+                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-lg transition ${
+                  isDarkMode ? "bg-white/5 hover:bg-white/10" : "bg-slate-50 hover:bg-slate-100"
+                }`}
+              >
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    isDarkMode ? "bg-blue-500/20" : "bg-blue-100"
+                  }`}
+                >
+                  <FaLink className={isDarkMode ? "text-blue-400" : "text-blue-600"} />
+                </div>
+                <span className="text-sm">Copy Link</span>
+              </button>
+
+              {navigator.share && (
+                <button
+                  onClick={() => shareViaMethod(shareDialogPostId, "native")}
+                  className={`flex flex-col items-center justify-center gap-2 p-4 rounded-lg transition ${
+                    isDarkMode ? "bg-white/5 hover:bg-white/10" : "bg-slate-50 hover:bg-slate-100"
+                  }`}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      isDarkMode ? "bg-green-500/20" : "bg-green-100"
+                    }`}
+                  >
+                    <FaShare className={isDarkMode ? "text-green-400" : "text-green-600"} />
+                  </div>
+                  <span className="text-sm">Share</span>
+                </button>
+              )}
+            </div>
+
+            <button
+              onClick={() => setShareDialogPostId(null)}
+              className={`w-full py-2 ${
+                isDarkMode ? "bg-white/10 hover:bg-white/20" : "bg-slate-100 hover:bg-slate-200"
+              } rounded-lg transition`}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
