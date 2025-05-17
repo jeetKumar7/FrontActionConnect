@@ -75,6 +75,8 @@ export default function HeroSection() {
 
   // Theme detection logic
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
     // Initial theme check
     const isLightMode = document.body.classList.contains("light");
     setIsDarkMode(!isLightMode);

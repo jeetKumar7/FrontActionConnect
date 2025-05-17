@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaEnvelope, FaLock, FaUser, FaGoogle, FaGithub, FaCheckCircle } from "react-icons/fa";
 import Modal from "../common/Modal";
 import { login, register } from "../../services";
+import { useNavigate } from "react-router-dom";
 
 // Theme detection hook
 const useThemeDetection = () => {
@@ -228,7 +229,7 @@ export const SignInModal = ({ isOpen, onClose }) => {
   );
 };
 
-export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
+export const SignUpModal = ({ isOpen, onClose }) => {
   const isDarkMode = useThemeDetection();
   const [formData, setFormData] = useState({
     name: "",
@@ -239,6 +240,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleOpenSignUp = (event) => {
@@ -316,6 +318,25 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Add this function to handle successful Google auth
+  const handleGoogleSuccess = (userData) => {
+    // Store auth token and user data
+    localStorage.setItem("token", userData.token);
+    localStorage.setItem("userId", userData.userId);
+    localStorage.setItem("userEmail", userData.email);
+    localStorage.setItem("userName", userData.name);
+
+    // Close the modal
+    onClose();
+
+    // Redirect to the passion page or dashboard
+    navigate("/passion");
+
+    // Reload the page to ensure all components update with auth state
+    // Alternatively, you could use context or Redux to update all components
+    // window.location.reload();
   };
 
   return (
