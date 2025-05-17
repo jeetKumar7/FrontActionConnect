@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaRegHeart, FaHeart, FaRegComment, FaShare, FaImage, FaVideo, FaLink, FaLeaf } from "react-icons/fa6";
-import { createPost, likePost, addComment, getPostByShareId, getPosts, uploadImage } from "../../services";
+import { createPost, likePost, addComment, getPosts, uploadImage } from "../../services";
 
 // Add theme detection hook
 const useThemeDetection = () => {
