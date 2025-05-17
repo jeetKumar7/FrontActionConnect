@@ -425,9 +425,12 @@ const Navbar = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className={`lg:hidden mt-2 pb-3 border-t ${isDarkMode ? "border-white/10" : "border-slate-200"} pt-2`}
+              className={`lg:hidden mt-2 pb-3 border-t ${
+                isDarkMode ? "bg-[var(--bg-primary)] border-white/10" : "bg-white border-slate-200"
+              } pt-2`}
             >
               <div className="flex flex-col space-y-1 px-2">
+                {/* Navigation links */}
                 {navLinks.map((link) => (
                   <motion.div key={link.name} whileHover={{ x: 5 }} className="w-full">
                     <Link
@@ -440,56 +443,75 @@ const Navbar = () => {
                         }
                       }}
                       className={`flex items-center text-left w-full ${
-                        isDarkMode ? "text-slate-300 hover:text-white" : "text-slate-700 hover:text-slate-900"
-                      } text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-slate-100/10 transition-colors uppercase whitespace-nowrap tracking-wide`}
+                        isDarkMode
+                          ? "text-slate-300 hover:text-white hover:bg-white/10"
+                          : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                      } text-xs font-semibold py-2.5 px-3 rounded-md transition-colors uppercase whitespace-nowrap tracking-wide`}
                     >
                       <span>{link.name}</span>
                     </Link>
                   </motion.div>
                 ))}
 
-                {/* Mobile divider */}
-                <div className="border-t border-white/10 my-2 pt-2">
+                {/* Mobile divider - Make it more visible */}
+                <div className={`border-t my-2 pt-2 ${isDarkMode ? "border-white/20" : "border-slate-200"}`}>
                   {/* Theme toggle for mobile */}
                   <button
                     onClick={toggleTheme}
                     className={`flex items-center justify-between w-full ${
-                      isDarkMode ? "text-slate-300 hover:text-white" : "text-slate-700 hover:text-slate-900"
-                    } text-sm font-medium py-2.5 px-3 rounded-md ${
-                      isDarkMode ? "hover:bg-white/5" : "hover:bg-slate-100"
-                    } transition-colors`}
+                      isDarkMode
+                        ? "text-slate-300 hover:text-white hover:bg-white/10"
+                        : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                    } text-sm font-medium py-2.5 px-3 rounded-md transition-colors`}
                   >
                     <div className="flex items-center gap-2">
                       {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-blue-400" />}
                       <span>{isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
                     </div>
                   </button>
+
+                  {/* Auth buttons - Fix colors based on theme */}
                   {!isAuthenticated ? (
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 mt-2">
                       <button
                         onClick={handleOpenSignIn}
-                        className="w-full bg-slate-800 text-[var(--text-primary)] py-2.5 px-3 rounded-md font-medium text-center text-sm border border-white/10"
+                        className={`w-full py-2.5 px-3 rounded-md font-medium text-center text-sm border ${
+                          isDarkMode
+                            ? "bg-slate-800 text-white border-white/20"
+                            : "bg-slate-100 text-slate-800 border-slate-200"
+                        }`}
                       >
                         Sign In
                       </button>
                       <button
                         onClick={handleOpenSignUp}
-                        className="w-full bg-cyan-600 text-[var(--text-primary)] py-2.5 px-3 rounded-md font-medium text-center text-sm"
+                        className={`w-full py-2.5 px-3 rounded-md font-medium text-center text-sm ${
+                          isDarkMode ? "bg-cyan-600 text-white" : "bg-blue-600 text-white"
+                        }`}
                       >
                         Get Started
                       </button>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 mt-2">
                       <Link
                         to="/profile"
-                        className="flex items-center gap-2 text-slate-300 hover:text-[var(--text-primary)] text-sm font-medium py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                        className={`flex items-center gap-2 text-sm font-medium py-2.5 px-3 rounded-md transition-colors ${
+                          isDarkMode
+                            ? "text-slate-300 hover:text-white hover:bg-white/10"
+                            : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                        }`}
                       >
-                        <FaUserCircle className="text-cyan-400" /> Your Profile
+                        <FaUserCircle className={isDarkMode ? "text-cyan-400" : "text-blue-500"} />
+                        Your Profile
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center justify-center gap-2 w-full bg-red-500/10 text-red-400 py-2.5 px-3 rounded-md font-medium text-sm"
+                        className={`flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-md font-medium text-sm ${
+                          isDarkMode
+                            ? "bg-red-500/20 text-red-300 hover:bg-red-500/30"
+                            : "bg-red-50 text-red-600 hover:bg-red-100"
+                        }`}
                       >
                         <FaSignOutAlt /> Sign Out
                       </button>
