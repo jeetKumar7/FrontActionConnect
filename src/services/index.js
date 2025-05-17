@@ -122,9 +122,17 @@ export const addComment = async (postId, content) => {
   }
 };
 
+export const getPostByShareId = async (shareId) => {
+  const response = await fetch(`${BACKEND_URL}/api/posts/share/${shareId}`);
+  if (response.status === 200 || response.status === 400) {
+    return response.json();
+  }
+  throw new Error("Something went wrong!");
+};
+
 export const getPostBySharedId = async (shareId) => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/shared/${shareId}`, {
+    const response = await fetch(`${BACKEND_URL}/api/posts/share/${shareId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
