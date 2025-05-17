@@ -206,28 +206,28 @@ const CommunityFeed = () => {
       // Set a loading state for this specific post
       setPosts((prev) => prev.map((p) => (p._id === postId ? { ...p, isSharing: true } : p)));
 
-      // Get the post's share ID
-      const response = await getPostByShareId(postId);
+      // Find the post in our current state by its _id
+      const post = posts.find((p) => p._id === postId);
 
-      if (response.error) {
-        throw new Error(response.error);
-      }
+      if (!post || !post.shareId) {
+        // If no shareId exists, we need to fetch it from the backend
+        const response = await getPostByShareId(postId);
 
-      const shareId = response.post?.shareId || response.shareId;
-      const shareUrl = `${window.location.origin}/post/${shareId}`;
+        if (response.error) {
+          throw new Error(response.error);
+        }
 
-      if (method === "native" && navigator.share) {
-        // Try using the Web Share API if available (mobile-friendly)
-        await navigator.share({
-          title: "Check out this post on ActionConnect",
-          text: "I found this interesting post on ActionConnect",
-          url: shareUrl,
-        });
-        setSuccessMessage("Post shared successfully!");
-      } else if (method === "clipboard") {
-        // Fallback to clipboard
-        await navigator.clipboard.writeText(shareUrl);
-        setSuccessMessage("Link copied to clipboard!");
+        // Update the post in our state to include shareId for future use
+        const shareId = response.shareId;
+        setPosts((prev) => prev.map((p) => (p._id === postId ? { ...p, shareId } : p)));
+
+        // Use this shareId for sharing
+        const shareUrl = `${window.location.origin}/post/${shareId}`;
+        await performShare(method, shareUrl);
+      } else {
+        // We already have the shareId, use it directly
+        const shareUrl = `${window.location.origin}/post/${post.shareId}`;
+        await performShare(method, shareUrl);
       }
 
       // Close the dialog
@@ -243,6 +243,23 @@ const CommunityFeed = () => {
     } finally {
       // Clear the loading state
       setPosts((prev) => prev.map((p) => (p._id === postId ? { ...p, isSharing: false } : p)));
+    }
+  };
+
+  // Helper function for the actual sharing
+  const performShare = async (method, shareUrl) => {
+    if (method === "native" && navigator.share) {
+      // Try using the Web Share API if available (mobile-friendly)
+      await navigator.share({
+        title: "Check out this post on ActionConnect",
+        text: "I found this interesting post on ActionConnect",
+        url: shareUrl,
+      });
+      setSuccessMessage("Post shared successfully!");
+    } else if (method === "clipboard") {
+      // Fallback to clipboard
+      await navigator.clipboard.writeText(shareUrl);
+      setSuccessMessage("Link copied to clipboard!");
     }
   };
 
