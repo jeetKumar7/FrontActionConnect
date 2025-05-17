@@ -122,12 +122,24 @@ export const addComment = async (postId, content) => {
   }
 };
 
-export const getPostByShareId = async (shareId) => {
-  const response = await fetch(`${BACKEND_URL}/api/posts/share/${shareId}`);
-  if (response.status === 200 || response.status === 400) {
-    return response.json();
+export const getPostBySharedId = async (shareId) => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/shared/${shareId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Token is optional here if you want to allow non-authenticated users to view shared posts
+        ...(localStorage.getItem("token") && {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }),
+      },
+    });
+
+    return await response.json();
+  } catch (err) {
+    console.error("Error fetching shared post:", err);
+    return { error: "Failed to fetch shared post" };
   }
-  throw new Error("Something went wrong!");
 };
 
 // Add function to get all posts for feed

@@ -15,6 +15,7 @@ import LearnMore from "../../pages/LearnMore";
 import UserProfile from "../user/UserProfile";
 import AuthCallback from "../auth/AuthCallback";
 import WelcomeModal from "../common/WelcomeModal";
+import SharedPostView from "../../pages/SharedPostView";
 import { useWelcome } from "../../context/WelcomeContext";
 import { AnimatePresence } from "framer-motion";
 import { SignInModal, SignUpModal } from "../auth/AuthModals";
@@ -38,6 +39,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/library" element={<ContentLibrary />} />
+        <Route path="/shared/:postId" element={<SharedPostView />} />
         <Route path="/community/*" element={<Community />} />
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/hub" element={<ActionHub />} />
