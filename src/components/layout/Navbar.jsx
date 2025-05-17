@@ -436,6 +436,10 @@ const Navbar = () => {
                     <Link
                       to={link.path}
                       onClick={(e) => {
+                        // Close the mobile menu first
+                        setIsOpen(false);
+
+                        // Then handle authentication check
                         const requiresAuth = ["/passion", "/community", "/map"];
                         if (requiresAuth.includes(link.path) && !isAuthenticated) {
                           e.preventDefault();
