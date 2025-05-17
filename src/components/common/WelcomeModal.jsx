@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaLeaf, FaUserPlus, FaSignInAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const WelcomeModal = ({ isOpen, onSignUp, onSignIn, onClose }) => {
   const navigate = useNavigate();
+
+  // Check for authentication token and close modal if it exists
+  useEffect(() => {
+    const authToken = localStorage.getItem("token");
+    if (authToken && isOpen) {
+      console.log("User already authenticated, closing welcome modal");
+      onClose();
+    }
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
