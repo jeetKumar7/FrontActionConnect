@@ -361,10 +361,12 @@ const Navbar = () => {
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 5 }}
-                          className="absolute right-0 mt-2 w-52 bg-slate-800 border border-white/10 rounded-md py-1.5 shadow-2xl z-50"
+                          className={`absolute right-0 mt-2 w-52 ${
+                            isDarkMode ? "bg-slate-800 border-white/10" : "bg-white border-slate-200"
+                          } border rounded-md py-1.5 shadow-xl z-50`}
                         >
-                          <div className="px-3 py-2 border-b border-white/10">
-                            <div className="font-medium text-[var(--text-primary)]">
+                          <div className={`px-3 py-2 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
+                            <div className={`font-medium ${isDarkMode ? "text-white" : "text-slate-800"}`}>
                               {localStorage.getItem("userName") || "User"}
                             </div>
                             <div className="text-xs text-slate-400 truncate">
@@ -376,26 +378,24 @@ const Navbar = () => {
                           <div className="py-1">
                             <Link
                               to="/profile"
-                              className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
+                              className={`flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm ${
+                                isDarkMode ? "text-slate-300 hover:bg-white/5" : "text-slate-700 hover:bg-slate-100"
+                              }`}
                               onClick={() => setShowProfileMenu(false)}
                             >
-                              <FaUserCircle className="text-cyan-400 text-xs" /> Your Profile
-                            </Link>
-                            <Link
-                              to="/settings"
-                              className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
-                              onClick={() => setShowProfileMenu(false)}
-                            >
-                              <FaCog className="text-cyan-400 text-xs" /> Settings
+                              <FaUserCircle className={isDarkMode ? "text-cyan-400" : "text-blue-500"} size={12} /> Your
+                              Profile
                             </Link>
                           </div>
 
-                          <div className="border-t border-white/10 mt-1 pt-1">
+                          <div className={`border-t mt-1 pt-1 ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
                             <button
                               onClick={handleLogout}
-                              className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-slate-300 hover:bg-white/5"
+                              className={`flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm ${
+                                isDarkMode ? "text-slate-300 hover:bg-white/5" : "text-slate-700 hover:bg-slate-100"
+                              }`}
                             >
-                              <FaSignOutAlt className="text-red-400 text-xs" /> Sign Out
+                              <FaSignOutAlt className="text-red-400" size={12} /> Sign Out
                             </button>
                           </div>
                         </motion.div>
