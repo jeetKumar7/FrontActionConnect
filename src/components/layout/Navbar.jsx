@@ -194,7 +194,7 @@ const Navbar = () => {
       className={`fixed w-full top-0 z-50 transition-all duration-500 py-1.5 ${
         isDarkMode
           ? "bg-[var(--bg-primary)] border-b border-white/10 shadow-md shadow-black/10"
-          : "bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm"
+          : "bg-white border-b border-slate-200 shadow-sm" // Removed /90 opacity and backdrop-blur-md
       }`}
     >
       {/* Container with modified layout gdfdsgvf */}
@@ -425,7 +425,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden mt-2 pb-3 border-t border-white/10 pt-2"
+              className={`lg:hidden mt-2 pb-3 border-t ${isDarkMode ? "border-white/10" : "border-slate-200"} pt-2`}
             >
               <div className="flex flex-col space-y-1 px-2">
                 {navLinks.map((link) => (
@@ -439,7 +439,9 @@ const Navbar = () => {
                           handleProtectedNavigation(e, link.path);
                         }
                       }}
-                      className="flex items-center text-left w-full text-slate-300 hover:text-[var(--text-primary)] text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors uppercase whitespace-nowrap tracking-wide"
+                      className={`flex items-center text-left w-full ${
+                        isDarkMode ? "text-slate-300 hover:text-white" : "text-slate-700 hover:text-slate-900"
+                      } text-xs font-semibold py-2.5 px-3 rounded-md hover:bg-slate-100/10 transition-colors uppercase whitespace-nowrap tracking-wide`}
                     >
                       <span>{link.name}</span>
                     </Link>
@@ -451,7 +453,11 @@ const Navbar = () => {
                   {/* Theme toggle for mobile */}
                   <button
                     onClick={toggleTheme}
-                    className="flex items-center justify-between w-full text-slate-300 hover:text-[var(--text-primary)] text-sm font-medium py-2.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+                    className={`flex items-center justify-between w-full ${
+                      isDarkMode ? "text-slate-300 hover:text-white" : "text-slate-700 hover:text-slate-900"
+                    } text-sm font-medium py-2.5 px-3 rounded-md ${
+                      isDarkMode ? "hover:bg-white/5" : "hover:bg-slate-100"
+                    } transition-colors`}
                   >
                     <div className="flex items-center gap-2">
                       {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-blue-400" />}
