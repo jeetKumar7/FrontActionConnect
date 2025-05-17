@@ -256,7 +256,19 @@ export default function HeroSection() {
 
 // Video Modal Component
 const VideoModal = ({ video, onClose, isDarkMode }) => {
-  // Close on ESC key
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  const handleFeedbackSubmit = (e) => {
+    e.preventDefault();
+
+    console.log("Feedback submitted:", feedback);
+
+    // Reset form and close modal
+    setFeedback("");
+    setShowFeedbackForm(false);
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") onClose();
@@ -265,7 +277,6 @@ const VideoModal = ({ video, onClose, isDarkMode }) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  // Prevent scrolling when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -293,6 +304,61 @@ const VideoModal = ({ video, onClose, isDarkMode }) => {
         <div className={`p-4 ${isDarkMode ? "text-white" : "text-slate-800"}`}>
           <h3 className="text-xl font-medium">{video.title}</h3>
         </div>
+
+        {/* Subtle Feedback Button */}
+        <div className="absolute bottom-4 right-4">
+          <button
+            onClick={() => setShowFeedbackForm(true)}
+            className="bg-black/30 text-white text-sm px-3 py-1 rounded-full shadow-md hover:bg-black/50 transition-opacity opacity-70 hover:opacity-100"
+            aria-label="Give Feedback"
+          >
+            Feedback
+          </button>
+        </div>
+
+        {/* Feedback Form Modal */}
+        {showFeedbackForm && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-bold mb-4">Give Feedback</h2>
+              <form onSubmit={handleFeedbackSubmit}>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">Your Feedback</label>
+                  <textarea
+                    className="w-full border border-gray-300 rounded-md p-2 mt-1"
+                    rows="4"
+                    placeholder="Write your feedback here..."
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                  ></textarea>
+                </div>
+                <div className="flex justify-between items-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowFeedbackForm(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 transition"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-500">
+                  Want to provide feedback on other parts of the site?{" "}
+                  <a href="/feedback" className="text-blue-600 hover:underline">
+                    Go to Feedback Page
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <button
           onClick={onClose}
