@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaRegHeart, FaHeart, FaRegComment, FaShare, FaArrowLeft } from "react-icons/fa6";
-import { getPostByShareId, likePost, addComment } from "../services";
+import { getPostBySharedId, likePost, addComment } from "../services";
 
 // Add theme detection hook
 const useThemeDetection = () => {
@@ -44,7 +44,7 @@ const SharedPostView = () => {
       try {
         setLoading(true);
         // Modify this function in your services file to fetch a post by shareId
-        const response = await getPostByShareId(shareId);
+        const response = await getPostBySharedId(shareId);
 
         if (response.error) {
           setError(response.error);

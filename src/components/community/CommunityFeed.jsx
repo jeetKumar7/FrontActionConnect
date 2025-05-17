@@ -209,26 +209,19 @@ const CommunityFeed = () => {
       // Find the post in our current state by its _id
       const post = posts.find((p) => p._id === postId);
 
-      if (!post || !post.shareId) {
-        // If no shareId exists, we need to fetch it from the backend
-        const response = await getPostByShareId(postId);
-
-        if (response.error) {
-          throw new Error(response.error);
-        }
-
-        // Update the post in our state to include shareId for future use
-        const shareId = response.shareId;
-        setPosts((prev) => prev.map((p) => (p._id === postId ? { ...p, shareId } : p)));
-
-        // Use this shareId for sharing
-        const shareUrl = `${window.location.origin}/post/${shareId}`;
-        await performShare(method, shareUrl);
-      } else {
-        // We already have the shareId, use it directly
-        const shareUrl = `${window.location.origin}/post/${post.shareId}`;
-        await performShare(method, shareUrl);
+      if (!post) {
+        throw new Error("Post not found");
       }
+
+      // The shareId should already be in the post object from MongoDB
+      // If it's missing for some reason, show an error
+      if (!post.shareId) {
+        throw new Error("Share ID not available for this post");
+      }
+
+      // Use the shareId directly from the post object
+      const shareUrl = `${window.location.origin}/shared/${post.shareId}`;
+      await performShare(method, shareUrl);
 
       // Close the dialog
       setShareDialogPostId(null);

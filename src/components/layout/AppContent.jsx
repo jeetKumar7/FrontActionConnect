@@ -39,7 +39,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/library" element={<ContentLibrary />} />
-        <Route path="/shared/:postId" element={<SharedPostView />} />
+        <Route path="/shared/:shareId" element={<SharedPostView />} />
         <Route path="/community/*" element={<Community />} />
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/hub" element={<ActionHub />} />

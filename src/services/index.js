@@ -122,24 +122,22 @@ export const addComment = async (postId, content) => {
   }
 };
 
-export const getPostByShareId = async (shareId) => {
-  const response = await fetch(`${BACKEND_URL}/api/posts/share/${shareId}`);
-  if (response.status === 200 || response.status === 400) {
-    return response.json();
-  }
-  throw new Error("Something went wrong!");
-};
+// export const getPostByShareId = async (shareId) => {
+//   const response = await fetch(`${BACKEND_URL}/api/posts/share/${shareId}`);
+//   if (response.status === 200 || response.status === 400) {
+//     return response.json();
+//   }
+//   throw new Error("Something went wrong!");
+// };
 
 export const getPostBySharedId = async (shareId) => {
   try {
+    const token = localStorage.getItem("token");
     const response = await fetch(`${BACKEND_URL}/api/posts/share/${shareId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         // Token is optional here if you want to allow non-authenticated users to view shared posts
-        ...(localStorage.getItem("token") && {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }),
       },
     });
 
