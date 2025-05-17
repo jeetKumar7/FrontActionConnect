@@ -7,6 +7,7 @@ import {
   FaPlay,
   FaChevronLeft,
   FaChevronRight,
+  FaTimes,
 } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { SignUpModal } from "./auth/AuthModals";
@@ -70,6 +71,7 @@ export default function HeroSection() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const carouselRef = useRef(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [currentVideo, setCurrentVideo] = useState(null); // Add this line
 
   // Theme detection logic
   useEffect(() => {
@@ -105,8 +107,9 @@ export default function HeroSection() {
     carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
-  const openVideo = (url) => {
-    window.open(url, "_blank");
+  const openVideo = (video) => {
+    // Updated to set the current video instead of opening a new tab
+    setCurrentVideo(video);
   };
 
   const navigateToLibrary = () => {
@@ -201,7 +204,7 @@ export default function HeroSection() {
                 <div
                   key={idx}
                   className="flex-shrink-0 w-[280px] h-[140px] bg-black/20 rounded-lg overflow-hidden snap-start cursor-pointer relative group"
-                  onClick={() => openVideo(video.url)}
+                  onClick={() => openVideo(video)} // Updated to pass the entire video object
                 >
                   {/* Video Thumbnail */}
                   <img
@@ -241,7 +244,64 @@ export default function HeroSection() {
         </div>
       </div>
 
+      {/* Video Modal */}
+      {currentVideo && (
+        <VideoModal video={currentVideo} onClose={() => setCurrentVideo(null)} isDarkMode={isDarkMode} />
+      )}
+
       <SignUpModal isOpen={showSignUp} onClose={() => setShowSignUp(false)} />
     </section>
   );
 }
+
+// Video Modal Component
+const VideoModal = ({ video, onClose, isDarkMode }) => {
+  // Close on ESC key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  // Prevent scrolling when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6"
+      onClick={onClose}
+    >
+      <div className="w-full max-w-5xl relative" onClick={(e) => e.stopPropagation()}>
+        <div className="aspect-video relative shadow-2xl">
+          <iframe
+            src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
+            title={video.title}
+            className="absolute inset-0 w-full h-full rounded-lg"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+
+        <div className={`p-4 ${isDarkMode ? "text-white" : "text-slate-800"}`}>
+          <h3 className="text-xl font-medium">{video.title}</h3>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="absolute -top-12 right-0 text-white hover:text-gray-300"
+          aria-label="Close video"
+        >
+          <FaTimes size={24} />
+        </button>
+      </div>
+    </div>
+  );
+};
