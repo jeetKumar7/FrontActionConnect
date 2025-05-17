@@ -142,25 +142,25 @@ export default function HeroSection() {
       <div className="relative z-10 h-full flex flex-col">
         {/* Top Part - Hero Content */}
         <div className="h-[80%] flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight max-w-4xl">
             Connect,{" "}
             <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">Inspire</span>,
             and Catalyze Change
           </h1>
-          <p className="mt-4 text-lg md:text-xl text-slate-300/90 leading-relaxed max-w-3xl">
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl text-slate-300/90 leading-relaxed max-w-3xl px-2 sm:px-0">
             We bring together passionate individuals and diverse social causes, sparking meaningful conversations that
             transform shared vision into measurable societal impact.
           </p>
-          <div className="mt-6 flex flex-wrap gap-4 justify-center">
+          <div className="mt-5 sm:mt-6 flex flex-wrap gap-3 sm:gap-4 justify-center w-full px-2 sm:px-0">
             <button
               onClick={handleGetStarted}
-              className="bg-gradient-to-r from-cyan-600 to-teal-600 text-white px-6 py-3 rounded-md font-medium shadow-lg hover:from-cyan-500 hover:to-teal-500 transition-all"
+              className="bg-gradient-to-r from-cyan-600 to-teal-600 text-white py-3 px-5 sm:px-6 rounded-md font-medium shadow-lg hover:from-cyan-500 hover:to-teal-500 transition-all w-full sm:w-auto text-sm sm:text-base"
             >
               {isAuthenticated ? "Find Your Passion" : "Get Started"}
             </button>
             <Link
               to="/learn-more"
-              className="text-white border border-teal-700/30 hover:border-teal-600/60 px-6 py-3 rounded-md font-medium transition-all"
+              className="text-white border border-teal-700/30 hover:border-teal-600/60 py-3 px-5 sm:px-6 rounded-md font-medium transition-all w-full sm:w-auto text-sm sm:text-base"
             >
               Learn More
             </Link>
@@ -175,38 +175,45 @@ export default function HeroSection() {
               : "bg-gradient-to-r from-slate-100/70 via-cyan-50/90 to-slate-100/90 border-slate-200"
           } backdrop-blur-md border-t`}
         >
-          <div className="container mx-auto px-4 py-5">
+          <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-5">
             <div className="flex items-center justify-between mb-2">
-              <h2 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-slate-800"}`}>Impact Stories</h2>
-              <div className="flex items-center gap-2">
+              <h2 className={`text-base sm:text-lg font-bold ${isDarkMode ? "text-white" : "text-slate-800"}`}>
+                Impact Stories
+              </h2>
+              <div className="flex items-center gap-1 sm:gap-2">
                 <button
                   onClick={() => scrollCarousel("left")}
-                  className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                  className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
                     isDarkMode
                       ? "bg-white/10 hover:bg-white/20 text-white"
                       : "bg-slate-300/40 hover:bg-slate-300/60 text-slate-700"
                   }`}
                 >
-                  <FaChevronLeft size={14} />
+                  <FaChevronLeft size={12} className="sm:hidden" />
+                  <FaChevronLeft size={14} className="hidden sm:block" />
                 </button>
                 <button
                   onClick={() => scrollCarousel("right")}
-                  className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                  className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
                     isDarkMode
                       ? "bg-white/10 hover:bg-white/20 text-white"
                       : "bg-slate-300/40 hover:bg-slate-300/60 text-slate-700"
                   }`}
                 >
-                  <FaChevronRight size={14} />
+                  <FaChevronRight size={12} className="sm:hidden" />
+                  <FaChevronRight size={14} className="hidden sm:block" />
                 </button>
               </div>
             </div>
-            <div ref={carouselRef} className="flex overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory">
+            <div
+              ref={carouselRef}
+              className="flex overflow-x-auto gap-2 sm:gap-4 scrollbar-hide snap-x snap-mandatory pb-1"
+            >
               {videos.map((video, idx) => (
                 <div
                   key={idx}
-                  className="flex-shrink-0 w-[280px] h-[140px] bg-black/20 rounded-lg overflow-hidden snap-start cursor-pointer relative group"
-                  onClick={() => openVideo(video)} // Updated to pass the entire video object
+                  className="flex-shrink-0 w-[220px] sm:w-[260px] md:w-[280px] h-[110px] sm:h-[130px] md:h-[140px] bg-black/20 rounded-lg overflow-hidden snap-start cursor-pointer relative group"
+                  onClick={() => openVideo(video)}
                 >
                   {/* Video Thumbnail */}
                   <img
@@ -216,14 +223,14 @@ export default function HeroSection() {
                   />
 
                   {/* Title Overlay - Shows at bottom on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 className="text-white text-sm font-semibold">{video.title}</h3>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-2 sm:p-3 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <h3 className="text-white text-xs sm:text-sm font-semibold line-clamp-2">{video.title}</h3>
                   </div>
 
                   {/* Play Button - Centered */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <FaPlay className="text-white" size={18} />
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                      <FaPlay className="text-white" size={14} />
                     </div>
                   </div>
                 </div>
@@ -231,14 +238,14 @@ export default function HeroSection() {
 
               {/* Explore More Button */}
               <div
-                className="flex-shrink-0 w-[280px] h-[140px] bg-gradient-to-r from-teal-900/60 to-cyan-900/60 rounded-lg overflow-hidden snap-start cursor-pointer relative group"
+                className="flex-shrink-0 w-[220px] sm:w-[260px] md:w-[280px] h-[110px] sm:h-[130px] md:h-[140px] bg-gradient-to-r from-teal-900/60 to-cyan-900/60 rounded-lg overflow-hidden snap-start cursor-pointer relative group"
                 onClick={navigateToLibrary}
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                  <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-2">
-                    <FaArrowRight className="text-white" size={16} />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-1 sm:mb-2">
+                    <FaArrowRight className="text-white" size={14} />
                   </div>
-                  <span className="text-white font-medium text-center">Explore More</span>
+                  <span className="text-white text-sm font-medium text-center">Explore More</span>
                 </div>
               </div>
             </div>
@@ -263,10 +270,7 @@ const VideoModal = ({ video, onClose, isDarkMode }) => {
 
   const handleFeedbackSubmit = (e) => {
     e.preventDefault();
-
     console.log("Feedback submitted:", feedback);
-
-    // Reset form and close modal
     setFeedback("");
     setShowFeedbackForm(false);
   };
@@ -288,46 +292,46 @@ const VideoModal = ({ video, onClose, isDarkMode }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 md:p-6"
       onClick={onClose}
     >
       <div className="w-full max-w-5xl relative" onClick={(e) => e.stopPropagation()}>
-        <div className="aspect-video relative shadow-2xl">
+        <div className="aspect-video relative shadow-2xl rounded-lg overflow-hidden">
           <iframe
             src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
             title={video.title}
-            className="absolute inset-0 w-full h-full rounded-lg"
+            className="absolute inset-0 w-full h-full"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
         </div>
 
-        <div className={`p-4 ${isDarkMode ? "text-white" : "text-slate-800"}`}>
-          <h3 className="text-xl font-medium">{video.title}</h3>
+        <div className={`p-3 sm:p-4 ${isDarkMode ? "text-white" : "text-slate-800"}`}>
+          <h3 className="text-base sm:text-lg md:text-xl font-medium line-clamp-2">{video.title}</h3>
         </div>
 
-        {/* Subtle Feedback Button */}
-        <div className="absolute bottom-4 right-4 ">
+        {/* Feedback Button - Positioned better for mobile */}
+        <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4">
           <button
             onClick={() => setShowFeedbackForm(true)}
-            className="bg-black/30 text-white text-sm px-3 py-1 rounded-full shadow-md hover:bg-black/50 transition-opacity opacity-70 hover:opacity-100"
+            className="bg-black/30 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full shadow-md hover:bg-black/50 transition-opacity opacity-70 hover:opacity-100"
             aria-label="Give Feedback"
           >
             Feedback
           </button>
         </div>
 
-        {/* Feedback Form Modal */}
+        {/* Improved Feedback Form Modal */}
         {showFeedbackForm && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-              <h2 className="text-xl font-bold mb-4">Give Feedback</h2>
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-md mx-2">
+              <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Give Feedback</h2>
               <form onSubmit={handleFeedbackSubmit}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Your Feedback</label>
+                <div className="mb-3 sm:mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Your Feedback</label>
                   <textarea
-                    className="w-full border border-gray-300 rounded-md p-2 mt-1"
+                    className="w-full border border-gray-300 rounded-md p-2 text-sm"
                     rows="4"
                     placeholder="Write your feedback here..."
                     value={feedback}
@@ -338,20 +342,20 @@ const VideoModal = ({ video, onClose, isDarkMode }) => {
                   <button
                     type="button"
                     onClick={() => setShowFeedbackForm(false)}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-gray-500 hover:text-gray-700 text-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 transition"
+                    className="bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 text-sm rounded-md shadow-md hover:bg-blue-700 transition"
                   >
                     Submit
                   </button>
                 </div>
               </form>
               <div className="mt-4 text-center">
-                <p className="text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500">
                   Want to provide feedback on other parts of the site?{" "}
                   <a href="/feedback" className="text-blue-600 hover:underline">
                     Go to Feedback Page
@@ -362,12 +366,14 @@ const VideoModal = ({ video, onClose, isDarkMode }) => {
           </div>
         )}
 
+        {/* Close Button - Better positioned for mobile */}
         <button
           onClick={onClose}
-          className="absolute -top-12 right-0 text-white hover:text-gray-300"
+          className="absolute -top-10 right-0 sm:-top-12 text-white hover:text-gray-300"
           aria-label="Close video"
         >
-          <FaTimes size={24} />
+          <FaTimes size={20} className="sm:hidden" />
+          <FaTimes size={24} className="hidden sm:block" />
         </button>
       </div>
     </div>
