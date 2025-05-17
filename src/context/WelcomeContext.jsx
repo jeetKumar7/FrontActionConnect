@@ -49,12 +49,14 @@ export const WelcomeProvider = ({ children }) => {
 
   const handleSignUpClick = () => {
     localStorage.setItem("redirectAfterAuth", "/passion");
+    localStorage.setItem("isNewUserOnboarding", "true"); // Add this line
     setShowWelcome(false);
     setShowSignUp(true);
   };
 
   const handleSignInClick = () => {
     localStorage.setItem("redirectAfterAuth", "/passion");
+    localStorage.setItem("isNewUserOnboarding", "true"); // Add this line
     setShowWelcome(false);
     setShowSignIn(true);
   };
