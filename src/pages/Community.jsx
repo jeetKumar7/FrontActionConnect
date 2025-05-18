@@ -47,7 +47,7 @@ const Community = () => {
       }`}
     >
       {/* Page Header */}
-      <div className={`pt-16 pb-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
+      <div className={`pt-18 pb-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-center sm:text-left">Community Hub</h1>
 
