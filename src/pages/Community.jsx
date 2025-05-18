@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, Routes, Route, useLocation, Navigate } from "react-router-dom";
-import { FaRss, FaHashtag, FaRegCalendarCheck, FaEnvelope } from "react-icons/fa";
+import { FaRss, FaHashtag, FaRegCalendarCheck } from "react-icons/fa";
 import CommunityFeed from "../components/community/CommunityFeed";
 import ChatChannels from "../components/community/ChatChannels";
 import UpcomingEvents from "../components/community/UpcomingEvents";
@@ -41,19 +41,21 @@ const Community = () => {
   return (
     <div
       className={`min-h-screen ${
-        isDarkMode ? "bg-gradient-to-b from-slate-900 to-slate-800" : "bg-gradient-to-b from-white to-slate-100"
-      } text-[var(--text-primary)]`}
+        isDarkMode
+          ? "bg-gradient-to-b from-slate-900 to-slate-800 text-white"
+          : "bg-gradient-to-b from-white to-slate-100 text-slate-800"
+      }`}
     >
       {/* Page Header */}
-      <div className={`pt-20 pb-6 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
+      <div className={`pt-16 pb-4 border-b ${isDarkMode ? "border-white/10" : "border-slate-200"}`}>
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-6">Community Hub</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-center sm:text-left">Community Hub</h1>
 
           {/* Navigation Tabs */}
-          <div className="flex space-x-1 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
             <Link
               to="/community/feed"
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                 isActive("feed")
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
                   : isDarkMode
@@ -62,11 +64,11 @@ const Community = () => {
               }`}
             >
               <FaRss className="w-4 h-4" />
-              <span>Community Feed</span>
+              <span className="text-sm sm:text-base">Feed</span>
             </Link>
             <Link
               to="/community/channels"
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                 isActive("channels")
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
                   : isDarkMode
@@ -75,12 +77,11 @@ const Community = () => {
               }`}
             >
               <FaHashtag className="w-4 h-4" />
-              <span>Chat Channels</span>
+              <span className="text-sm sm:text-base">Channels</span>
             </Link>
-
             <Link
               to="/community/events"
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                 isActive("events")
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
                   : isDarkMode
@@ -89,14 +90,14 @@ const Community = () => {
               }`}
             >
               <FaRegCalendarCheck className="w-4 h-4" />
-              <span>Upcoming Events</span>
+              <span className="text-sm sm:text-base">Events</span>
             </Link>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <Routes>
           <Route path="/" element={<Navigate to="/community/feed" replace />} />
           <Route path="feed" element={<CommunityFeed />} />
